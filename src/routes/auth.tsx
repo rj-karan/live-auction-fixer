@@ -15,6 +15,14 @@ export const Route = createFileRoute("/auth")({
 
 const ADMIN_EMAIL = "admin@auction.local";
 
+function mustChangePassword(user: { user_metadata?: Record<string, unknown> } | null | undefined) {
+  const md = user?.user_metadata ?? {};
+  if (md.must_change_password === true) return true;
+  // Legacy accounts without a recorded change are treated as requiring one.
+  if (md.password_changed_at == null && md.must_change_password !== false) return true;
+  return false;
+}
+
 function AuthPage() {
   const navigate = useNavigate();
   const [username, setUsername] = useState("admin");
@@ -25,7 +33,9 @@ function AuthPage() {
     // Ensure the default admin exists.
     fetch("/api/public/bootstrap-admin", { method: "POST" }).catch(() => {});
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/admin" });
+      if (data.session) {
+        navigate({ to: mustChangePassword(data.session.user) ? "/change-password" : "/admin" });
+      }
     });
   }, [navigate]);
 
@@ -33,7 +43,7 @@ function AuthPage() {
     e.preventDefault();
     setBusy(true);
     const email = username.includes("@") ? username : ADMIN_EMAIL;
-    const { error } = await supabase.auth.signInWithPassword({
+    const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
@@ -43,7 +53,7 @@ function AuthPage() {
       return;
     }
     toast.success("Signed in");
-    navigate({ to: "/admin" });
+    navigate({ to: mustChangePassword(data.user) ? "/change-password" : "/admin" });
   };
 
   return (
@@ -78,9 +88,6 @@ function AuthPage() {
             <Button type="submit" disabled={busy} className="w-full">
               {busy ? "Signing in…" : "Sign in"}
             </Button>
-            <p className="text-xs text-muted-foreground">
-              Default admin: <code>admin</code> / <code>admin123</code>
-            </p>
           </form>
         </CardContent>
       </Card>
