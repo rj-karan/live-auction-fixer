@@ -18,7 +18,13 @@ function AuthGate() {
     if (loading) return;
     if (!session || !isAdmin) {
       navigate({ to: "/auth" });
+      return;
     }
+    const md = (session.user.user_metadata ?? {}) as Record<string, unknown>;
+    const mustChange =
+      md.must_change_password === true ||
+      (md.password_changed_at == null && md.must_change_password !== false);
+    if (mustChange) navigate({ to: "/change-password" });
   }, [loading, session, isAdmin, navigate]);
   if (loading || !session || !isAdmin) {
     return (
