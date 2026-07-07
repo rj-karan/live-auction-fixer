@@ -9,38 +9,215 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as AuthRouteImport } from './routes/auth'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as TournamentSlugRouteImport } from './routes/tournament.$slug'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
+import { Route as ApiPublicBootstrapAdminRouteImport } from './routes/api/public/bootstrap-admin'
+import { Route as AuthenticatedAdminTransactionsRouteImport } from './routes/_authenticated/admin.transactions'
+import { Route as AuthenticatedAdminTournamentsRouteImport } from './routes/_authenticated/admin.tournaments'
+import { Route as AuthenticatedAdminTeamsRouteImport } from './routes/_authenticated/admin.teams'
+import { Route as AuthenticatedAdminPlayersRouteImport } from './routes/_authenticated/admin.players'
+import { Route as AuthenticatedAdminAuctionRouteImport } from './routes/_authenticated/admin.auction'
+import { Route as TournamentSlugTeamTeamSlugRouteImport } from './routes/tournament.$slug.team.$teamSlug'
+import { Route as TournamentSlugPlayerPlayerIdRouteImport } from './routes/tournament.$slug.player.$playerId'
 
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const TournamentSlugRoute = TournamentSlugRouteImport.update({
+  id: '/tournament/$slug',
+  path: '/tournament/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const ApiPublicBootstrapAdminRoute = ApiPublicBootstrapAdminRouteImport.update({
+  id: '/api/public/bootstrap-admin',
+  path: '/api/public/bootstrap-admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedAdminTransactionsRoute =
+  AuthenticatedAdminTransactionsRouteImport.update({
+    id: '/transactions',
+    path: '/transactions',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminTournamentsRoute =
+  AuthenticatedAdminTournamentsRouteImport.update({
+    id: '/tournaments',
+    path: '/tournaments',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminTeamsRoute = AuthenticatedAdminTeamsRouteImport.update({
+  id: '/teams',
+  path: '/teams',
+  getParentRoute: () => AuthenticatedAdminRoute,
+} as any)
+const AuthenticatedAdminPlayersRoute =
+  AuthenticatedAdminPlayersRouteImport.update({
+    id: '/players',
+    path: '/players',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const AuthenticatedAdminAuctionRoute =
+  AuthenticatedAdminAuctionRouteImport.update({
+    id: '/auction',
+    path: '/auction',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
+const TournamentSlugTeamTeamSlugRoute =
+  TournamentSlugTeamTeamSlugRouteImport.update({
+    id: '/team/$teamSlug',
+    path: '/team/$teamSlug',
+    getParentRoute: () => TournamentSlugRoute,
+  } as any)
+const TournamentSlugPlayerPlayerIdRoute =
+  TournamentSlugPlayerPlayerIdRouteImport.update({
+    id: '/player/$playerId',
+    path: '/player/$playerId',
+    getParentRoute: () => TournamentSlugRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/tournament/$slug': typeof TournamentSlugRouteWithChildren
+  '/admin/auction': typeof AuthenticatedAdminAuctionRoute
+  '/admin/players': typeof AuthenticatedAdminPlayersRoute
+  '/admin/teams': typeof AuthenticatedAdminTeamsRoute
+  '/admin/tournaments': typeof AuthenticatedAdminTournamentsRoute
+  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
+  '/api/public/bootstrap-admin': typeof ApiPublicBootstrapAdminRoute
+  '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/tournament/$slug/player/$playerId': typeof TournamentSlugPlayerPlayerIdRoute
+  '/tournament/$slug/team/$teamSlug': typeof TournamentSlugTeamTeamSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
+  '/tournament/$slug': typeof TournamentSlugRouteWithChildren
+  '/admin/auction': typeof AuthenticatedAdminAuctionRoute
+  '/admin/players': typeof AuthenticatedAdminPlayersRoute
+  '/admin/teams': typeof AuthenticatedAdminTeamsRoute
+  '/admin/tournaments': typeof AuthenticatedAdminTournamentsRoute
+  '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
+  '/api/public/bootstrap-admin': typeof ApiPublicBootstrapAdminRoute
+  '/admin': typeof AuthenticatedAdminIndexRoute
+  '/tournament/$slug/player/$playerId': typeof TournamentSlugPlayerPlayerIdRoute
+  '/tournament/$slug/team/$teamSlug': typeof TournamentSlugTeamTeamSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
+  '/tournament/$slug': typeof TournamentSlugRouteWithChildren
+  '/_authenticated/admin/auction': typeof AuthenticatedAdminAuctionRoute
+  '/_authenticated/admin/players': typeof AuthenticatedAdminPlayersRoute
+  '/_authenticated/admin/teams': typeof AuthenticatedAdminTeamsRoute
+  '/_authenticated/admin/tournaments': typeof AuthenticatedAdminTournamentsRoute
+  '/_authenticated/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
+  '/api/public/bootstrap-admin': typeof ApiPublicBootstrapAdminRoute
+  '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/tournament/$slug/player/$playerId': typeof TournamentSlugPlayerPlayerIdRoute
+  '/tournament/$slug/team/$teamSlug': typeof TournamentSlugTeamTeamSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths:
+    | '/'
+    | '/auth'
+    | '/admin'
+    | '/tournament/$slug'
+    | '/admin/auction'
+    | '/admin/players'
+    | '/admin/teams'
+    | '/admin/tournaments'
+    | '/admin/transactions'
+    | '/api/public/bootstrap-admin'
+    | '/admin/'
+    | '/tournament/$slug/player/$playerId'
+    | '/tournament/$slug/team/$teamSlug'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to:
+    | '/'
+    | '/auth'
+    | '/tournament/$slug'
+    | '/admin/auction'
+    | '/admin/players'
+    | '/admin/teams'
+    | '/admin/tournaments'
+    | '/admin/transactions'
+    | '/api/public/bootstrap-admin'
+    | '/admin'
+    | '/tournament/$slug/player/$playerId'
+    | '/tournament/$slug/team/$teamSlug'
+  id:
+    | '__root__'
+    | '/'
+    | '/_authenticated'
+    | '/auth'
+    | '/_authenticated/admin'
+    | '/tournament/$slug'
+    | '/_authenticated/admin/auction'
+    | '/_authenticated/admin/players'
+    | '/_authenticated/admin/teams'
+    | '/_authenticated/admin/tournaments'
+    | '/_authenticated/admin/transactions'
+    | '/api/public/bootstrap-admin'
+    | '/_authenticated/admin/'
+    | '/tournament/$slug/player/$playerId'
+    | '/tournament/$slug/team/$teamSlug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
+  TournamentSlugRoute: typeof TournamentSlugRouteWithChildren
+  ApiPublicBootstrapAdminRoute: typeof ApiPublicBootstrapAdminRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,22 +225,139 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/tournament/$slug': {
+      id: '/tournament/$slug'
+      path: '/tournament/$slug'
+      fullPath: '/tournament/$slug'
+      preLoaderRoute: typeof TournamentSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/_authenticated/admin/': {
+      id: '/_authenticated/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AuthenticatedAdminIndexRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/api/public/bootstrap-admin': {
+      id: '/api/public/bootstrap-admin'
+      path: '/api/public/bootstrap-admin'
+      fullPath: '/api/public/bootstrap-admin'
+      preLoaderRoute: typeof ApiPublicBootstrapAdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated/admin/transactions': {
+      id: '/_authenticated/admin/transactions'
+      path: '/transactions'
+      fullPath: '/admin/transactions'
+      preLoaderRoute: typeof AuthenticatedAdminTransactionsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/tournaments': {
+      id: '/_authenticated/admin/tournaments'
+      path: '/tournaments'
+      fullPath: '/admin/tournaments'
+      preLoaderRoute: typeof AuthenticatedAdminTournamentsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/teams': {
+      id: '/_authenticated/admin/teams'
+      path: '/teams'
+      fullPath: '/admin/teams'
+      preLoaderRoute: typeof AuthenticatedAdminTeamsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/players': {
+      id: '/_authenticated/admin/players'
+      path: '/players'
+      fullPath: '/admin/players'
+      preLoaderRoute: typeof AuthenticatedAdminPlayersRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/_authenticated/admin/auction': {
+      id: '/_authenticated/admin/auction'
+      path: '/auction'
+      fullPath: '/admin/auction'
+      preLoaderRoute: typeof AuthenticatedAdminAuctionRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
+    '/tournament/$slug/team/$teamSlug': {
+      id: '/tournament/$slug/team/$teamSlug'
+      path: '/team/$teamSlug'
+      fullPath: '/tournament/$slug/team/$teamSlug'
+      preLoaderRoute: typeof TournamentSlugTeamTeamSlugRouteImport
+      parentRoute: typeof TournamentSlugRoute
+    }
+    '/tournament/$slug/player/$playerId': {
+      id: '/tournament/$slug/player/$playerId'
+      path: '/player/$playerId'
+      fullPath: '/tournament/$slug/player/$playerId'
+      preLoaderRoute: typeof TournamentSlugPlayerPlayerIdRouteImport
+      parentRoute: typeof TournamentSlugRoute
+    }
   }
 }
 
+interface AuthenticatedAdminRouteChildren {
+  AuthenticatedAdminAuctionRoute: typeof AuthenticatedAdminAuctionRoute
+  AuthenticatedAdminPlayersRoute: typeof AuthenticatedAdminPlayersRoute
+  AuthenticatedAdminTeamsRoute: typeof AuthenticatedAdminTeamsRoute
+  AuthenticatedAdminTournamentsRoute: typeof AuthenticatedAdminTournamentsRoute
+  AuthenticatedAdminTransactionsRoute: typeof AuthenticatedAdminTransactionsRoute
+  AuthenticatedAdminIndexRoute: typeof AuthenticatedAdminIndexRoute
+}
+
+const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
+  AuthenticatedAdminAuctionRoute: AuthenticatedAdminAuctionRoute,
+  AuthenticatedAdminPlayersRoute: AuthenticatedAdminPlayersRoute,
+  AuthenticatedAdminTeamsRoute: AuthenticatedAdminTeamsRoute,
+  AuthenticatedAdminTournamentsRoute: AuthenticatedAdminTournamentsRoute,
+  AuthenticatedAdminTransactionsRoute: AuthenticatedAdminTransactionsRoute,
+  AuthenticatedAdminIndexRoute: AuthenticatedAdminIndexRoute,
+}
+
+const AuthenticatedAdminRouteWithChildren =
+  AuthenticatedAdminRoute._addFileChildren(AuthenticatedAdminRouteChildren)
+
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRouteWithChildren
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRouteWithChildren,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
+interface TournamentSlugRouteChildren {
+  TournamentSlugPlayerPlayerIdRoute: typeof TournamentSlugPlayerPlayerIdRoute
+  TournamentSlugTeamTeamSlugRoute: typeof TournamentSlugTeamTeamSlugRoute
+}
+
+const TournamentSlugRouteChildren: TournamentSlugRouteChildren = {
+  TournamentSlugPlayerPlayerIdRoute: TournamentSlugPlayerPlayerIdRoute,
+  TournamentSlugTeamTeamSlugRoute: TournamentSlugTeamTeamSlugRoute,
+}
+
+const TournamentSlugRouteWithChildren = TournamentSlugRoute._addFileChildren(
+  TournamentSlugRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
+  TournamentSlugRoute: TournamentSlugRouteWithChildren,
+  ApiPublicBootstrapAdminRoute: ApiPublicBootstrapAdminRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

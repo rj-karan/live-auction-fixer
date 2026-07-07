@@ -77,14 +77,18 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
+      { title: "Auction Platform — Physical Auction Manager" },
+      { name: "description", content: "Manage tournaments, teams, players and record physical auction results in real time." },
       { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { property: "og:title", content: "Auction Platform — Physical Auction Manager" },
+      { property: "og:description", content: "Manage tournaments, teams, players and record physical auction results in real time." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       { name: "twitter:site", content: "@Lovable" },
+      { name: "twitter:title", content: "Auction Platform — Physical Auction Manager" },
+      { name: "twitter:description", content: "Manage tournaments, teams, players and record physical auction results in real time." },
+      { property: "og:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a81af24e-5c19-41d4-81f3-bb0a5420cbe9/id-preview-7aaf0413--4fffd2f7-a33b-4823-a183-ffcd5f43986c.lovable.app-1783427943639.png" },
+      { name: "twitter:image", content: "https://pub-bb2e103a32db4e198524a2e9ed8f35b4.r2.dev/a81af24e-5c19-41d4-81f3-bb0a5420cbe9/id-preview-7aaf0413--4fffd2f7-a33b-4823-a183-ffcd5f43986c.lovable.app-1783427943639.png" },
     ],
     links: [
       {
