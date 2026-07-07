@@ -86,6 +86,16 @@ function AdminLayout() {
               variant="ghost"
               size="sm"
               className="justify-start"
+              asChild
+            >
+              <Link to="/change-password">
+                <KeyRound className="mr-2 h-4 w-4" /> Change password
+              </Link>
+            </Button>
+            <Button
+              variant="ghost"
+              size="sm"
+              className="justify-start"
               onClick={signOut}
             >
               <LogOut className="mr-2 h-4 w-4" /> Sign out
