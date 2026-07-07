@@ -28,6 +28,7 @@ export const Route = createFileRoute("/api/public/bootstrap-admin")({
             email,
             password,
             email_confirm: true,
+            user_metadata: { must_change_password: true },
           });
         let userId = created?.user?.id;
         if (createErr || !userId) {
@@ -40,6 +41,10 @@ export const Route = createFileRoute("/api/public/bootstrap-admin")({
               { status: 500 },
             );
           }
+          // Ensure the flag is set for a pre-existing account too.
+          await supabaseAdmin.auth.admin.updateUserById(userId, {
+            user_metadata: { must_change_password: true },
+          });
         }
 
         const { error: insertErr } = await supabaseAdmin
