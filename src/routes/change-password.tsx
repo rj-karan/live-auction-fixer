@@ -43,12 +43,15 @@ function ChangePasswordPage() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrorMsg(null);
     if (pw.length < MIN_LENGTH) {
-      toast.error(`Password must be at least ${MIN_LENGTH} characters.`);
+      const m = `Password must be at least ${MIN_LENGTH} characters.`;
+      setErrorMsg(m); toast.error(m);
       return;
     }
     if (pw !== confirm) {
-      toast.error("Passwords do not match.");
+      const m = "Passwords do not match.";
+      setErrorMsg(m); toast.error(m);
       return;
     }
     setBusy(true);
@@ -61,12 +64,17 @@ function ChangePasswordPage() {
     });
     setBusy(false);
     if (error) {
-      toast.error(error.message);
+      const msg = /weak|pwned|leaked/i.test(error.message)
+        ? "This password appears in known data breaches. Please choose a stronger, unique password."
+        : error.message;
+      setErrorMsg(msg);
+      toast.error(msg);
       return;
     }
     toast.success("Password updated");
     navigate({ to: "/admin" });
   };
+
 
   if (!ready) {
     return (
