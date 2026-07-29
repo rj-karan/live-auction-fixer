@@ -14,16 +14,306 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      admins: {
+        Row: {
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      auction_events: {
+        Row: {
+          auction_round: number
+          created_at: string
+          event_type: Database["public"]["Enums"]["event_type"]
+          id: string
+          is_undone: boolean
+          player_id: string | null
+          player_name_snapshot: string | null
+          price: number | null
+          team_id: string | null
+          team_name_snapshot: string | null
+          tournament_id: string
+        }
+        Insert: {
+          auction_round?: number
+          created_at?: string
+          event_type: Database["public"]["Enums"]["event_type"]
+          id?: string
+          is_undone?: boolean
+          player_id?: string | null
+          player_name_snapshot?: string | null
+          price?: number | null
+          team_id?: string | null
+          team_name_snapshot?: string | null
+          tournament_id: string
+        }
+        Update: {
+          auction_round?: number
+          created_at?: string
+          event_type?: Database["public"]["Enums"]["event_type"]
+          id?: string
+          is_undone?: boolean
+          player_id?: string | null
+          player_name_snapshot?: string | null
+          price?: number | null
+          team_id?: string | null
+          team_name_snapshot?: string | null
+          tournament_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "auction_events_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_events_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "auction_events_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      players: {
+        Row: {
+          age: number | null
+          auction_round: number
+          base_price: number | null
+          created_at: string
+          cricheroes_data: Json | null
+          cricheroes_fetched_at: string | null
+          cricheroes_player_id: string | null
+          cricheroes_url: string | null
+          details: string | null
+          final_price: number | null
+          id: string
+          name: string
+          photo_url: string | null
+          player_number: string | null
+          role: string | null
+          status: Database["public"]["Enums"]["player_status"]
+          team_id: string | null
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          age?: number | null
+          auction_round?: number
+          base_price?: number | null
+          created_at?: string
+          cricheroes_data?: Json | null
+          cricheroes_fetched_at?: string | null
+          cricheroes_player_id?: string | null
+          cricheroes_url?: string | null
+          details?: string | null
+          final_price?: number | null
+          id?: string
+          name: string
+          photo_url?: string | null
+          player_number?: string | null
+          role?: string | null
+          status?: Database["public"]["Enums"]["player_status"]
+          team_id?: string | null
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          age?: number | null
+          auction_round?: number
+          base_price?: number | null
+          created_at?: string
+          cricheroes_data?: Json | null
+          cricheroes_fetched_at?: string | null
+          cricheroes_player_id?: string | null
+          cricheroes_url?: string | null
+          details?: string | null
+          final_price?: number | null
+          id?: string
+          name?: string
+          photo_url?: string | null
+          player_number?: string | null
+          role?: string | null
+          status?: Database["public"]["Enums"]["player_status"]
+          team_id?: string | null
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "players_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "players_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      teams: {
+        Row: {
+          captain_contact: string | null
+          captain_name: string
+          captain_photo_url: string | null
+          created_at: string
+          id: string
+          initial_purse: number
+          logo_url: string | null
+          max_players: number
+          name: string
+          owner_name: string | null
+          players_purchased_count: number
+          remaining_purse: number
+          short_name: string
+          slug: string
+          theme_color: string | null
+          total_spent: number
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          captain_contact?: string | null
+          captain_name: string
+          captain_photo_url?: string | null
+          created_at?: string
+          id?: string
+          initial_purse: number
+          logo_url?: string | null
+          max_players?: number
+          name: string
+          owner_name?: string | null
+          players_purchased_count?: number
+          remaining_purse: number
+          short_name: string
+          slug: string
+          theme_color?: string | null
+          total_spent?: number
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          captain_contact?: string | null
+          captain_name?: string
+          captain_photo_url?: string | null
+          created_at?: string
+          id?: string
+          initial_purse?: number
+          logo_url?: string | null
+          max_players?: number
+          name?: string
+          owner_name?: string | null
+          players_purchased_count?: number
+          remaining_purse?: number
+          short_name?: string
+          slug?: string
+          theme_color?: string | null
+          total_spent?: number
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "teams_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      tournaments: {
+        Row: {
+          banner_url: string | null
+          created_at: string
+          currency: string
+          default_purse: number
+          description: string | null
+          id: string
+          location: string | null
+          logo_url: string | null
+          name: string
+          slug: string
+          status: Database["public"]["Enums"]["tournament_status"]
+          tournament_date: string | null
+          updated_at: string
+        }
+        Insert: {
+          banner_url?: string | null
+          created_at?: string
+          currency?: string
+          default_purse?: number
+          description?: string | null
+          id?: string
+          location?: string | null
+          logo_url?: string | null
+          name: string
+          slug: string
+          status?: Database["public"]["Enums"]["tournament_status"]
+          tournament_date?: string | null
+          updated_at?: string
+        }
+        Update: {
+          banner_url?: string | null
+          created_at?: string
+          currency?: string
+          default_purse?: number
+          description?: string | null
+          id?: string
+          location?: string | null
+          logo_url?: string | null
+          name?: string
+          slug?: string
+          status?: Database["public"]["Enums"]["tournament_status"]
+          tournament_date?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      confirm_player_sale: {
+        Args: { p_player_id: string; p_price: number; p_team_id: string }
+        Returns: string
+      }
+      is_admin: { Args: never; Returns: boolean }
+      mark_player_unsold: { Args: { p_player_id: string }; Returns: string }
+      restore_player_available: {
+        Args: { p_player_id: string }
+        Returns: undefined
+      }
+      undo_last_event: { Args: { p_tournament_id: string }; Returns: string }
     }
     Enums: {
-      [_ in never]: never
+      event_type: "sale" | "unsold" | "undo_sale" | "undo_unsold"
+      player_status: "available" | "sold" | "unsold"
+      tournament_status: "draft" | "active" | "completed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +440,10 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      event_type: ["sale", "unsold", "undo_sale", "undo_unsold"],
+      player_status: ["available", "sold", "unsold"],
+      tournament_status: ["draft", "active", "completed"],
+    },
   },
 } as const
