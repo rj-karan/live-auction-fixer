@@ -64,6 +64,9 @@ function TeamsPage() {
       captain_name: form.captain_name,
       captain_photo_url: form.captain_photo_url || null,
       captain_contact: form.captain_contact || null,
+      owner_name: form.owner_name || null,
+      theme_color: form.theme_color || null,
+      max_players: Number(form.max_players) || 15,
       initial_purse: Number(form.initial_purse),
       remaining_purse: Number(form.initial_purse),
     });
