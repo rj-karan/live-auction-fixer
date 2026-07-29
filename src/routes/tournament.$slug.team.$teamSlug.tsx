@@ -422,6 +422,16 @@ function TeamPage() {
                           {p.role || "—"}
                           {p.player_number ? ` · #${p.player_number}` : ""}
                         </div>
+                        <div className="mt-1 flex flex-wrap items-center gap-1">
+                          <Badge variant="secondary" className="text-[10px]">
+                            {String(p.status).toUpperCase()}
+                          </Badge>
+                          {p.cricheroes_data?.rating != null && (
+                            <Badge variant="outline" className="text-[10px]">
+                              CH {p.cricheroes_data.rating}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                       <div className="text-right shrink-0">
                         <div className="text-sm font-bold text-active">
