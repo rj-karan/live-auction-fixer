@@ -257,22 +257,42 @@ function TeamPage() {
                 <span className="uppercase tracking-wide">{team.short_name}</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black truncate">{team.name}</h1>
-              <div className="mt-3 flex items-center gap-3">
-                {team.captain_photo_url ? (
-                  <img
-                    src={team.captain_photo_url}
-                    alt=""
-                    className="h-9 w-9 rounded-full object-cover ring-1 ring-active/60"
-                  />
-                ) : (
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-active/20">
-                    <Crown className="h-4 w-4 text-active" />
+              <div className="mt-3 flex flex-wrap items-center gap-5">
+                <div className="flex items-center gap-3">
+                  {team.captain_photo_url ? (
+                    <img
+                      src={team.captain_photo_url}
+                      alt=""
+                      className="h-9 w-9 rounded-full object-cover ring-1 ring-active/60"
+                    />
+                  ) : (
+                    <div className="grid h-9 w-9 place-items-center rounded-full bg-active/20">
+                      <Crown className="h-4 w-4 text-active" />
+                    </div>
+                  )}
+                  <div className="text-sm">
+                    <div className="opacity-70 text-[11px] uppercase tracking-wider">Captain</div>
+                    <div className="font-semibold">{team.captain_name}</div>
+                  </div>
+                </div>
+                {team.owner_name && (
+                  <div className="text-sm">
+                    <div className="opacity-70 text-[11px] uppercase tracking-wider">Owner</div>
+                    <div className="font-semibold">{team.owner_name}</div>
                   </div>
                 )}
-                <div className="text-sm">
-                  <div className="opacity-70 text-[11px] uppercase tracking-wider">Captain</div>
-                  <div className="font-semibold">{team.captain_name}</div>
-                </div>
+                {team.theme_color && (
+                  <div className="text-sm">
+                    <div className="opacity-70 text-[11px] uppercase tracking-wider">Team Colour</div>
+                    <div className="flex items-center gap-2 font-semibold">
+                      <span
+                        className="inline-block h-4 w-4 rounded-full ring-1 ring-white/40"
+                        style={{ backgroundColor: team.theme_color }}
+                      />
+                      {team.theme_color}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
