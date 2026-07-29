@@ -210,6 +210,8 @@ function PlayerPage() {
             <Info label="Base Price" value={formatMoney(Number(player.base_price), c)} />
           )}
           <Info label="Role" value={player.role || "—"} />
+          <Info label="Status" value={String(player.status).toUpperCase()} />
+          <Info label="Auction Round" value={`Round ${player.auction_round ?? 1}`} />
           {player.player_number && <Info label="Number" value={`#${player.player_number}`} />}
           {player.age && <Info label="Age" value={String(player.age)} />}
         </div>
