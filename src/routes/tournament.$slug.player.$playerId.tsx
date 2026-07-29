@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { CricheroesPanel } from "@/components/cricheroes-panel";
 import { ArrowLeft, User, Trophy, Crown } from "lucide-react";
 
 export const Route = createFileRoute("/tournament/$slug/player/$playerId")({
