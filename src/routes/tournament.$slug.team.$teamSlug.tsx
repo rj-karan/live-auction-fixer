@@ -497,7 +497,7 @@ function TeamPage() {
                               e.player_name_snapshot
                             )
                           }
-                          detail={`Purchased for ${formatMoney(Number(e.price), c)} · Remaining ${formatMoney(remaining, c)}`}
+                          detail={`Round ${e.auction_round ?? 1} · Purchased for ${formatMoney(Number(e.price), c)} · Remaining ${formatMoney(remaining, c)}`}
                           time={new Date(e.created_at).toLocaleString()}
                           price={formatMoney(Number(e.price), c)}
                         />
