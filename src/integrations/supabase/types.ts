@@ -31,6 +31,7 @@ export type Database = {
       }
       auction_events: {
         Row: {
+          auction_round: number
           created_at: string
           event_type: Database["public"]["Enums"]["event_type"]
           id: string
@@ -43,6 +44,7 @@ export type Database = {
           tournament_id: string
         }
         Insert: {
+          auction_round?: number
           created_at?: string
           event_type: Database["public"]["Enums"]["event_type"]
           id?: string
@@ -55,6 +57,7 @@ export type Database = {
           tournament_id: string
         }
         Update: {
+          auction_round?: number
           created_at?: string
           event_type?: Database["public"]["Enums"]["event_type"]
           id?: string
@@ -93,8 +96,13 @@ export type Database = {
       players: {
         Row: {
           age: number | null
+          auction_round: number
           base_price: number | null
           created_at: string
+          cricheroes_data: Json | null
+          cricheroes_fetched_at: string | null
+          cricheroes_player_id: string | null
+          cricheroes_url: string | null
           details: string | null
           final_price: number | null
           id: string
@@ -109,8 +117,13 @@ export type Database = {
         }
         Insert: {
           age?: number | null
+          auction_round?: number
           base_price?: number | null
           created_at?: string
+          cricheroes_data?: Json | null
+          cricheroes_fetched_at?: string | null
+          cricheroes_player_id?: string | null
+          cricheroes_url?: string | null
           details?: string | null
           final_price?: number | null
           id?: string
@@ -125,8 +138,13 @@ export type Database = {
         }
         Update: {
           age?: number | null
+          auction_round?: number
           base_price?: number | null
           created_at?: string
+          cricheroes_data?: Json | null
+          cricheroes_fetched_at?: string | null
+          cricheroes_player_id?: string | null
+          cricheroes_url?: string | null
           details?: string | null
           final_price?: number | null
           id?: string
@@ -165,11 +183,14 @@ export type Database = {
           id: string
           initial_purse: number
           logo_url: string | null
+          max_players: number
           name: string
+          owner_name: string | null
           players_purchased_count: number
           remaining_purse: number
           short_name: string
           slug: string
+          theme_color: string | null
           total_spent: number
           tournament_id: string
           updated_at: string
@@ -182,11 +203,14 @@ export type Database = {
           id?: string
           initial_purse: number
           logo_url?: string | null
+          max_players?: number
           name: string
+          owner_name?: string | null
           players_purchased_count?: number
           remaining_purse: number
           short_name: string
           slug: string
+          theme_color?: string | null
           total_spent?: number
           tournament_id: string
           updated_at?: string
@@ -199,11 +223,14 @@ export type Database = {
           id?: string
           initial_purse?: number
           logo_url?: string | null
+          max_players?: number
           name?: string
+          owner_name?: string | null
           players_purchased_count?: number
           remaining_purse?: number
           short_name?: string
           slug?: string
+          theme_color?: string | null
           total_spent?: number
           tournament_id?: string
           updated_at?: string

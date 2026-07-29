@@ -24,6 +24,9 @@ function TeamsPage() {
     captain_name: "",
     captain_photo_url: "",
     captain_contact: "",
+    owner_name: "",
+    theme_color: "#1d4ed8",
+    max_players: 15,
     initial_purse: 0,
   });
   const [busy, setBusy] = useState(false);
@@ -61,6 +64,9 @@ function TeamsPage() {
       captain_name: form.captain_name,
       captain_photo_url: form.captain_photo_url || null,
       captain_contact: form.captain_contact || null,
+      owner_name: form.owner_name || null,
+      theme_color: form.theme_color || null,
+      max_players: Number(form.max_players) || 15,
       initial_purse: Number(form.initial_purse),
       remaining_purse: Number(form.initial_purse),
     });
@@ -157,15 +163,41 @@ function TeamsPage() {
                 />
               </div>
             </div>
-            <div>
-              <Label>Initial Purse</Label>
-              <Input
-                type="number"
-                value={form.initial_purse}
-                onChange={(e) =>
-                  setForm({ ...form, initial_purse: Number(e.target.value) })
-                }
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Team Owner</Label>
+                <Input
+                  value={form.owner_name}
+                  onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Team Colour</Label>
+                <Input
+                  type="color"
+                  value={form.theme_color || "#1d4ed8"}
+                  onChange={(e) => setForm({ ...form, theme_color: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Max Players</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={form.max_players}
+                  onChange={(e) => setForm({ ...form, max_players: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <Label>Initial Purse</Label>
+                <Input
+                  type="number"
+                  value={form.initial_purse}
+                  onChange={(e) =>
+                    setForm({ ...form, initial_purse: Number(e.target.value) })
+                  }
+                />
+              </div>
             </div>
             <Button disabled={busy} type="submit">
               {busy ? "Adding…" : "Add Team"}

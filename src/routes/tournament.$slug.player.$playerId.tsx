@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { CricheroesPanel } from "@/components/cricheroes-panel";
 import { ArrowLeft, User, Trophy, Crown } from "lucide-react";
 
 export const Route = createFileRoute("/tournament/$slug/player/$playerId")({
@@ -95,7 +96,7 @@ function PlayerPage() {
   return (
     <div className="min-h-screen bg-background">
       <div className="border-b sticky top-0 z-20 bg-background">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 py-3 flex items-center gap-3">
+        <div className="mx-auto max-w-4xl px-4 sm:px-6 py-3 flex items-center gap-4 flex-wrap">
           <Link
             to="/tournament/$slug"
             params={{ slug: tournament.slug }}
@@ -104,6 +105,16 @@ function PlayerPage() {
             <ArrowLeft className="h-4 w-4" />
             <span className="hidden sm:inline">Back to</span> {tournament.name}
           </Link>
+          {team?.slug && (
+            <Link
+              to="/tournament/$slug/team/$teamSlug"
+              params={{ slug: tournament.slug, teamSlug: team.slug }}
+              className="flex items-center gap-1 text-sm font-medium text-muted-foreground hover:text-active transition-colors"
+            >
+              <ArrowLeft className="h-4 w-4" />
+              Back to {team.name}
+            </Link>
+          )}
         </div>
       </div>
 
@@ -199,6 +210,8 @@ function PlayerPage() {
             <Info label="Base Price" value={formatMoney(Number(player.base_price), c)} />
           )}
           <Info label="Role" value={player.role || "—"} />
+          <Info label="Status" value={String(player.status).toUpperCase()} />
+          <Info label="Auction Round" value={`Round ${player.auction_round ?? 1}`} />
           {player.player_number && <Info label="Number" value={`#${player.player_number}`} />}
           {player.age && <Info label="Age" value={String(player.age)} />}
         </div>
@@ -211,6 +224,8 @@ function PlayerPage() {
             </CardContent>
           </Card>
         )}
+
+        <CricheroesPanel playerRowId={player.id} linked={!!player.cricheroes_player_id} />
       </main>
     </div>
   );

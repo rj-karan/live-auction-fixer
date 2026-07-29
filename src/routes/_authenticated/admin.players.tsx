@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { useActiveTournament } from "@/hooks/use-active-tournament";
 import { formatMoney } from "@/lib/format";
 import { Trash2 } from "lucide-react";
+import { extractCricheroesId, cricheroesProfileUrl } from "@/lib/cricheroes";
 
 export const Route = createFileRoute("/_authenticated/admin/players")({
   component: PlayersPage,
@@ -27,6 +28,8 @@ function PlayersPage() {
     base_price: "",
     age: "",
     details: "",
+    cricheroes: "",
+    auction_round: "1",
   });
   const [q, setQ] = useState("");
   const [filter, setFilter] = useState<"all" | "available" | "sold" | "unsold">(
@@ -70,6 +73,11 @@ function PlayersPage() {
       base_price: form.base_price ? Number(form.base_price) : null,
       age: form.age ? Number(form.age) : null,
       details: form.details || null,
+      auction_round: Number(form.auction_round) || 1,
+      cricheroes_player_id: extractCricheroesId(form.cricheroes),
+      cricheroes_url: extractCricheroesId(form.cricheroes)
+        ? cricheroesProfileUrl(extractCricheroesId(form.cricheroes)!)
+        : null,
     });
     if (error) return toast.error(error.message);
     toast.success("Player added");
@@ -81,6 +89,8 @@ function PlayersPage() {
       base_price: "",
       age: "",
       details: "",
+      cricheroes: "",
+      auction_round: form.auction_round,
     });
   };
 
@@ -163,6 +173,26 @@ function PlayersPage() {
                 onChange={(e) =>
                   setForm({ ...form, photo_url: e.target.value })
                 }
+              />
+            </div>
+            <div>
+              <Label>CricHeroes ID or Profile URL</Label>
+              <Input
+                value={form.cricheroes}
+                onChange={(e) => setForm({ ...form, cricheroes: e.target.value })}
+                placeholder="1234567 or https://cricheroes.com/player-profile/1234567/name"
+              />
+              <p className="mt-1 text-xs text-muted-foreground">
+                Stats load automatically on the public player page when linked.
+              </p>
+            </div>
+            <div>
+              <Label>Auction Round</Label>
+              <Input
+                type="number"
+                min={1}
+                value={form.auction_round}
+                onChange={(e) => setForm({ ...form, auction_round: e.target.value })}
               />
             </div>
             <div>

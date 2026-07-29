@@ -122,6 +122,22 @@ function TeamPage() {
   const hi = prices.length ? Math.max(...prices) : 0;
   const lo = prices.length ? Math.min(...prices) : 0;
 
+  const maxPlayers = Number(team.max_players ?? 0);
+  const squadSize = players.length + 1; // incl. captain
+  const remainingSlots = maxPlayers ? Math.max(0, maxPlayers - squadSize) : null;
+  const utilization = Number(team.initial_purse)
+    ? (Number(team.total_spent) / Number(team.initial_purse)) * 100
+    : 0;
+
+  const roleCount = (matcher: RegExp) =>
+    players.filter((p) => matcher.test(String(p.role ?? ""))).length;
+  const composition = {
+    batsmen: roleCount(/bat/i),
+    bowlers: roleCount(/bowl/i),
+    allRounders: roleCount(/all[\s-]?round/i),
+    keepers: roleCount(/keep|wk/i),
+  };
+
   const sortedPlayers = useMemo(() => {
     const arr = [...players];
     switch (sort) {
@@ -241,22 +257,42 @@ function TeamPage() {
                 <span className="uppercase tracking-wide">{team.short_name}</span>
               </div>
               <h1 className="text-2xl sm:text-3xl font-black truncate">{team.name}</h1>
-              <div className="mt-3 flex items-center gap-3">
-                {team.captain_photo_url ? (
-                  <img
-                    src={team.captain_photo_url}
-                    alt=""
-                    className="h-9 w-9 rounded-full object-cover ring-1 ring-active/60"
-                  />
-                ) : (
-                  <div className="grid h-9 w-9 place-items-center rounded-full bg-active/20">
-                    <Crown className="h-4 w-4 text-active" />
+              <div className="mt-3 flex flex-wrap items-center gap-5">
+                <div className="flex items-center gap-3">
+                  {team.captain_photo_url ? (
+                    <img
+                      src={team.captain_photo_url}
+                      alt=""
+                      className="h-9 w-9 rounded-full object-cover ring-1 ring-active/60"
+                    />
+                  ) : (
+                    <div className="grid h-9 w-9 place-items-center rounded-full bg-active/20">
+                      <Crown className="h-4 w-4 text-active" />
+                    </div>
+                  )}
+                  <div className="text-sm">
+                    <div className="opacity-70 text-[11px] uppercase tracking-wider">Captain</div>
+                    <div className="font-semibold">{team.captain_name}</div>
+                  </div>
+                </div>
+                {team.owner_name && (
+                  <div className="text-sm">
+                    <div className="opacity-70 text-[11px] uppercase tracking-wider">Owner</div>
+                    <div className="font-semibold">{team.owner_name}</div>
                   </div>
                 )}
-                <div className="text-sm">
-                  <div className="opacity-70 text-[11px] uppercase tracking-wider">Captain</div>
-                  <div className="font-semibold">{team.captain_name}</div>
-                </div>
+                {team.theme_color && (
+                  <div className="text-sm">
+                    <div className="opacity-70 text-[11px] uppercase tracking-wider">Team Colour</div>
+                    <div className="flex items-center gap-2 font-semibold">
+                      <span
+                        className="inline-block h-4 w-4 rounded-full ring-1 ring-white/40"
+                        style={{ backgroundColor: team.theme_color }}
+                      />
+                      {team.theme_color}
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>
@@ -275,31 +311,43 @@ function TeamPage() {
             <FinCard label="Remaining" value={formatMoney(Number(team.remaining_purse), c)} accent icon={<TrendingUp className="h-3.5 w-3.5" />} />
             <FinCard label="Squad Size" value={`${team.players_purchased_count + 1}`} sub="incl. captain" icon={<Users className="h-3.5 w-3.5" />} />
           </div>
-          <div className="grid gap-3 grid-cols-3 mt-3">
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mt-3">
             <FinCard small label="Highest Buy" value={formatMoney(hi, c)} />
             <FinCard small label="Lowest Buy" value={formatMoney(lo, c)} />
             <FinCard small label="Avg Price" value={formatMoney(avg, c)} />
+            <FinCard small label="Purse Used" value={`${utilization.toFixed(1)}%`} />
+            <FinCard small label="Max Players" value={maxPlayers ? String(maxPlayers) : "—"} />
+            <FinCard
+              small
+              label="Slots Left"
+              value={remainingSlots === null ? "—" : String(remainingSlots)}
+            />
           </div>
           <div className="mt-4">
             <div className="flex justify-between text-xs text-muted-foreground mb-1">
               <span>Purse used</span>
-              <span>
-                {Number(team.initial_purse)
-                  ? ((Number(team.total_spent) / Number(team.initial_purse)) * 100).toFixed(1)
-                  : 0}
-                %
-              </span>
+              <span>{utilization.toFixed(1)}%</span>
             </div>
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full bg-active transition-all"
-                style={{
-                  width: `${Number(team.initial_purse)
-                    ? Math.min(100, (Number(team.total_spent) / Number(team.initial_purse)) * 100)
-                    : 0}%`,
-                }}
+                className="h-full bg-active transition-all duration-500"
+                style={{ width: `${Math.min(100, utilization)}%` }}
               />
             </div>
+          </div>
+        </section>
+
+        {/* Team composition */}
+        <section>
+          <h2 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+            Team Statistics
+          </h2>
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+            <FinCard small label="Total Players" value={String(squadSize)} sub="incl. captain" />
+            <FinCard small label="Batsmen" value={String(composition.batsmen)} />
+            <FinCard small label="Bowlers" value={String(composition.bowlers)} />
+            <FinCard small label="All-rounders" value={String(composition.allRounders)} />
+            <FinCard small label="Wicket Keepers" value={String(composition.keepers)} />
           </div>
         </section>
 
@@ -374,6 +422,16 @@ function TeamPage() {
                           {p.role || "—"}
                           {p.player_number ? ` · #${p.player_number}` : ""}
                         </div>
+                        <div className="mt-1 flex flex-wrap items-center gap-1">
+                          <Badge variant="secondary" className="text-[10px]">
+                            {String(p.status).toUpperCase()}
+                          </Badge>
+                          {p.cricheroes_data?.rating != null && (
+                            <Badge variant="outline" className="text-[10px]">
+                              CH {p.cricheroes_data.rating}
+                            </Badge>
+                          )}
+                        </div>
                       </div>
                       <div className="text-right shrink-0">
                         <div className="text-sm font-bold text-active">
@@ -439,7 +497,7 @@ function TeamPage() {
                               e.player_name_snapshot
                             )
                           }
-                          detail={`Purchased for ${formatMoney(Number(e.price), c)} · Remaining ${formatMoney(remaining, c)}`}
+                          detail={`Round ${e.auction_round ?? 1} · Purchased for ${formatMoney(Number(e.price), c)} · Remaining ${formatMoney(remaining, c)}`}
                           time={new Date(e.created_at).toLocaleString()}
                           price={formatMoney(Number(e.price), c)}
                         />
