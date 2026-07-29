@@ -224,6 +224,8 @@ function PlayerPage() {
             </CardContent>
           </Card>
         )}
+
+        <CricheroesPanel playerRowId={player.id} linked={!!player.cricheroes_player_id} />
       </main>
     </div>
   );
