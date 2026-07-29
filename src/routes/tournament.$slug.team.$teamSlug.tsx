@@ -311,31 +311,43 @@ function TeamPage() {
             <FinCard label="Remaining" value={formatMoney(Number(team.remaining_purse), c)} accent icon={<TrendingUp className="h-3.5 w-3.5" />} />
             <FinCard label="Squad Size" value={`${team.players_purchased_count + 1}`} sub="incl. captain" icon={<Users className="h-3.5 w-3.5" />} />
           </div>
-          <div className="grid gap-3 grid-cols-3 mt-3">
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mt-3">
             <FinCard small label="Highest Buy" value={formatMoney(hi, c)} />
             <FinCard small label="Lowest Buy" value={formatMoney(lo, c)} />
             <FinCard small label="Avg Price" value={formatMoney(avg, c)} />
+            <FinCard small label="Purse Used" value={`${utilization.toFixed(1)}%`} />
+            <FinCard small label="Max Players" value={maxPlayers ? String(maxPlayers) : "—"} />
+            <FinCard
+              small
+              label="Slots Left"
+              value={remainingSlots === null ? "—" : String(remainingSlots)}
+            />
           </div>
           <div className="mt-4">
             <div className="flex justify-between text-xs text-muted-foreground mb-1">
               <span>Purse used</span>
-              <span>
-                {Number(team.initial_purse)
-                  ? ((Number(team.total_spent) / Number(team.initial_purse)) * 100).toFixed(1)
-                  : 0}
-                %
-              </span>
+              <span>{utilization.toFixed(1)}%</span>
             </div>
             <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
               <div
-                className="h-full bg-active transition-all"
-                style={{
-                  width: `${Number(team.initial_purse)
-                    ? Math.min(100, (Number(team.total_spent) / Number(team.initial_purse)) * 100)
-                    : 0}%`,
-                }}
+                className="h-full bg-active transition-all duration-500"
+                style={{ width: `${Math.min(100, utilization)}%` }}
               />
             </div>
+          </div>
+        </section>
+
+        {/* Team composition */}
+        <section>
+          <h2 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
+            Team Statistics
+          </h2>
+          <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+            <FinCard small label="Total Players" value={String(squadSize)} sub="incl. captain" />
+            <FinCard small label="Batsmen" value={String(composition.batsmen)} />
+            <FinCard small label="Bowlers" value={String(composition.bowlers)} />
+            <FinCard small label="All-rounders" value={String(composition.allRounders)} />
+            <FinCard small label="Wicket Keepers" value={String(composition.keepers)} />
           </div>
         </section>
 
