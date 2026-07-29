@@ -122,6 +122,22 @@ function TeamPage() {
   const hi = prices.length ? Math.max(...prices) : 0;
   const lo = prices.length ? Math.min(...prices) : 0;
 
+  const maxPlayers = Number(team.max_players ?? 0);
+  const squadSize = players.length + 1; // incl. captain
+  const remainingSlots = maxPlayers ? Math.max(0, maxPlayers - squadSize) : null;
+  const utilization = Number(team.initial_purse)
+    ? (Number(team.total_spent) / Number(team.initial_purse)) * 100
+    : 0;
+
+  const roleCount = (matcher: RegExp) =>
+    players.filter((p) => matcher.test(String(p.role ?? ""))).length;
+  const composition = {
+    batsmen: roleCount(/bat/i),
+    bowlers: roleCount(/bowl/i),
+    allRounders: roleCount(/all[\s-]?round/i),
+    keepers: roleCount(/keep|wk/i),
+  };
+
   const sortedPlayers = useMemo(() => {
     const arr = [...players];
     switch (sort) {
