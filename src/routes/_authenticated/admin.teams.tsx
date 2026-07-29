@@ -24,6 +24,9 @@ function TeamsPage() {
     captain_name: "",
     captain_photo_url: "",
     captain_contact: "",
+    owner_name: "",
+    theme_color: "#1d4ed8",
+    max_players: 15,
     initial_purse: 0,
   });
   const [busy, setBusy] = useState(false);
