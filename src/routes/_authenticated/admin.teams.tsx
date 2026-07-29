@@ -157,15 +157,41 @@ function TeamsPage() {
                 />
               </div>
             </div>
-            <div>
-              <Label>Initial Purse</Label>
-              <Input
-                type="number"
-                value={form.initial_purse}
-                onChange={(e) =>
-                  setForm({ ...form, initial_purse: Number(e.target.value) })
-                }
-              />
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <Label>Team Owner</Label>
+                <Input
+                  value={form.owner_name}
+                  onChange={(e) => setForm({ ...form, owner_name: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Team Colour</Label>
+                <Input
+                  type="color"
+                  value={form.theme_color || "#1d4ed8"}
+                  onChange={(e) => setForm({ ...form, theme_color: e.target.value })}
+                />
+              </div>
+              <div>
+                <Label>Max Players</Label>
+                <Input
+                  type="number"
+                  min={1}
+                  value={form.max_players}
+                  onChange={(e) => setForm({ ...form, max_players: Number(e.target.value) })}
+                />
+              </div>
+              <div>
+                <Label>Initial Purse</Label>
+                <Input
+                  type="number"
+                  value={form.initial_purse}
+                  onChange={(e) =>
+                    setForm({ ...form, initial_purse: Number(e.target.value) })
+                  }
+                />
+              </div>
             </div>
             <Button disabled={busy} type="submit">
               {busy ? "Adding…" : "Add Team"}
