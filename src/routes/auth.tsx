@@ -13,7 +13,7 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const ADMIN_EMAIL = "admin@auction.local";
+
 
 function mustChangePassword(user: { user_metadata?: Record<string, unknown> } | null | undefined) {
   const md = user?.user_metadata ?? {};
@@ -42,7 +42,8 @@ function AuthPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const email = username.includes("@") ? username : ADMIN_EMAIL;
+    const u = username.trim().toLowerCase();
+    const email = u.includes("@") ? u : `${u}@auction.local`;
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
