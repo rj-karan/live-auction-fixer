@@ -209,12 +209,21 @@ function PlayerPage() {
           {player.base_price != null && (
             <Info label="Base Price" value={formatMoney(Number(player.base_price), c)} />
           )}
-          <Info label="Role" value={player.role || "—"} />
+          <Info label="Role" value={player.role || ch?.role || "—"} />
+          <Info label="Batting Style" value={ch?.batting_style || "—"} />
+          <Info label="Bowling Style" value={ch?.bowling_style || "—"} />
+          <Info
+            label="Auction Price"
+            value={isSold && player.final_price != null ? formatMoney(Number(player.final_price), c) : "—"}
+          />
+          <Info label="Current Team" value={team?.name || (isSold ? "—" : "Not sold")} />
           <Info label="Status" value={String(player.status).toUpperCase()} />
           <Info label="Auction Round" value={`Round ${player.auction_round ?? 1}`} />
+          {ch?.city && <Info label="City" value={ch.city} />}
           {player.player_number && <Info label="Number" value={`#${player.player_number}`} />}
           {player.age && <Info label="Age" value={String(player.age)} />}
         </div>
+
 
         {player.details && (
           <Card>
