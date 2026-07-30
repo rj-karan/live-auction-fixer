@@ -20,7 +20,7 @@ import {
   Calendar,
 } from "lucide-react";
 
-export const Route = createFileRoute("/tournament/$slug")({
+export const Route = createFileRoute("/tournament/$slug/")({
   loader: async ({ params }) => {
     const { data } = await supabase
       .from("tournaments")
