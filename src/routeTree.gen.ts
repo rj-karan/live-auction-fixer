@@ -13,8 +13,8 @@ import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as AuthRouteImport } from './routes/auth'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TournamentSlugRouteImport } from './routes/tournament.$slug'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as TournamentSlugIndexRouteImport } from './routes/tournament.$slug.index'
 import { Route as AuthenticatedAdminIndexRouteImport } from './routes/_authenticated/admin.index'
 import { Route as ApiPublicBootstrapAdminRouteImport } from './routes/api/public/bootstrap-admin'
 import { Route as AuthenticatedAdminTransactionsRouteImport } from './routes/_authenticated/admin.transactions'
@@ -44,15 +44,15 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TournamentSlugRoute = TournamentSlugRouteImport.update({
-  id: '/tournament/$slug',
-  path: '/tournament/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
+const TournamentSlugIndexRoute = TournamentSlugIndexRouteImport.update({
+  id: '/tournament/$slug/',
+  path: '/tournament/$slug/',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAdminIndexRoute = AuthenticatedAdminIndexRouteImport.update({
   id: '/',
@@ -95,15 +95,15 @@ const AuthenticatedAdminAuctionRoute =
   } as any)
 const TournamentSlugTeamTeamSlugRoute =
   TournamentSlugTeamTeamSlugRouteImport.update({
-    id: '/team/$teamSlug',
-    path: '/team/$teamSlug',
-    getParentRoute: () => TournamentSlugRoute,
+    id: '/tournament/$slug/team/$teamSlug',
+    path: '/tournament/$slug/team/$teamSlug',
+    getParentRoute: () => rootRouteImport,
   } as any)
 const TournamentSlugPlayerPlayerIdRoute =
   TournamentSlugPlayerPlayerIdRouteImport.update({
-    id: '/player/$playerId',
-    path: '/player/$playerId',
-    getParentRoute: () => TournamentSlugRoute,
+    id: '/tournament/$slug/player/$playerId',
+    path: '/tournament/$slug/player/$playerId',
+    getParentRoute: () => rootRouteImport,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -111,7 +111,6 @@ export interface FileRoutesByFullPath {
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
   '/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/tournament/$slug': typeof TournamentSlugRouteWithChildren
   '/admin/auction': typeof AuthenticatedAdminAuctionRoute
   '/admin/players': typeof AuthenticatedAdminPlayersRoute
   '/admin/teams': typeof AuthenticatedAdminTeamsRoute
@@ -119,6 +118,7 @@ export interface FileRoutesByFullPath {
   '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/api/public/bootstrap-admin': typeof ApiPublicBootstrapAdminRoute
   '/admin/': typeof AuthenticatedAdminIndexRoute
+  '/tournament/$slug/': typeof TournamentSlugIndexRoute
   '/tournament/$slug/player/$playerId': typeof TournamentSlugPlayerPlayerIdRoute
   '/tournament/$slug/team/$teamSlug': typeof TournamentSlugTeamTeamSlugRoute
 }
@@ -126,7 +126,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
-  '/tournament/$slug': typeof TournamentSlugRouteWithChildren
   '/admin/auction': typeof AuthenticatedAdminAuctionRoute
   '/admin/players': typeof AuthenticatedAdminPlayersRoute
   '/admin/teams': typeof AuthenticatedAdminTeamsRoute
@@ -134,6 +133,7 @@ export interface FileRoutesByTo {
   '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/api/public/bootstrap-admin': typeof ApiPublicBootstrapAdminRoute
   '/admin': typeof AuthenticatedAdminIndexRoute
+  '/tournament/$slug': typeof TournamentSlugIndexRoute
   '/tournament/$slug/player/$playerId': typeof TournamentSlugPlayerPlayerIdRoute
   '/tournament/$slug/team/$teamSlug': typeof TournamentSlugTeamTeamSlugRoute
 }
@@ -144,7 +144,6 @@ export interface FileRoutesById {
   '/auth': typeof AuthRoute
   '/change-password': typeof ChangePasswordRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRouteWithChildren
-  '/tournament/$slug': typeof TournamentSlugRouteWithChildren
   '/_authenticated/admin/auction': typeof AuthenticatedAdminAuctionRoute
   '/_authenticated/admin/players': typeof AuthenticatedAdminPlayersRoute
   '/_authenticated/admin/teams': typeof AuthenticatedAdminTeamsRoute
@@ -152,6 +151,7 @@ export interface FileRoutesById {
   '/_authenticated/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
   '/api/public/bootstrap-admin': typeof ApiPublicBootstrapAdminRoute
   '/_authenticated/admin/': typeof AuthenticatedAdminIndexRoute
+  '/tournament/$slug/': typeof TournamentSlugIndexRoute
   '/tournament/$slug/player/$playerId': typeof TournamentSlugPlayerPlayerIdRoute
   '/tournament/$slug/team/$teamSlug': typeof TournamentSlugTeamTeamSlugRoute
 }
@@ -162,7 +162,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/change-password'
     | '/admin'
-    | '/tournament/$slug'
     | '/admin/auction'
     | '/admin/players'
     | '/admin/teams'
@@ -170,6 +169,7 @@ export interface FileRouteTypes {
     | '/admin/transactions'
     | '/api/public/bootstrap-admin'
     | '/admin/'
+    | '/tournament/$slug/'
     | '/tournament/$slug/player/$playerId'
     | '/tournament/$slug/team/$teamSlug'
   fileRoutesByTo: FileRoutesByTo
@@ -177,7 +177,6 @@ export interface FileRouteTypes {
     | '/'
     | '/auth'
     | '/change-password'
-    | '/tournament/$slug'
     | '/admin/auction'
     | '/admin/players'
     | '/admin/teams'
@@ -185,6 +184,7 @@ export interface FileRouteTypes {
     | '/admin/transactions'
     | '/api/public/bootstrap-admin'
     | '/admin'
+    | '/tournament/$slug'
     | '/tournament/$slug/player/$playerId'
     | '/tournament/$slug/team/$teamSlug'
   id:
@@ -194,7 +194,6 @@ export interface FileRouteTypes {
     | '/auth'
     | '/change-password'
     | '/_authenticated/admin'
-    | '/tournament/$slug'
     | '/_authenticated/admin/auction'
     | '/_authenticated/admin/players'
     | '/_authenticated/admin/teams'
@@ -202,6 +201,7 @@ export interface FileRouteTypes {
     | '/_authenticated/admin/transactions'
     | '/api/public/bootstrap-admin'
     | '/_authenticated/admin/'
+    | '/tournament/$slug/'
     | '/tournament/$slug/player/$playerId'
     | '/tournament/$slug/team/$teamSlug'
   fileRoutesById: FileRoutesById
@@ -211,8 +211,10 @@ export interface RootRouteChildren {
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
   ChangePasswordRoute: typeof ChangePasswordRoute
-  TournamentSlugRoute: typeof TournamentSlugRouteWithChildren
   ApiPublicBootstrapAdminRoute: typeof ApiPublicBootstrapAdminRoute
+  TournamentSlugIndexRoute: typeof TournamentSlugIndexRoute
+  TournamentSlugPlayerPlayerIdRoute: typeof TournamentSlugPlayerPlayerIdRoute
+  TournamentSlugTeamTeamSlugRoute: typeof TournamentSlugTeamTeamSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -245,19 +247,19 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tournament/$slug': {
-      id: '/tournament/$slug'
-      path: '/tournament/$slug'
-      fullPath: '/tournament/$slug'
-      preLoaderRoute: typeof TournamentSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/_authenticated/admin': {
       id: '/_authenticated/admin'
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
+    }
+    '/tournament/$slug/': {
+      id: '/tournament/$slug/'
+      path: '/tournament/$slug'
+      fullPath: '/tournament/$slug/'
+      preLoaderRoute: typeof TournamentSlugIndexRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_authenticated/admin/': {
       id: '/_authenticated/admin/'
@@ -310,17 +312,17 @@ declare module '@tanstack/react-router' {
     }
     '/tournament/$slug/team/$teamSlug': {
       id: '/tournament/$slug/team/$teamSlug'
-      path: '/team/$teamSlug'
+      path: '/tournament/$slug/team/$teamSlug'
       fullPath: '/tournament/$slug/team/$teamSlug'
       preLoaderRoute: typeof TournamentSlugTeamTeamSlugRouteImport
-      parentRoute: typeof TournamentSlugRoute
+      parentRoute: typeof rootRouteImport
     }
     '/tournament/$slug/player/$playerId': {
       id: '/tournament/$slug/player/$playerId'
-      path: '/player/$playerId'
+      path: '/tournament/$slug/player/$playerId'
       fullPath: '/tournament/$slug/player/$playerId'
       preLoaderRoute: typeof TournamentSlugPlayerPlayerIdRouteImport
-      parentRoute: typeof TournamentSlugRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -357,28 +359,26 @@ const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
 const AuthenticatedRouteRouteWithChildren =
   AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
 
-interface TournamentSlugRouteChildren {
-  TournamentSlugPlayerPlayerIdRoute: typeof TournamentSlugPlayerPlayerIdRoute
-  TournamentSlugTeamTeamSlugRoute: typeof TournamentSlugTeamTeamSlugRoute
-}
-
-const TournamentSlugRouteChildren: TournamentSlugRouteChildren = {
-  TournamentSlugPlayerPlayerIdRoute: TournamentSlugPlayerPlayerIdRoute,
-  TournamentSlugTeamTeamSlugRoute: TournamentSlugTeamTeamSlugRoute,
-}
-
-const TournamentSlugRouteWithChildren = TournamentSlugRoute._addFileChildren(
-  TournamentSlugRouteChildren,
-)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
   ChangePasswordRoute: ChangePasswordRoute,
-  TournamentSlugRoute: TournamentSlugRouteWithChildren,
   ApiPublicBootstrapAdminRoute: ApiPublicBootstrapAdminRoute,
+  TournamentSlugIndexRoute: TournamentSlugIndexRoute,
+  TournamentSlugPlayerPlayerIdRoute: TournamentSlugPlayerPlayerIdRoute,
+  TournamentSlugTeamTeamSlugRoute: TournamentSlugTeamTeamSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
