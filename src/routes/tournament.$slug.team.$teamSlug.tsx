@@ -437,6 +437,11 @@ function TeamPage() {
                         <div className="text-sm font-bold text-active">
                           {formatMoney(Number(p.final_price), c)}
                         </div>
+                        {p.base_price != null && (
+                          <div className="text-[10px] text-muted-foreground">
+                            Base {formatMoney(Number(p.base_price), c)}
+                          </div>
+                        )}
                         <div className="text-[10px] text-muted-foreground">
                           {new Date(p.updated_at).toLocaleDateString()}
                         </div>
