@@ -42,7 +42,8 @@ function AuthPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setBusy(true);
-    const email = username.includes("@") ? username : ADMIN_EMAIL;
+    const u = username.trim().toLowerCase();
+    const email = u.includes("@") ? u : `${u}@auction.local`;
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
