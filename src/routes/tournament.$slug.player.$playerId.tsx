@@ -92,6 +92,12 @@ function PlayerPage() {
 
   const isSold = player.status === "sold";
   const isUnsold = player.status === "unsold";
+  const ch = (player.cricheroes_data ?? null) as {
+    role?: string | null;
+    batting_style?: string | null;
+    bowling_style?: string | null;
+    city?: string | null;
+  } | null;
 
   return (
     <div className="min-h-screen bg-background">
