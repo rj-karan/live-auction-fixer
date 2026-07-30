@@ -13,7 +13,7 @@ export const Route = createFileRoute("/auth")({
   component: AuthPage,
 });
 
-const ADMIN_EMAIL = "admin@auction.local";
+
 
 function mustChangePassword(user: { user_metadata?: Record<string, unknown> } | null | undefined) {
   const md = user?.user_metadata ?? {};
