@@ -230,6 +230,28 @@ function PlayerPage() {
           {player.age && <Info label="Age" value={String(player.age)} />}
         </div>
 
+        {cricheroesLink && (
+          <Card>
+            <CardContent className="pt-5 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
+                  CricHeroes Profile
+                </div>
+                <p className="text-sm text-muted-foreground mt-0.5">
+                  Verified profile link shared by the player.
+                </p>
+              </div>
+              <a
+                href={cricheroesLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium hover:text-active transition-colors"
+              >
+                View on CricHeroes <ExternalLink className="h-4 w-4" />
+              </a>
+            </CardContent>
+          </Card>
+        )}
 
         {player.details && (
           <Card>
@@ -240,7 +262,11 @@ function PlayerPage() {
           </Card>
         )}
 
-        <CricheroesPanel playerRowId={player.id} linked={!!player.cricheroes_player_id} />
+        <CricheroesPanel
+          playerRowId={player.id}
+          linked={!!(player.cricheroes_player_id || player.cricheroes_url)}
+        />
+
       </main>
     </div>
   );
