@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { useActiveTournament } from "@/hooks/use-active-tournament";
 import { formatMoney } from "@/lib/format";
 import { Trash2 } from "lucide-react";
-import { extractCricheroesId, extractCricheroesUrl, cricheroesProfileUrl } from "@/lib/cricheroes";
+import { extractCricheroesId, extractCricheroesUrl } from "@/lib/cricheroes";
 import { ImageUpload } from "@/components/image-upload";
 
 
