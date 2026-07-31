@@ -75,10 +75,9 @@ function PlayersPage() {
       details: form.details || null,
       auction_round: Number(form.auction_round) || 1,
       cricheroes_player_id: extractCricheroesId(form.cricheroes),
-      cricheroes_url: extractCricheroesId(form.cricheroes)
-        ? cricheroesProfileUrl(extractCricheroesId(form.cricheroes)!)
-        : null,
+      cricheroes_url: extractCricheroesUrl(form.cricheroes),
     });
+
     if (error) return toast.error(error.message);
     toast.success("Player added");
     setForm({
