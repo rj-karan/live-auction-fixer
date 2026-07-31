@@ -131,3 +131,22 @@ export async function searchCricheroesPlayers(query: string): Promise<Cricheroes
     return [];
   }
 }
+
+/**
+ * Resolves a CricHeroes short share link (chshare.link/player/XXXX) to the
+ * numeric player id by reading the redirect payload the share page embeds.
+ */
+export async function resolveCricheroesShareLink(shareUrl: string): Promise<string | null> {
+  try {
+    const response = await fetch(shareUrl, { headers: { "User-Agent": UA, Accept: "text/html" } });
+    if (!response.ok) return null;
+    const html = await response.text();
+    const target =
+      html.match(/player-profile\\?\/(\d+)/)?.[1] ??
+      html.match(/player-profile\/(\d+)/)?.[1] ??
+      null;
+    return target;
+  } catch {
+    return null;
+  }
+}

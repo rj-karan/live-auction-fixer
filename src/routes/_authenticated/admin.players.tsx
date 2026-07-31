@@ -10,7 +10,9 @@ import { toast } from "sonner";
 import { useActiveTournament } from "@/hooks/use-active-tournament";
 import { formatMoney } from "@/lib/format";
 import { Trash2 } from "lucide-react";
-import { extractCricheroesId, cricheroesProfileUrl } from "@/lib/cricheroes";
+import { extractCricheroesId, extractCricheroesUrl } from "@/lib/cricheroes";
+import { ImageUpload } from "@/components/image-upload";
+
 
 export const Route = createFileRoute("/_authenticated/admin/players")({
   component: PlayersPage,
@@ -75,10 +77,9 @@ function PlayersPage() {
       details: form.details || null,
       auction_round: Number(form.auction_round) || 1,
       cricheroes_player_id: extractCricheroesId(form.cricheroes),
-      cricheroes_url: extractCricheroesId(form.cricheroes)
-        ? cricheroesProfileUrl(extractCricheroesId(form.cricheroes)!)
-        : null,
+      cricheroes_url: extractCricheroesUrl(form.cricheroes),
     });
+
     if (error) return toast.error(error.message);
     toast.success("Player added");
     setForm({
@@ -166,26 +167,26 @@ function PlayersPage() {
                 />
               </div>
             </div>
+            <ImageUpload
+              label="Player Photo"
+              value={form.photo_url}
+              onChange={(url) => setForm({ ...form, photo_url: url })}
+              folder="players"
+            />
             <div>
-              <Label>Photo URL</Label>
-              <Input
-                value={form.photo_url}
-                onChange={(e) =>
-                  setForm({ ...form, photo_url: e.target.value })
-                }
-              />
-            </div>
-            <div>
-              <Label>CricHeroes ID or Profile URL</Label>
+              <Label>CricHeroes ID, Profile URL or Share Link</Label>
               <Input
                 value={form.cricheroes}
                 onChange={(e) => setForm({ ...form, cricheroes: e.target.value })}
-                placeholder="1234567 or https://cricheroes.com/player-profile/1234567/name"
+                placeholder="https://chshare.link/player/XXXXXX or cricheroes.com/player-profile/1234567/name"
               />
               <p className="mt-1 text-xs text-muted-foreground">
-                Stats load automatically on the public player page when linked.
+                Paste the whole share message if you like — the link is picked out
+                automatically and shown on the public player page. Stats load when
+                CricHeroes makes them readable.
               </p>
             </div>
+
             <div>
               <Label>Auction Round</Label>
               <Input
