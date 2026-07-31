@@ -125,13 +125,12 @@ function TeamsPage() {
                 required
               />
             </div>
-            <div>
-              <Label>Logo URL</Label>
-              <Input
-                value={form.logo_url}
-                onChange={(e) => setForm({ ...form, logo_url: e.target.value })}
-              />
-            </div>
+            <ImageUpload
+              label="Team Logo"
+              value={form.logo_url}
+              onChange={(url) => setForm({ ...form, logo_url: url })}
+              folder="teams"
+            />
             <div className="border-t pt-3 space-y-3">
               <p className="text-sm font-medium">Captain</p>
               <div>
@@ -144,15 +143,13 @@ function TeamsPage() {
                   required
                 />
               </div>
-              <div>
-                <Label>Captain Photo URL</Label>
-                <Input
-                  value={form.captain_photo_url}
-                  onChange={(e) =>
-                    setForm({ ...form, captain_photo_url: e.target.value })
-                  }
-                />
-              </div>
+              <ImageUpload
+                label="Captain Photo"
+                value={form.captain_photo_url}
+                onChange={(url) => setForm({ ...form, captain_photo_url: url })}
+                folder="captains"
+              />
+
               <div>
                 <Label>Captain Contact (admin only)</Label>
                 <Input
