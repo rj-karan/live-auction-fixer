@@ -9,6 +9,8 @@ import { toast } from "sonner";
 import { slugify, formatMoney } from "@/lib/format";
 import { useActiveTournament } from "@/hooks/use-active-tournament";
 import { Trash2 } from "lucide-react";
+import { ImageUpload } from "@/components/image-upload";
+
 
 export const Route = createFileRoute("/_authenticated/admin/teams")({
   component: TeamsPage,
