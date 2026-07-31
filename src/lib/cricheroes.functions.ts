@@ -9,12 +9,33 @@ export const getCricheroesProfile = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: row } = await supabaseAdmin
       .from("players")
-      .select("id, cricheroes_player_id, cricheroes_data, cricheroes_fetched_at")
+      .select("id, cricheroes_player_id, cricheroes_url, cricheroes_data, cricheroes_fetched_at")
       .eq("id", data.playerRowId)
       .maybeSingle();
 
-    if (!row?.cricheroes_player_id) {
-      return { available: false, reason: "No CricHeroes profile linked to this player." };
+    if (!row) return { available: false, reason: "Player not found." };
+
+    let playerId = row.cricheroes_player_id as string | null;
+
+    // Short share links (chshare.link/player/XXXX) resolve to the numeric id.
+    if (!playerId && row.cricheroes_url) {
+      const { resolveCricheroesShareLink } = await import("./cricheroes-provider.server");
+      playerId = await resolveCricheroesShareLink(row.cricheroes_url as string);
+      if (playerId) {
+        await supabaseAdmin
+          .from("players")
+          .update({ cricheroes_player_id: playerId })
+          .eq("id", row.id);
+      }
+    }
+
+    if (!playerId) {
+      return {
+        available: false,
+        reason: row.cricheroes_url
+          ? "CricHeroes stats could not be read from this link. The profile link is shown above."
+          : "No CricHeroes profile linked to this player.",
+      };
     }
 
     const fetchedAt = row.cricheroes_fetched_at ? new Date(row.cricheroes_fetched_at).getTime() : 0;
@@ -29,7 +50,8 @@ export const getCricheroesProfile = createServerFn({ method: "POST" })
     }
 
     const { fetchCricheroesProfile } = await import("./cricheroes-provider.server");
-    const result = await fetchCricheroesProfile(row.cricheroes_player_id);
+    const result = await fetchCricheroesProfile(playerId);
+
 
     if (!result.ok) {
       if (row.cricheroes_data) {
