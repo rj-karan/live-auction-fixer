@@ -72,15 +72,32 @@ export function extractCricheroesId(input: string): string | null {
   const value = (input ?? "").trim();
   if (!value) return null;
   if (/^\d+$/.test(value)) return value;
+  // Short share links (chshare.link/player/XXXX) carry no numeric id — they are
+  // resolved server-side instead.
+  if (/chshare\.link/i.test(value)) return null;
   const match = value.match(/cricheroes\.(?:in|com)\/player-profile\/(\d+)|cricheroes\.(?:in|com)\/player\/(\d+)/i);
   if (match) return match[1] ?? match[2] ?? null;
   const anyDigits = value.match(/\/(\d{4,})(?:[/?#]|$)/);
   return anyDigits ? anyDigits[1] : null;
 }
 
+/**
+ * Extracts the first http(s) URL from pasted text (CricHeroes share messages
+ * include surrounding text) and returns the canonical profile link to store.
+ */
+export function extractCricheroesUrl(input: string): string | null {
+  const value = (input ?? "").trim();
+  if (!value) return null;
+  const url = value.match(/https?:\/\/\S+/i)?.[0]?.replace(/[).,]+$/, "");
+  if (url) return url;
+  const id = extractCricheroesId(value);
+  return id ? cricheroesProfileUrl(id) : null;
+}
+
 export function cricheroesProfileUrl(playerId: string) {
   return `https://cricheroes.com/player-profile/${playerId}`;
 }
+
 
 /** Session-scoped cache so the same player is not refetched while browsing. */
 const sessionCache = new Map<string, CricheroesResult>();
