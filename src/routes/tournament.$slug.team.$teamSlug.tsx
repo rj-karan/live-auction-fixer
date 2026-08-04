@@ -474,7 +474,7 @@ function TeamPage() {
               </div>
             )}
           </div>
-        </section></Reveal>
+        </section>
 
         {/* Purchase Timeline */}
         <Reveal className="contents"><section>
