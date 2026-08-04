@@ -264,26 +264,23 @@ function StatMini({
   value,
   icon,
   accent,
+  count,
 }: {
   label: string;
   value: string | number;
   icon?: React.ReactNode;
   accent?: boolean;
+  count?: number;
 }) {
   return (
-    <Card className={cn(accent && "border-active/50")}>
+    <Card className={cn("glass-card glow-border transition-shadow hover:shadow-lg", accent && "border-active/50")}>
       <CardContent className="pt-4 pb-3">
         <div className="text-[11px] text-muted-foreground uppercase tracking-wider flex items-center gap-1">
           {icon}
           {label}
         </div>
-        <div
-          className={cn(
-            "text-xl font-bold mt-1",
-            accent && "text-active",
-          )}
-        >
-          {value}
+        <div className={cn("text-xl font-bold mt-1", accent && "text-active")}>
+          {count != null ? <CountUp value={count} /> : value}
         </div>
       </CardContent>
     </Card>
@@ -399,61 +396,70 @@ function SectionHeader({ title, action }: { title: string; action?: React.ReactN
 function TeamsGrid({ teams, sold, tournament }: any) {
   const c = tournament.currency;
   if (teams.length === 0) {
-    return <p className="text-muted-foreground text-sm">No teams yet.</p>;
+    return (
+      <EmptyState
+        icon={<Users className="h-7 w-7" />}
+        title="No teams yet"
+        hint="Teams appear here once the admin adds them."
+      />
+    );
   }
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {teams.map((t: any) => {
+      {teams.map((t: any, i: number) => {
         const teamPlayers = sold.filter((p: any) => p.team_id === t.id);
         const usedPct = t.initial_purse ? (Number(t.total_spent) / Number(t.initial_purse)) * 100 : 0;
         return (
-          <Link
-            key={t.id}
-            to="/tournament/$slug/team/$teamSlug"
-            params={{ slug: tournament.slug, teamSlug: t.slug }}
-            className="group block focus:outline-none"
-          >
-            <Card className="h-full overflow-hidden transition-all cursor-pointer hover:border-active hover:shadow-lg focus-within:border-active group-focus-visible:ring-2 group-focus-visible:ring-active">
-              <div className="flex items-center gap-3 border-b bg-secondary/50 px-4 py-3">
-                {t.logo_url ? (
-                  <img src={t.logo_url} className="h-10 w-10 rounded object-cover shrink-0" alt="" />
-                ) : (
-                  <div className="grid h-10 w-10 shrink-0 place-items-center rounded bg-primary text-primary-foreground">
-                    <Trophy className="h-5 w-5" />
-                  </div>
-                )}
-                <div className="min-w-0 flex-1">
-                  <div className="font-bold truncate group-hover:text-active transition-colors">{t.name}</div>
-                  <div className="text-xs text-muted-foreground truncate">
-                    {t.short_name} · Captain: {t.captain_name}
-                  </div>
-                </div>
-                <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-active transition-colors shrink-0" />
-              </div>
-              <CardContent className="pt-4 space-y-3">
-                <div className="grid grid-cols-3 gap-2 text-center">
-                  <MiniStat label="Spent" value={formatMoney(Number(t.total_spent), c)} />
-                  <MiniStat label="Left" value={formatMoney(Number(t.remaining_purse), c)} accent />
-                  <MiniStat label="Squad" value={teamPlayers.length + 1} />
-                </div>
-                <div>
-                  <div className="flex justify-between text-[11px] text-muted-foreground mb-1">
-                    <span>Purse used</span>
-                    <span>{usedPct.toFixed(0)}%</span>
-                  </div>
-                  <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                    <div
-                      className="h-full bg-active transition-all"
-                      style={{ width: `${Math.min(100, usedPct)}%` }}
+          <LiftCard key={t.id} delay={Math.min(i, 8) * 0.05}>
+            <Link
+              to="/tournament/$slug/team/$teamSlug"
+              params={{ slug: tournament.slug, teamSlug: t.slug }}
+              className="group block h-full focus:outline-none"
+            >
+              <Card className="glass-card glow-border h-full overflow-hidden transition-shadow cursor-pointer hover:shadow-2xl group-focus-visible:ring-2 group-focus-visible:ring-active">
+                <div className="flex items-center gap-3 border-b bg-[linear-gradient(100deg,color-mix(in_oklab,var(--primary)_10%,transparent),transparent)] px-4 py-3 transition-colors group-hover:bg-[linear-gradient(100deg,color-mix(in_oklab,var(--active)_16%,transparent),transparent)]">
+                  {t.logo_url ? (
+                    <img
+                      src={t.logo_url}
+                      loading="lazy"
+                      className="h-10 w-10 rounded object-cover shrink-0 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110"
+                      alt=""
                     />
+                  ) : (
+                    <div className="grid h-10 w-10 shrink-0 place-items-center rounded bg-primary text-primary-foreground transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110">
+                      <Trophy className="h-5 w-5" />
+                    </div>
+                  )}
+                  <div className="min-w-0 flex-1">
+                    <div className="font-bold truncate group-hover:text-active transition-colors">{t.name}</div>
+                    <div className="text-xs text-muted-foreground truncate">
+                      {t.short_name} · Captain: {t.captain_name}
+                    </div>
                   </div>
+                  <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-active transition-all group-hover:translate-x-1 shrink-0" />
                 </div>
-                <div className="pt-1 text-xs font-medium text-active flex items-center gap-1 group-hover:gap-2 transition-all">
-                  View team details <ChevronRight className="h-3 w-3" />
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
+                <CardContent className="pt-4 space-y-3">
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <MiniStat label="Spent" value={formatMoney(Number(t.total_spent), c)} />
+                    <MiniStat label="Left" value={formatMoney(Number(t.remaining_purse), c)} accent />
+                    <MiniStat label="Squad" value={teamPlayers.length + 1} />
+                  </div>
+                  <div>
+                    <div className="flex justify-between text-[11px] text-muted-foreground mb-1">
+                      <span>Purse used</span>
+                      <span>
+                        <CountUp value={usedPct} format={(n) => `${n.toFixed(0)}%`} />
+                      </span>
+                    </div>
+                    <AnimatedBar pct={usedPct} />
+                  </div>
+                  <div className="pt-1 text-xs font-semibold text-active flex items-center gap-1 group-hover:gap-2 transition-all">
+                    View team details <ChevronRight className="h-3 w-3" />
+                  </div>
+                </CardContent>
+              </Card>
+            </Link>
+          </LiftCard>
         );
       })}
     </div>
@@ -509,59 +515,71 @@ function PlayersView({ players, teams, tournament }: any) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="text-sm text-muted-foreground py-8 text-center">No players match.</p>
+        <EmptyState
+          icon={<User className="h-7 w-7" />}
+          title="No players match"
+          hint="Try a different search or filter."
+        />
       ) : (
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((p: any) => {
+          {filtered.map((p: any, i: number) => {
             const team: any = p.team_id ? teamMap.get(p.team_id) : null;
             return (
-              <Link
-                key={p.id}
-                to="/tournament/$slug/player/$playerId"
-                params={{ slug: tournament.slug, playerId: p.id }}
-                className="group"
-              >
-                <Card className="h-full transition-all hover:border-active hover:shadow-md cursor-pointer">
-                  <CardContent className="pt-4">
-                    <div className="flex items-start gap-3">
-                      {p.photo_url ? (
-                        <img src={p.photo_url} alt="" className="h-12 w-12 rounded-full object-cover shrink-0" />
-                      ) : (
-                        <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-muted">
-                          <User className="h-5 w-5 text-muted-foreground" />
-                        </div>
-                      )}
-                      <div className="min-w-0 flex-1">
-                        <div className="flex items-start justify-between gap-2">
-                          <div className="min-w-0">
-                            <div className="font-semibold truncate group-hover:text-active transition-colors">
-                              {p.name}
+              <LiftCard key={p.id} delay={Math.min(i, 8) * 0.03}>
+                <Link
+                  to="/tournament/$slug/player/$playerId"
+                  params={{ slug: tournament.slug, playerId: p.id }}
+                  className="group block h-full"
+                >
+                  <Card className="glass-card glow-border h-full overflow-hidden transition-shadow hover:shadow-xl cursor-pointer">
+                    <CardContent className="pt-4">
+                      <div className="flex items-start gap-3">
+                        <div className="shine relative h-12 w-12 shrink-0 rounded-full ring-2 ring-transparent transition group-hover:ring-active/70">
+                          {p.photo_url ? (
+                            <img
+                              src={p.photo_url}
+                              alt=""
+                              loading="lazy"
+                              className="h-12 w-12 rounded-full object-cover transition-transform duration-500 group-hover:scale-110"
+                            />
+                          ) : (
+                            <div className="grid h-12 w-12 place-items-center rounded-full bg-muted">
+                              <User className="h-5 w-5 text-muted-foreground" />
                             </div>
-                            <div className="text-xs text-muted-foreground truncate">
-                              {p.role || "—"}
-                              {p.player_number ? ` · #${p.player_number}` : ""}
-                            </div>
-                          </div>
-                          <StatusBadge status={p.status} />
+                          )}
                         </div>
-                        {p.status === "sold" && team && (
-                          <div className="mt-2 flex items-center justify-between gap-2 text-xs">
-                            <span className="flex items-center gap-1 min-w-0">
-                              {team.logo_url && (
-                                <img src={team.logo_url} className="h-4 w-4 rounded shrink-0" alt="" />
-                              )}
-                              <span className="truncate text-muted-foreground">{team.name}</span>
-                            </span>
-                            <span className="font-semibold text-active shrink-0">
-                              {formatMoney(Number(p.final_price), c)}
-                            </span>
+                        <div className="min-w-0 flex-1">
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="min-w-0">
+                              <div className="font-semibold truncate group-hover:text-active transition-colors">
+                                {p.name}
+                              </div>
+                              <div className="text-xs text-muted-foreground truncate">
+                                {p.role || "—"}
+                                {p.player_number ? ` · #${p.player_number}` : ""}
+                              </div>
+                            </div>
+                            <StatusBadge status={p.status} />
                           </div>
-                        )}
+                          {p.status === "sold" && team && (
+                            <div className="mt-2 flex items-center justify-between gap-2 text-xs">
+                              <span className="flex items-center gap-1 min-w-0">
+                                {team.logo_url && (
+                                  <img src={team.logo_url} loading="lazy" className="h-4 w-4 rounded shrink-0" alt="" />
+                                )}
+                                <span className="truncate text-muted-foreground">{team.name}</span>
+                              </span>
+                              <span className="font-semibold text-active shrink-0">
+                                {formatMoney(Number(p.final_price), c)}
+                              </span>
+                            </div>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              </Link>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </LiftCard>
             );
           })}
         </div>
