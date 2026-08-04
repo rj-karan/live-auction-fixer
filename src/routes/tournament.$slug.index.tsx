@@ -297,8 +297,6 @@ function PublicTournament() {
           </motion.div>
         </AnimatePresence>
       </main>
-
-      </main>
     </div>
   );
 }
