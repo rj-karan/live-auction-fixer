@@ -309,7 +309,7 @@ function StatMini({
   count,
 }: {
   label: string;
-  value: string | number;
+  value: React.ReactNode;
   icon?: React.ReactNode;
   accent?: boolean;
   count?: number;
