@@ -136,37 +136,56 @@ function PublicTournament() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="relative border-b bg-primary text-primary-foreground overflow-hidden">
+        <HeroBackdrop variant="stadium" priority />
         {tournament.banner_url && (
           <img
             src={tournament.banner_url}
             alt=""
-            className="absolute inset-0 h-full w-full object-cover opacity-20"
+            className="absolute inset-0 h-full w-full object-cover opacity-15 mix-blend-luminosity"
           />
         )}
-        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-10">
-          <div className="flex items-start gap-4">
-            {tournament.logo_url ? (
-              <img
-                src={tournament.logo_url}
-                alt=""
-                className="h-14 w-14 sm:h-20 sm:w-20 rounded-lg object-cover ring-2 ring-active shrink-0"
-              />
-            ) : (
-              <div className="grid h-14 w-14 sm:h-20 sm:w-20 place-items-center rounded-lg bg-active text-active-foreground shrink-0">
-                <Trophy className="h-8 w-8" />
-              </div>
-            )}
+        <SpinningBall className="pointer-events-none absolute -right-6 top-6 h-24 w-24 opacity-40 sm:h-32 sm:w-32 sm:opacity-60" />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-14">
+          <motion.div
+            className="flex items-start gap-4"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
+            <motion.div
+              className="shrink-0"
+              animate={{ y: [0, -6, 0] }}
+              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {tournament.logo_url ? (
+                <img
+                  src={tournament.logo_url}
+                  alt=""
+                  className="h-14 w-14 sm:h-20 sm:w-20 rounded-lg object-cover ring-2 ring-active shadow-[0_0_30px_-6px_var(--active)]"
+                />
+              ) : (
+                <div className="grid h-14 w-14 sm:h-20 sm:w-20 place-items-center rounded-lg bg-active text-active-foreground shadow-[0_0_30px_-6px_var(--active)]">
+                  <Trophy className="h-8 w-8" />
+                </div>
+              )}
+            </motion.div>
             <div className="min-w-0 flex-1">
               <div className="flex items-center gap-2 mb-1">
                 <Badge className="bg-active text-active-foreground border-0 uppercase tracking-wide text-[10px]">
                   {tournament.status}
                 </Badge>
-                <span className="text-xs opacity-70">Live Auction</span>
+                <span className="flex items-center gap-1.5 text-xs opacity-80">
+                  <span className="relative flex h-2 w-2">
+                    <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-active opacity-70" />
+                    <span className="relative inline-flex h-2 w-2 rounded-full bg-active" />
+                  </span>
+                  Live Auction
+                </span>
               </div>
-              <h1 className="text-2xl sm:text-4xl font-black tracking-tight truncate">
+              <h1 className="text-3xl sm:text-5xl font-black tracking-tight truncate drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]">
                 {tournament.name}
               </h1>
-              <div className="mt-2 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm opacity-85">
+              <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm opacity-90">
                 {tournament.location && (
                   <span className="flex items-center gap-1">
                     <MapPin className="h-3.5 w-3.5" /> {tournament.location}
@@ -178,14 +197,18 @@ function PublicTournament() {
                     {new Date(tournament.tournament_date).toLocaleDateString()}
                   </span>
                 )}
+                <span className="flex items-center gap-1">
+                  <Gavel className="h-3.5 w-3.5 text-active" /> Physical auction · live results
+                </span>
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
+        <div className="absolute inset-x-0 bottom-0 h-px bg-[linear-gradient(90deg,transparent,var(--active),transparent)] lights-pulse" />
       </div>
 
       {/* Section nav */}
-      <div className="sticky top-0 z-20 border-b bg-background/95 backdrop-blur">
+      <div className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur-xl">
         <div className="mx-auto max-w-6xl px-2 sm:px-6">
           <nav className="flex overflow-x-auto no-scrollbar">
             {SECTIONS.map((s) => {
@@ -194,18 +217,23 @@ function PublicTournament() {
               return (
                 <button
                   key={s.id}
+                  type="button"
                   onClick={() => setSection(s.id)}
                   className={cn(
-                    "relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors",
+                    "ripple relative flex items-center gap-2 whitespace-nowrap px-4 py-3 text-sm font-medium transition-colors",
                     active
                       ? "text-active"
-                      : "text-muted-foreground hover:text-foreground",
+                      : "text-muted-foreground hover:text-foreground hover:drop-shadow-[0_0_10px_color-mix(in_oklab,var(--active)_60%,transparent)]",
                   )}
                 >
-                  <Icon className="h-4 w-4" />
+                  <Icon className={cn("h-4 w-4 transition-transform", active && "scale-110")} />
                   {s.label}
                   {active && (
-                    <span className="absolute inset-x-2 -bottom-px h-0.5 bg-active rounded-full" />
+                    <motion.span
+                      layoutId="section-underline"
+                      className="absolute inset-x-2 -bottom-px h-0.5 rounded-full bg-[linear-gradient(90deg,var(--active),color-mix(in_oklab,var(--active)_50%,white))]"
+                      transition={{ type: "spring", stiffness: 420, damping: 34 }}
+                    />
                   )}
                 </button>
               );
@@ -215,45 +243,61 @@ function PublicTournament() {
       </div>
 
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">
-        {loading ? (
-          <div className="grid gap-3 sm:grid-cols-3 md:grid-cols-6">
-            {Array.from({ length: 6 }).map((_, i) => (
-              <div key={i} className="h-24 rounded-lg bg-muted animate-pulse" />
-            ))}
-          </div>
-        ) : section === "overview" ? (
-          <OverviewSection
-            teams={teams}
-            players={players}
-            sold={sold}
-            available={available}
-            unsold={unsold}
-            events={events}
-            currency={c}
-            totalInitial={totalInitial}
-            totalSpent={totalSpent}
-            totalRemaining={totalRemaining}
-            tournament={tournament}
-            onSection={setSection}
-          />
-        ) : section === "teams" ? (
-          <TeamsGrid teams={teams} sold={sold} tournament={tournament} />
-        ) : section === "players" ? (
-          <PlayersView players={players} teams={teams} tournament={tournament} />
-        ) : section === "results" ? (
-          <ResultsSection events={events} teams={teams} tournament={tournament} />
-        ) : (
-          <StatsSection
-            teams={teams}
-            sold={sold}
-            unsold={unsold}
-            available={available}
-            currency={c}
-            avgPrice={avgPrice}
-            topSale={topSale}
-            totalSpent={totalSpent}
-          />
-        )}
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={loading ? "loading" : section}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -8 }}
+            transition={{ duration: 0.25, ease: [0.22, 1, 0.36, 1] }}
+            className="space-y-6"
+          >
+            {loading ? (
+              <div className="space-y-6">
+                <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+                  {Array.from({ length: 6 }).map((_, i) => (
+                    <Shimmer key={i} className="h-24" />
+                  ))}
+                </div>
+                <CardSkeletonGrid count={6} />
+              </div>
+            ) : section === "overview" ? (
+              <OverviewSection
+                teams={teams}
+                players={players}
+                sold={sold}
+                available={available}
+                unsold={unsold}
+                events={events}
+                currency={c}
+                totalInitial={totalInitial}
+                totalSpent={totalSpent}
+                totalRemaining={totalRemaining}
+                tournament={tournament}
+                onSection={setSection}
+              />
+            ) : section === "teams" ? (
+              <TeamsGrid teams={teams} sold={sold} tournament={tournament} />
+            ) : section === "players" ? (
+              <PlayersView players={players} teams={teams} tournament={tournament} />
+            ) : section === "results" ? (
+              <ResultsSection events={events} teams={teams} tournament={tournament} />
+            ) : (
+              <StatsSection
+                teams={teams}
+                sold={sold}
+                unsold={unsold}
+                available={available}
+                currency={c}
+                avgPrice={avgPrice}
+                topSale={topSale}
+                totalSpent={totalSpent}
+              />
+            )}
+          </motion.div>
+        </AnimatePresence>
+      </main>
+
       </main>
     </div>
   );
