@@ -25,6 +25,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { motion } from "framer-motion";
+import {
+  Reveal,
+  LiftCard,
+  CountUp,
+  AnimatedBar,
+  EmptyState,
+} from "@/components/sports/motion-bits";
+import { HeroBackdrop } from "@/components/sports/hero-backdrop";
 
 export const Route = createFileRoute("/tournament/$slug/team/$teamSlug")({
   loader: async ({ params }) => {
@@ -236,14 +245,20 @@ function TeamPage() {
       </div>
 
       {/* Team header */}
-      <div className="border-b bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-8">
-          <div className="flex items-start gap-4">
+      <div className="relative border-b text-primary-foreground overflow-hidden">
+        <HeroBackdrop variant="trophy" className="absolute inset-0" />
+        <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
+          <motion.div
+            className="flex items-start gap-4"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
             {team.logo_url ? (
               <img
                 src={team.logo_url}
                 alt=""
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-lg object-cover ring-2 ring-active shrink-0"
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-lg object-cover ring-2 ring-active shrink-0 shadow-[0_0_28px_-6px_var(--active)]"
               />
             ) : (
               <div className="grid h-16 w-16 sm:h-20 sm:w-20 place-items-center rounded-lg bg-active text-active-foreground shrink-0">
@@ -295,26 +310,26 @@ function TeamPage() {
                 )}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
       <main className="mx-auto max-w-6xl px-4 sm:px-6 py-6 sm:py-8 space-y-8">
         {/* Financial cards */}
-        <section>
+        <Reveal className="contents"><section>
           <h2 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
             Financial Overview
           </h2>
           <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-            <FinCard label="Initial Purse" value={formatMoney(Number(team.initial_purse), c)} icon={<Wallet className="h-3.5 w-3.5" />} />
-            <FinCard label="Total Spent" value={formatMoney(Number(team.total_spent), c)} icon={<Coins className="h-3.5 w-3.5" />} />
-            <FinCard label="Remaining" value={formatMoney(Number(team.remaining_purse), c)} accent icon={<TrendingUp className="h-3.5 w-3.5" />} />
+            <FinCard label="Initial Purse" value={<CountUp value={Number(team.initial_purse)} format={(n) => formatMoney(n, c)} />} icon={<Wallet className="h-3.5 w-3.5" />} />
+            <FinCard label="Total Spent" value={<CountUp value={Number(team.total_spent)} format={(n) => formatMoney(n, c)} />} icon={<Coins className="h-3.5 w-3.5" />} />
+            <FinCard label="Remaining" value={<CountUp value={Number(team.remaining_purse)} format={(n) => formatMoney(n, c)} />} accent icon={<TrendingUp className="h-3.5 w-3.5" />} />
             <FinCard label="Squad Size" value={`${team.players_purchased_count + 1}`} sub="incl. captain" icon={<Users className="h-3.5 w-3.5" />} />
           </div>
           <div className="grid gap-3 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 mt-3">
-            <FinCard small label="Highest Buy" value={formatMoney(hi, c)} />
-            <FinCard small label="Lowest Buy" value={formatMoney(lo, c)} />
-            <FinCard small label="Avg Price" value={formatMoney(avg, c)} />
+            <FinCard small label="Highest Buy" value={<CountUp value={hi} format={(n) => formatMoney(n, c)} />} />
+            <FinCard small label="Lowest Buy" value={<CountUp value={lo} format={(n) => formatMoney(n, c)} />} />
+            <FinCard small label="Avg Price" value={<CountUp value={avg} format={(n) => formatMoney(n, c)} />} />
             <FinCard small label="Purse Used" value={`${utilization.toFixed(1)}%`} />
             <FinCard small label="Max Players" value={maxPlayers ? String(maxPlayers) : "—"} />
             <FinCard
@@ -328,17 +343,12 @@ function TeamPage() {
               <span>Purse used</span>
               <span>{utilization.toFixed(1)}%</span>
             </div>
-            <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-              <div
-                className="h-full bg-active transition-all duration-500"
-                style={{ width: `${Math.min(100, utilization)}%` }}
-              />
-            </div>
+            <AnimatedBar className="h-2" pct={utilization} />
           </div>
-        </section>
+        </section></Reveal>
 
         {/* Team composition */}
-        <section>
+        <Reveal className="contents"><section>
           <h2 className="text-xs uppercase tracking-wider text-muted-foreground mb-3">
             Team Statistics
           </h2>
@@ -349,7 +359,7 @@ function TeamPage() {
             <FinCard small label="All-rounders" value={String(composition.allRounders)} />
             <FinCard small label="Wicket Keepers" value={String(composition.keepers)} />
           </div>
-        </section>
+        </section></Reveal>
 
         {/* Squad */}
         <section>
@@ -377,7 +387,7 @@ function TeamPage() {
 
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {/* Captain */}
-            <Card className="border-active/60 bg-active-soft/40">
+            <Card className="glass-card glow-border border-active/60 bg-active-soft/40">
               <CardContent className="pt-4">
                 <div className="flex items-center gap-3">
                   {team.captain_photo_url ? (
@@ -406,11 +416,12 @@ function TeamPage() {
                 params={{ slug: tournament.slug, playerId: p.id }}
                 className="group"
               >
-                <Card className="h-full transition-all hover:border-active hover:shadow-md cursor-pointer">
+                <LiftCard>
+                <Card className="glass-card h-full transition-colors hover:border-active cursor-pointer">
                   <CardContent className="pt-4">
                     <div className="flex items-center gap-3">
                       {p.photo_url ? (
-                        <img src={p.photo_url} alt="" className="h-12 w-12 rounded-full object-cover shrink-0" />
+                        <img src={p.photo_url} alt="" className="h-12 w-12 rounded-full object-cover shrink-0 shine ring-2 ring-active/40" />
                       ) : (
                         <div className="grid h-12 w-12 shrink-0 place-items-center rounded-full bg-muted">
                           <User className="h-5 w-5 text-muted-foreground" />
@@ -449,28 +460,34 @@ function TeamPage() {
                     </div>
                   </CardContent>
                 </Card>
+                </LiftCard>
               </Link>
             ))}
 
             {players.length === 0 && (
-              <Card className="sm:col-span-2 border-dashed">
-                <CardContent className="py-8 text-center text-sm text-muted-foreground">
-                  No players purchased yet.
-                </CardContent>
-              </Card>
+              <div className="sm:col-span-2">
+                <EmptyState
+                  icon={<Users className="h-7 w-7" />}
+                  title="No players purchased yet"
+                  hint="Squad members appear as the admin records purchases."
+                />
+              </div>
             )}
           </div>
         </section>
 
         {/* Purchase Timeline */}
-        <section>
+        <Reveal className="contents"><section>
           <h2 className="text-lg font-bold tracking-tight mb-3">Transaction Timeline</h2>
-          <Card>
+          <Card className="glass-card">
             <CardContent className="p-0">
               {salesEvents.length === 0 ? (
-                <p className="p-6 text-sm text-muted-foreground text-center">
-                  No transactions recorded yet.
-                </p>
+                <EmptyState
+                  className="border-0"
+                  icon={<Coins className="h-7 w-7" />}
+                  title="No transactions recorded yet"
+                  hint="Final purchases will be timestamped here."
+                />
               ) : (
                 <ol className="relative">
                   <TimelineItem
@@ -512,7 +529,7 @@ function TeamPage() {
               )}
             </CardContent>
           </Card>
-        </section>
+        </section></Reveal>
 
         {/* Bottom prev/next */}
         <div className="grid grid-cols-2 gap-3 pt-4 border-t">
@@ -548,7 +565,7 @@ function TeamPage() {
   );
 }
 
-function FinCard({
+function FinCardInner({
   label,
   value,
   sub,
@@ -557,14 +574,14 @@ function FinCard({
   icon,
 }: {
   label: string;
-  value: string;
+  value: React.ReactNode;
   sub?: string;
   accent?: boolean;
   small?: boolean;
   icon?: React.ReactNode;
 }) {
   return (
-    <Card className={cn(accent && "border-active/60 bg-active-soft/30")}>
+    <Card className={cn("glass-card", accent && "border-active/60 bg-active-soft/30 glow-border")}>
       <CardContent className={cn("pt-4 pb-3", small && "pt-3")}>
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground flex items-center gap-1">
           {icon}
@@ -580,6 +597,14 @@ function FinCard({
         {sub && <div className="text-[10px] text-muted-foreground">{sub}</div>}
       </CardContent>
     </Card>
+  );
+}
+
+function FinCard(props: React.ComponentProps<typeof FinCardInner>) {
+  return (
+    <LiftCard>
+      <FinCardInner {...props} />
+    </LiftCard>
   );
 }
 

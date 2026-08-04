@@ -8,6 +8,9 @@ import { cn } from "@/lib/utils";
 import { CricheroesPanel } from "@/components/cricheroes-panel";
 import { ArrowLeft, User, Trophy, Crown, ExternalLink } from "lucide-react";
 import { cricheroesProfileUrl } from "@/lib/cricheroes";
+import { motion } from "framer-motion";
+import { Reveal, LiftCard, CountUp } from "@/components/sports/motion-bits";
+import { HeroBackdrop } from "@/components/sports/hero-backdrop";
 
 
 export const Route = createFileRoute("/tournament/$slug/player/$playerId")({
@@ -130,14 +133,20 @@ function PlayerPage() {
         </div>
       </div>
 
-      <div className="border-b bg-primary text-primary-foreground">
-        <div className="mx-auto max-w-4xl px-4 sm:px-6 py-6 sm:py-10">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
+      <div className="relative border-b text-primary-foreground overflow-hidden">
+        <HeroBackdrop variant="auction" className="absolute inset-0" />
+        <div className="relative mx-auto max-w-4xl px-4 sm:px-6 py-8 sm:py-12">
+          <motion.div
+            className="flex flex-col sm:flex-row items-start sm:items-center gap-5"
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+          >
             {player.photo_url ? (
               <img
                 src={player.photo_url}
                 alt=""
-                className="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-active shrink-0"
+                className="h-24 w-24 sm:h-28 sm:w-28 rounded-full object-cover ring-4 ring-active shrink-0 shine shadow-[0_0_40px_-8px_var(--active)]"
               />
             ) : (
               <div className="grid h-24 w-24 sm:h-28 sm:w-28 shrink-0 place-items-center rounded-full bg-active text-active-foreground">
@@ -153,13 +162,13 @@ function PlayerPage() {
                 {player.age && <span>Age {player.age}</span>}
               </div>
             </div>
-          </div>
+          </motion.div>
         </div>
       </div>
 
       <main className="mx-auto max-w-4xl px-4 sm:px-6 py-6 sm:py-8 space-y-6">
         {isSold && team ? (
-          <Card className="border-active/60 bg-active-soft/30">
+          <Card className="glass-card glow-border border-active/60 bg-active-soft/30">
             <CardContent className="pt-5">
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground">Auction Result</div>
               <div className="mt-2 flex items-center gap-4">
@@ -186,7 +195,7 @@ function PlayerPage() {
                 <div className="text-right shrink-0">
                   <div className="text-[10px] uppercase tracking-wider text-muted-foreground">Final Price</div>
                   <div className="text-2xl sm:text-3xl font-black text-active">
-                    {formatMoney(Number(player.final_price), c)}
+                    <CountUp value={Number(player.final_price)} format={(n) => formatMoney(n, c)} />
                   </div>
                   {event && (
                     <div className="text-[10px] text-muted-foreground mt-0.5">
@@ -198,7 +207,7 @@ function PlayerPage() {
             </CardContent>
           </Card>
         ) : isUnsold ? (
-          <Card className="border-destructive/40 bg-destructive/5">
+          <Card className="glass-card border-destructive/40 bg-destructive/5">
             <CardContent className="pt-5 text-center">
               <Badge variant="destructive" className="text-sm">UNSOLD</Badge>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -207,7 +216,7 @@ function PlayerPage() {
             </CardContent>
           </Card>
         ) : (
-          <Card>
+          <Card className="glass-card">
             <CardContent className="pt-5 text-center">
               <Badge variant="secondary" className="text-sm">Available</Badge>
               <p className="mt-2 text-sm text-muted-foreground">
@@ -217,7 +226,7 @@ function PlayerPage() {
           </Card>
         )}
 
-        <div className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
+        <Reveal className="grid gap-3 sm:grid-cols-2 md:grid-cols-4">
           {player.base_price != null && (
             <Info label="Base Price" value={formatMoney(Number(player.base_price), c)} />
           )}
@@ -234,10 +243,10 @@ function PlayerPage() {
           {ch?.city && <Info label="City" value={ch.city} />}
           {player.player_number && <Info label="Number" value={`#${player.player_number}`} />}
           {player.age && <Info label="Age" value={String(player.age)} />}
-        </div>
+        </Reveal>
 
         {cricheroesLink && (
-          <Card>
+          <Card className="glass-card">
             <CardContent className="pt-5 flex flex-wrap items-center justify-between gap-3">
               <div>
                 <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
@@ -260,7 +269,7 @@ function PlayerPage() {
         )}
 
         {player.details && (
-          <Card>
+          <Card className="glass-card">
             <CardContent className="pt-5">
               <div className="text-[11px] uppercase tracking-wider text-muted-foreground mb-1">Details</div>
               <p className="text-sm whitespace-pre-wrap">{player.details}</p>
@@ -286,19 +295,30 @@ function StatusPill({ status }: { status: string }) {
   };
   const m = map[status] ?? map.available;
   return (
-    <span className={cn("inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider", m.cls)}>
+    <motion.span
+      initial={{ scale: 0.8, opacity: 0 }}
+      animate={{ scale: 1, opacity: 1 }}
+      transition={{ type: "spring", stiffness: 320, damping: 18, delay: 0.15 }}
+      className={cn(
+        "inline-flex items-center rounded-full px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+        status === "sold" && "shadow-[0_0_22px_-4px_var(--active)]",
+        m.cls,
+      )}
+    >
       {m.label}
-    </span>
+    </motion.span>
   );
 }
 
 function Info({ label, value }: { label: string; value: string }) {
   return (
-    <Card>
+    <LiftCard>
+    <Card className="glass-card h-full">
       <CardContent className="pt-4 pb-3">
         <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
         <div className="text-base font-semibold mt-0.5">{value}</div>
       </CardContent>
     </Card>
+    </LiftCard>
   );
 }
