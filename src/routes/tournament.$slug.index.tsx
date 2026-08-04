@@ -1,5 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -7,6 +8,15 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
 import { cn } from "@/lib/utils";
+import { HeroBackdrop, SpinningBall } from "@/components/sports/hero-backdrop";
+import {
+  AnimatedBar,
+  CardSkeletonGrid,
+  CountUp,
+  EmptyState,
+  LiftCard,
+  Shimmer,
+} from "@/components/sports/motion-bits";
 import {
   Trophy,
   Users,
@@ -18,6 +28,7 @@ import {
   ChevronRight,
   MapPin,
   Calendar,
+  Gavel,
 } from "lucide-react";
 
 export const Route = createFileRoute("/tournament/$slug/")({
