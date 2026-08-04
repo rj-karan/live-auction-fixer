@@ -347,12 +347,18 @@ function OverviewSection({
   return (
     <div className="space-y-6">
       <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-        <StatMini label="Teams" value={teams.length} icon={<Users className="h-3.5 w-3.5" />} />
-        <StatMini label="Players" value={players.length} icon={<User className="h-3.5 w-3.5" />} />
-        <StatMini label="Sold" value={sold.length} accent />
-        <StatMini label="Available" value={available.length} />
-        <StatMini label="Unsold" value={unsold.length} />
-        <StatMini label="Spent" value={formatMoney(totalSpent, currency)} icon={<Coins className="h-3.5 w-3.5" />} />
+        <StatMini label="Teams" value={teams.length} count={teams.length} icon={<Users className="h-3.5 w-3.5" />} />
+        <StatMini label="Players" value={players.length} count={players.length} icon={<User className="h-3.5 w-3.5" />} />
+        <StatMini label="Sold" value={sold.length} count={sold.length} accent />
+        <StatMini label="Available" value={available.length} count={available.length} />
+        <StatMini label="Unsold" value={unsold.length} count={unsold.length} />
+        <StatMini
+          label="Spent"
+          value={
+            <CountUp value={Number(totalSpent)} format={(n) => formatMoney(n, currency)} />
+          }
+          icon={<Coins className="h-3.5 w-3.5" />}
+        />
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
