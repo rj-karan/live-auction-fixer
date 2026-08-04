@@ -368,10 +368,15 @@ function OverviewSection({
               View all <ChevronRight className="h-3.5 w-3.5" />
             </button>
           } />
-          <Card>
+          <Card className="glass-card">
             <CardContent className="p-0">
               {recent.length === 0 ? (
-                <p className="p-6 text-sm text-muted-foreground">No auction results yet.</p>
+                <EmptyState
+                  className="border-0"
+                  icon={<Gavel className="h-7 w-7" />}
+                  title="No auction results yet"
+                  hint="Sales appear here the moment the admin records them."
+                />
               ) : (
                 <ul className="divide-y">
                   {recent.map((e: any) => (
@@ -395,17 +400,15 @@ function OverviewSection({
 
         <div className="space-y-4">
           <SectionHeader title="Purse Overview" />
-          <Card>
+          <Card className="glass-card">
             <CardContent className="pt-5 space-y-3">
               <PurseRow label="Total Purse" value={formatMoney(totalInitial, currency)} />
               <PurseRow label="Total Spent" value={formatMoney(totalSpent, currency)} highlight />
               <PurseRow label="Remaining" value={formatMoney(totalRemaining, currency)} />
-              <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
-                <div
-                  className="h-full bg-active transition-all"
-                  style={{ width: `${totalInitial ? Math.min(100, (totalSpent / totalInitial) * 100) : 0}%` }}
-                />
-              </div>
+              <AnimatedBar
+                className="h-2"
+                pct={totalInitial ? (totalSpent / totalInitial) * 100 : 0}
+              />
             </CardContent>
           </Card>
         </div>
@@ -654,10 +657,16 @@ function ResultsSection({ events, teams, tournament }: any) {
   const teamMap = new Map(teams.map((t: any) => [t.id, t]));
   const clean = events.filter((e: any) => !e.is_undone && !e.event_type.startsWith("undo"));
   if (clean.length === 0) {
-    return <p className="text-sm text-muted-foreground py-8 text-center">No auction results yet.</p>;
+    return (
+      <EmptyState
+        icon={<Gavel className="h-7 w-7" />}
+        title="No auction results yet"
+        hint="Every recorded purchase will show up here live."
+      />
+    );
   }
   return (
-    <Card>
+    <Card className="glass-card">
       <CardContent className="p-0">
         <ul className="divide-y">
           {clean.map((e: any) => {
@@ -718,18 +727,34 @@ function StatsSection({ teams, sold, unsold, available, currency, avgPrice, topS
   return (
     <div className="space-y-6">
       <div className="grid gap-3 grid-cols-2 md:grid-cols-4">
-        <StatMini label="Total Spent" value={formatMoney(totalSpent, currency)} icon={<Wallet className="h-3.5 w-3.5" />} />
-        <StatMini label="Avg Price" value={formatMoney(avgPrice, currency)} />
-        <StatMini label="Top Sale" value={formatMoney(topSale, currency)} accent />
+        <StatMini
+          label="Total Spent"
+          value={<CountUp value={Number(totalSpent)} format={(n) => formatMoney(n, currency)} />}
+          icon={<Wallet className="h-3.5 w-3.5" />}
+        />
+        <StatMini
+          label="Avg Price"
+          value={<CountUp value={Number(avgPrice)} format={(n) => formatMoney(n, currency)} />}
+        />
+        <StatMini
+          label="Top Sale"
+          value={<CountUp value={Number(topSale)} format={(n) => formatMoney(n, currency)} />}
+          accent
+        />
         <StatMini label="Sold / Total" value={`${sold.length}/${sold.length + unsold.length + available.length}`} />
       </div>
 
       <div>
         <SectionHeader title="Top Purchases" />
-        <Card>
+        <Card className="glass-card">
           <CardContent className="p-0">
             {priciest.length === 0 ? (
-              <p className="p-6 text-sm text-muted-foreground">No sales recorded yet.</p>
+              <EmptyState
+                className="border-0"
+                icon={<Trophy className="h-7 w-7" />}
+                title="No sales recorded yet"
+                hint="Top purchases will rank here."
+              />
             ) : (
               <ul className="divide-y">
                 {priciest.map((p: any, i: number) => {
