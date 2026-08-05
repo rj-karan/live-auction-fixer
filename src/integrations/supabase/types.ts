@@ -98,6 +98,9 @@ export type Database = {
           age: number | null
           auction_round: number
           base_price: number | null
+          batting_style: string | null
+          bowling_style: string | null
+          city: string | null
           created_at: string
           cricheroes_data: Json | null
           cricheroes_fetched_at: string | null
@@ -107,9 +110,11 @@ export type Database = {
           final_price: number | null
           id: string
           name: string
+          notes: string | null
           photo_url: string | null
           player_number: string | null
           role: string | null
+          state: string | null
           status: Database["public"]["Enums"]["player_status"]
           team_id: string | null
           tournament_id: string
@@ -119,6 +124,9 @@ export type Database = {
           age?: number | null
           auction_round?: number
           base_price?: number | null
+          batting_style?: string | null
+          bowling_style?: string | null
+          city?: string | null
           created_at?: string
           cricheroes_data?: Json | null
           cricheroes_fetched_at?: string | null
@@ -128,9 +136,11 @@ export type Database = {
           final_price?: number | null
           id?: string
           name: string
+          notes?: string | null
           photo_url?: string | null
           player_number?: string | null
           role?: string | null
+          state?: string | null
           status?: Database["public"]["Enums"]["player_status"]
           team_id?: string | null
           tournament_id: string
@@ -140,6 +150,9 @@ export type Database = {
           age?: number | null
           auction_round?: number
           base_price?: number | null
+          batting_style?: string | null
+          bowling_style?: string | null
+          city?: string | null
           created_at?: string
           cricheroes_data?: Json | null
           cricheroes_fetched_at?: string | null
@@ -149,9 +162,11 @@ export type Database = {
           final_price?: number | null
           id?: string
           name?: string
+          notes?: string | null
           photo_url?: string | null
           player_number?: string | null
           role?: string | null
+          state?: string | null
           status?: Database["public"]["Enums"]["player_status"]
           team_id?: string | null
           tournament_id?: string
@@ -180,6 +195,7 @@ export type Database = {
           captain_name: string
           captain_photo_url: string | null
           created_at: string
+          description: string | null
           id: string
           initial_purse: number
           logo_url: string | null
@@ -200,6 +216,7 @@ export type Database = {
           captain_name: string
           captain_photo_url?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           initial_purse: number
           logo_url?: string | null
@@ -220,6 +237,7 @@ export type Database = {
           captain_name?: string
           captain_photo_url?: string | null
           created_at?: string
+          description?: string | null
           id?: string
           initial_purse?: number
           logo_url?: string | null
@@ -255,9 +273,11 @@ export type Database = {
           id: string
           location: string | null
           logo_url: string | null
+          max_teams: number | null
           name: string
           slug: string
           status: Database["public"]["Enums"]["tournament_status"]
+          team_size: number | null
           tournament_date: string | null
           updated_at: string
         }
@@ -270,9 +290,11 @@ export type Database = {
           id?: string
           location?: string | null
           logo_url?: string | null
+          max_teams?: number | null
           name: string
           slug: string
           status?: Database["public"]["Enums"]["tournament_status"]
+          team_size?: number | null
           tournament_date?: string | null
           updated_at?: string
         }
@@ -285,9 +307,11 @@ export type Database = {
           id?: string
           location?: string | null
           logo_url?: string | null
+          max_teams?: number | null
           name?: string
           slug?: string
           status?: Database["public"]["Enums"]["tournament_status"]
+          team_size?: number | null
           tournament_date?: string | null
           updated_at?: string
         }
