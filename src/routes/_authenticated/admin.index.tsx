@@ -180,7 +180,8 @@ function Dashboard() {
       ? `${window.location.origin}/tournament/${tournament.slug}`
       : "";
   const c = tournament.currency || "₹";
-  const banner = tournamentImage(tournament);
+  const t = tournament as { banner_url?: string | null; logo_url?: string | null };
+  const banner = tournamentImage(t);
 
   return (
     <div className="space-y-6">
