@@ -587,6 +587,122 @@ function PlayersView({ players, teams, tournament }: any) {
   );
 }
 
+function PlayerCard({
+  player: p,
+  team,
+  tournament,
+  currency,
+}: {
+  player: any;
+  team: any;
+  tournament: any;
+  currency: string;
+}) {
+  const photo = p.photo_url || brandAsset("playerPhoto") || brandAsset("playerAvatar");
+  return (
+    <Card className="group glass-card glow-border relative h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-[color-mix(in_oklab,var(--active)_25%,transparent)]">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,color-mix(in_oklab,var(--active)_14%,transparent),transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <CardContent className="relative flex h-full flex-col gap-4 p-4">
+        <div className="flex items-start gap-4">
+          {/* Portrait — primary focus, ~42% of card */}
+          <div className="relative w-[42%] shrink-0">
+            <div className="shine relative aspect-square overflow-hidden rounded-2xl border-2 border-active/70 bg-muted shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--active)_70%,transparent)] ring-1 ring-active/25">
+              {photo ? (
+                <img
+                  src={photo}
+                  alt={p.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center">
+                  <User className="h-10 w-10 text-muted-foreground" />
+                </div>
+              )}
+            </div>
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+              <StatusBadge status={p.status} animated />
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="min-w-0 flex-1 space-y-2 pt-0.5">
+            <h3 className="truncate text-xl font-black uppercase tracking-tight transition-colors group-hover:text-active">
+              {p.name}
+            </h3>
+            <ul className="space-y-1.5 text-xs">
+              <PlayerMeta icon={<Gavel className="h-3.5 w-3.5" />} label={p.role || "Player"} />
+              {p.player_number && (
+                <PlayerMeta icon={<Shirt className="h-3.5 w-3.5" />} label={`#${p.player_number}`} />
+              )}
+              {p.base_price != null && (
+                <PlayerMeta
+                  icon={<Coins className="h-3.5 w-3.5" />}
+                  label={`Base ${formatMoney(Number(p.base_price), currency)}`}
+                />
+              )}
+              {p.status === "sold" && p.final_price != null && (
+                <PlayerMeta
+                  icon={<Wallet className="h-3.5 w-3.5" />}
+                  label={formatMoney(Number(p.final_price), currency)}
+                  accent
+                />
+              )}
+              <PlayerMeta
+                icon={<Users className="h-3.5 w-3.5" />}
+                label={team?.name || (p.status === "sold" ? "—" : "Available")}
+              />
+              {(p.batting_style || p.cricheroes_data?.batting_style) && (
+                <PlayerMeta
+                  icon={<Target className="h-3.5 w-3.5" />}
+                  label={p.batting_style || p.cricheroes_data?.batting_style}
+                />
+              )}
+              {(p.bowling_style || p.cricheroes_data?.bowling_style) && (
+                <PlayerMeta
+                  icon={<Activity className="h-3.5 w-3.5" />}
+                  label={p.bowling_style || p.cricheroes_data?.bowling_style}
+                />
+              )}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-auto pt-1">
+          <Button asChild className="w-full" variant="default">
+            <Link
+              to="/tournament/$slug/player/$playerId"
+              params={{ slug: tournament.slug, playerId: p.id }}
+            >
+              View Profile <ChevronRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function PlayerMeta({
+  icon,
+  label,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  accent?: boolean;
+}) {
+  return (
+    <li className="flex items-center gap-2 min-w-0">
+      <span className="text-active shrink-0">{icon}</span>
+      <span className={cn("truncate", accent ? "font-bold text-active" : "text-muted-foreground")}>
+        {label}
+      </span>
+    </li>
+  );
+}
+
+
 function StatusBadge({ status }: { status: string }) {
   const map: Record<string, string> = {
     sold: "bg-active text-active-foreground border-transparent",
