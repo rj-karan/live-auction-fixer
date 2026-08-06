@@ -189,6 +189,30 @@ export type Database = {
           },
         ]
       }
+      site_branding: {
+        Row: {
+          assets: Json
+          colors: Json
+          id: number
+          typography: Json
+          updated_at: string
+        }
+        Insert: {
+          assets?: Json
+          colors?: Json
+          id?: number
+          typography?: Json
+          updated_at?: string
+        }
+        Update: {
+          assets?: Json
+          colors?: Json
+          id?: number
+          typography?: Json
+          updated_at?: string
+        }
+        Relationships: []
+      }
       teams: {
         Row: {
           captain_contact: string | null
