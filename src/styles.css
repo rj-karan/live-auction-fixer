@@ -282,7 +282,16 @@
     border-color: var(--color-border);
   }
 
+  html {
+    font-size: var(--brand-font-scale, 100%);
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--brand-font-heading, inherit);
+  }
+
   body {
+    font-family: var(--brand-font-body, inherit);
     background-color: var(--color-background);
     color: var(--color-foreground);
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
