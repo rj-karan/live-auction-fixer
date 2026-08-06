@@ -21,6 +21,7 @@ import { Route as ApiPublicBootstrapAdminRouteImport } from './routes/api/public
 import { Route as AuthenticatedAdminTransactionsRouteImport } from './routes/_authenticated/admin.transactions'
 import { Route as AuthenticatedAdminTournamentsRouteImport } from './routes/_authenticated/admin.tournaments'
 import { Route as AuthenticatedAdminTeamsRouteImport } from './routes/_authenticated/admin.teams'
+import { Route as AuthenticatedAdminSettingsRouteImport } from './routes/_authenticated/admin.settings'
 import { Route as AuthenticatedAdminPlayersRouteImport } from './routes/_authenticated/admin.players'
 import { Route as AuthenticatedAdminAuctionRouteImport } from './routes/_authenticated/admin.auction'
 import { Route as TournamentSlugTeamTeamSlugRouteImport } from './routes/tournament.$slug.team.$teamSlug'
@@ -87,6 +88,12 @@ const AuthenticatedAdminTeamsRoute = AuthenticatedAdminTeamsRouteImport.update({
   path: '/teams',
   getParentRoute: () => AuthenticatedAdminRoute,
 } as any)
+const AuthenticatedAdminSettingsRoute =
+  AuthenticatedAdminSettingsRouteImport.update({
+    id: '/settings',
+    path: '/settings',
+    getParentRoute: () => AuthenticatedAdminRoute,
+  } as any)
 const AuthenticatedAdminPlayersRoute =
   AuthenticatedAdminPlayersRouteImport.update({
     id: '/players',
@@ -120,6 +127,7 @@ export interface FileRoutesByFullPath {
   '/tournament/$slug': typeof TournamentSlugRouteWithChildren
   '/admin/auction': typeof AuthenticatedAdminAuctionRoute
   '/admin/players': typeof AuthenticatedAdminPlayersRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/teams': typeof AuthenticatedAdminTeamsRoute
   '/admin/tournaments': typeof AuthenticatedAdminTournamentsRoute
   '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
@@ -135,6 +143,7 @@ export interface FileRoutesByTo {
   '/change-password': typeof ChangePasswordRoute
   '/admin/auction': typeof AuthenticatedAdminAuctionRoute
   '/admin/players': typeof AuthenticatedAdminPlayersRoute
+  '/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/admin/teams': typeof AuthenticatedAdminTeamsRoute
   '/admin/tournaments': typeof AuthenticatedAdminTournamentsRoute
   '/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
@@ -154,6 +163,7 @@ export interface FileRoutesById {
   '/tournament/$slug': typeof TournamentSlugRouteWithChildren
   '/_authenticated/admin/auction': typeof AuthenticatedAdminAuctionRoute
   '/_authenticated/admin/players': typeof AuthenticatedAdminPlayersRoute
+  '/_authenticated/admin/settings': typeof AuthenticatedAdminSettingsRoute
   '/_authenticated/admin/teams': typeof AuthenticatedAdminTeamsRoute
   '/_authenticated/admin/tournaments': typeof AuthenticatedAdminTournamentsRoute
   '/_authenticated/admin/transactions': typeof AuthenticatedAdminTransactionsRoute
@@ -173,6 +183,7 @@ export interface FileRouteTypes {
     | '/tournament/$slug'
     | '/admin/auction'
     | '/admin/players'
+    | '/admin/settings'
     | '/admin/teams'
     | '/admin/tournaments'
     | '/admin/transactions'
@@ -188,6 +199,7 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/admin/auction'
     | '/admin/players'
+    | '/admin/settings'
     | '/admin/teams'
     | '/admin/tournaments'
     | '/admin/transactions'
@@ -206,6 +218,7 @@ export interface FileRouteTypes {
     | '/tournament/$slug'
     | '/_authenticated/admin/auction'
     | '/_authenticated/admin/players'
+    | '/_authenticated/admin/settings'
     | '/_authenticated/admin/teams'
     | '/_authenticated/admin/tournaments'
     | '/_authenticated/admin/transactions'
@@ -311,6 +324,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminTeamsRouteImport
       parentRoute: typeof AuthenticatedAdminRoute
     }
+    '/_authenticated/admin/settings': {
+      id: '/_authenticated/admin/settings'
+      path: '/settings'
+      fullPath: '/admin/settings'
+      preLoaderRoute: typeof AuthenticatedAdminSettingsRouteImport
+      parentRoute: typeof AuthenticatedAdminRoute
+    }
     '/_authenticated/admin/players': {
       id: '/_authenticated/admin/players'
       path: '/players'
@@ -345,6 +365,7 @@ declare module '@tanstack/react-router' {
 interface AuthenticatedAdminRouteChildren {
   AuthenticatedAdminAuctionRoute: typeof AuthenticatedAdminAuctionRoute
   AuthenticatedAdminPlayersRoute: typeof AuthenticatedAdminPlayersRoute
+  AuthenticatedAdminSettingsRoute: typeof AuthenticatedAdminSettingsRoute
   AuthenticatedAdminTeamsRoute: typeof AuthenticatedAdminTeamsRoute
   AuthenticatedAdminTournamentsRoute: typeof AuthenticatedAdminTournamentsRoute
   AuthenticatedAdminTransactionsRoute: typeof AuthenticatedAdminTransactionsRoute
@@ -354,6 +375,7 @@ interface AuthenticatedAdminRouteChildren {
 const AuthenticatedAdminRouteChildren: AuthenticatedAdminRouteChildren = {
   AuthenticatedAdminAuctionRoute: AuthenticatedAdminAuctionRoute,
   AuthenticatedAdminPlayersRoute: AuthenticatedAdminPlayersRoute,
+  AuthenticatedAdminSettingsRoute: AuthenticatedAdminSettingsRoute,
   AuthenticatedAdminTeamsRoute: AuthenticatedAdminTeamsRoute,
   AuthenticatedAdminTournamentsRoute: AuthenticatedAdminTournamentsRoute,
   AuthenticatedAdminTransactionsRoute: AuthenticatedAdminTransactionsRoute,

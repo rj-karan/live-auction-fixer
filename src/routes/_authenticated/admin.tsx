@@ -23,6 +23,7 @@ import {
   ExternalLink,
   LogOut,
   KeyRound,
+  Settings,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -38,6 +39,7 @@ const items = [
   { title: "Players", url: "/admin/players", icon: UserCircle },
   { title: "Live Auction Entry", url: "/admin/auction", icon: Gavel },
   { title: "Transactions", url: "/admin/transactions", icon: History },
+  { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
 function AdminLayout() {

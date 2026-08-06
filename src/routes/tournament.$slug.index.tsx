@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
+import { brandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { HeroBackdrop, SpinningBall } from "@/components/sports/hero-backdrop";
 import {
@@ -29,6 +30,8 @@ import {
   MapPin,
   Calendar,
   Gavel,
+  Shirt,
+  Target,
 } from "lucide-react";
 
 export const Route = createFileRoute("/tournament/$slug/")({
@@ -572,64 +575,12 @@ function PlayersView({ players, teams, tournament }: any) {
           hint="Try a different search or filter."
         />
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p: any, i: number) => {
             const team: any = p.team_id ? teamMap.get(p.team_id) : null;
             return (
               <LiftCard key={p.id} delay={Math.min(i, 8) * 0.03}>
-                <Link
-                  to="/tournament/$slug/player/$playerId"
-                  params={{ slug: tournament.slug, playerId: p.id }}
-                  className="group block h-full"
-                >
-                  <Card className="glass-card glow-border h-full overflow-hidden transition-shadow hover:shadow-xl cursor-pointer">
-                    <CardContent className="pt-4">
-                      <div className="flex items-start gap-3">
-                        <div className="shine relative h-12 w-12 shrink-0 rounded-full ring-2 ring-transparent transition group-hover:ring-active/70">
-                          {p.photo_url ? (
-                            <img
-                              src={p.photo_url}
-                              alt=""
-                              loading="lazy"
-                              className="h-12 w-12 rounded-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
-                          ) : (
-                            <div className="grid h-12 w-12 place-items-center rounded-full bg-muted">
-                              <User className="h-5 w-5 text-muted-foreground" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0">
-                              <div className="font-semibold truncate group-hover:text-active transition-colors">
-                                {p.name}
-                              </div>
-                              <div className="text-xs text-muted-foreground truncate">
-                                {p.role || "—"}
-                                {p.player_number ? ` · #${p.player_number}` : ""}
-                              </div>
-                            </div>
-                            <StatusBadge status={p.status} />
-                          </div>
-                          {p.status === "sold" && team && (
-                            <div className="mt-2 flex items-center justify-between gap-2 text-xs">
-                              <span className="flex items-center gap-1 min-w-0">
-                                {team.logo_url && (
-                                  <img src={team.logo_url} loading="lazy" className="h-4 w-4 rounded shrink-0" alt="" />
-                                )}
-                                <span className="truncate text-muted-foreground">{team.name}</span>
-                              </span>
-                              <span className="font-semibold text-active shrink-0">
-                                {formatMoney(Number(p.final_price), c)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <PlayerCard player={p} team={team} tournament={tournament} currency={c} />
               </LiftCard>
             );
           })}
@@ -639,16 +590,141 @@ function PlayersView({ players, teams, tournament }: any) {
   );
 }
 
-function StatusBadge({ status }: { status: string }) {
+function PlayerCard({
+  player: p,
+  team,
+  tournament,
+  currency,
+}: {
+  player: any;
+  team: any;
+  tournament: any;
+  currency: string;
+}) {
+  const photo = p.photo_url || brandAsset("playerPhoto") || brandAsset("playerAvatar");
+  return (
+    <Card className="group glass-card glow-border relative h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-[color-mix(in_oklab,var(--active)_25%,transparent)]">
+      <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,color-mix(in_oklab,var(--active)_14%,transparent),transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+      <CardContent className="relative flex h-full flex-col gap-4 p-4">
+        <div className="flex items-start gap-4">
+          {/* Portrait — primary focus, ~42% of card */}
+          <div className="relative w-[42%] shrink-0">
+            <div className="shine relative aspect-square overflow-hidden rounded-2xl border-2 border-active/70 bg-muted shadow-[0_10px_30px_-12px_color-mix(in_oklab,var(--active)_70%,transparent)] ring-1 ring-active/25">
+              {photo ? (
+                <img
+                  src={photo}
+                  alt={p.name}
+                  loading="lazy"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+              ) : (
+                <div className="grid h-full w-full place-items-center">
+                  <User className="h-10 w-10 text-muted-foreground" />
+                </div>
+              )}
+            </div>
+            <div className="absolute -bottom-2 left-1/2 -translate-x-1/2">
+              <StatusBadge status={p.status} animated />
+            </div>
+          </div>
+
+          {/* Details */}
+          <div className="min-w-0 flex-1 space-y-2 pt-0.5">
+            <h3 className="truncate text-xl font-black uppercase tracking-tight transition-colors group-hover:text-active">
+              {p.name}
+            </h3>
+            <ul className="space-y-1.5 text-xs">
+              <PlayerMeta icon={<Gavel className="h-3.5 w-3.5" />} label={p.role || "Player"} />
+              {p.player_number && (
+                <PlayerMeta icon={<Shirt className="h-3.5 w-3.5" />} label={`#${p.player_number}`} />
+              )}
+              {p.base_price != null && (
+                <PlayerMeta
+                  icon={<Coins className="h-3.5 w-3.5" />}
+                  label={`Base ${formatMoney(Number(p.base_price), currency)}`}
+                />
+              )}
+              {p.status === "sold" && p.final_price != null && (
+                <PlayerMeta
+                  icon={<Wallet className="h-3.5 w-3.5" />}
+                  label={formatMoney(Number(p.final_price), currency)}
+                  accent
+                />
+              )}
+              <PlayerMeta
+                icon={<Users className="h-3.5 w-3.5" />}
+                label={team?.name || (p.status === "sold" ? "—" : "Available")}
+              />
+              {(p.batting_style || p.cricheroes_data?.batting_style) && (
+                <PlayerMeta
+                  icon={<Target className="h-3.5 w-3.5" />}
+                  label={p.batting_style || p.cricheroes_data?.batting_style}
+                />
+              )}
+              {(p.bowling_style || p.cricheroes_data?.bowling_style) && (
+                <PlayerMeta
+                  icon={<Activity className="h-3.5 w-3.5" />}
+                  label={p.bowling_style || p.cricheroes_data?.bowling_style}
+                />
+              )}
+            </ul>
+          </div>
+        </div>
+
+        <div className="mt-auto pt-1">
+          <Button asChild className="w-full" variant="default">
+            <Link
+              to="/tournament/$slug/player/$playerId"
+              params={{ slug: tournament.slug, playerId: p.id }}
+            >
+              View Profile <ChevronRight className="h-4 w-4" />
+            </Link>
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+function PlayerMeta({
+  icon,
+  label,
+  accent,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  accent?: boolean;
+}) {
+  return (
+    <li className="flex items-center gap-2 min-w-0">
+      <span className="text-active shrink-0">{icon}</span>
+      <span className={cn("truncate", accent ? "font-bold text-active" : "text-muted-foreground")}>
+        {label}
+      </span>
+    </li>
+  );
+}
+
+
+function StatusBadge({ status, animated }: { status: string; animated?: boolean }) {
   const map: Record<string, string> = {
-    sold: "bg-active text-active-foreground border-transparent",
-    unsold: "bg-destructive/10 text-destructive border-destructive/30",
+    sold: "bg-active text-active-foreground border-transparent shadow-[0_0_18px_-4px_var(--active)]",
+    unsold: "bg-destructive text-destructive-foreground border-transparent shadow-[0_0_18px_-6px_var(--destructive)]",
     available: "bg-secondary text-secondary-foreground border-border",
   };
   return (
-    <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider", map[status] ?? map.available)}>
+    <motion.span
+      initial={animated ? { scale: 0.7, opacity: 0 } : false}
+      animate={animated ? { scale: 1, opacity: 1 } : undefined}
+      transition={{ type: "spring", stiffness: 340, damping: 18 }}
+      className={cn(
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+        animated && status === "available" && "lights-pulse",
+        map[status] ?? map.available,
+      )}
+    >
       {status}
-    </span>
+    </motion.span>
   );
 }
 
