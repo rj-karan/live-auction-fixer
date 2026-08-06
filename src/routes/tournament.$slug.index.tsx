@@ -572,64 +572,12 @@ function PlayersView({ players, teams, tournament }: any) {
           hint="Try a different search or filter."
         />
       ) : (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {filtered.map((p: any, i: number) => {
             const team: any = p.team_id ? teamMap.get(p.team_id) : null;
             return (
               <LiftCard key={p.id} delay={Math.min(i, 8) * 0.03}>
-                <Link
-                  to="/tournament/$slug/player/$playerId"
-                  params={{ slug: tournament.slug, playerId: p.id }}
-                  className="group block h-full"
-                >
-                  <Card className="glass-card glow-border h-full overflow-hidden transition-shadow hover:shadow-xl cursor-pointer">
-                    <CardContent className="pt-4">
-                      <div className="flex items-start gap-3">
-                        <div className="shine relative h-12 w-12 shrink-0 rounded-full ring-2 ring-transparent transition group-hover:ring-active/70">
-                          {p.photo_url ? (
-                            <img
-                              src={p.photo_url}
-                              alt=""
-                              loading="lazy"
-                              className="h-12 w-12 rounded-full object-cover transition-transform duration-500 group-hover:scale-110"
-                            />
-                          ) : (
-                            <div className="grid h-12 w-12 place-items-center rounded-full bg-muted">
-                              <User className="h-5 w-5 text-muted-foreground" />
-                            </div>
-                          )}
-                        </div>
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-start justify-between gap-2">
-                            <div className="min-w-0">
-                              <div className="font-semibold truncate group-hover:text-active transition-colors">
-                                {p.name}
-                              </div>
-                              <div className="text-xs text-muted-foreground truncate">
-                                {p.role || "—"}
-                                {p.player_number ? ` · #${p.player_number}` : ""}
-                              </div>
-                            </div>
-                            <StatusBadge status={p.status} />
-                          </div>
-                          {p.status === "sold" && team && (
-                            <div className="mt-2 flex items-center justify-between gap-2 text-xs">
-                              <span className="flex items-center gap-1 min-w-0">
-                                {team.logo_url && (
-                                  <img src={team.logo_url} loading="lazy" className="h-4 w-4 rounded shrink-0" alt="" />
-                                )}
-                                <span className="truncate text-muted-foreground">{team.name}</span>
-                              </span>
-                              <span className="font-semibold text-active shrink-0">
-                                {formatMoney(Number(p.final_price), c)}
-                              </span>
-                            </div>
-                          )}
-                        </div>
-                      </div>
-                    </CardContent>
-                  </Card>
-                </Link>
+                <PlayerCard player={p} team={team} tournament={tournament} currency={c} />
               </LiftCard>
             );
           })}
