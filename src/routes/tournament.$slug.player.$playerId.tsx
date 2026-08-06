@@ -4,9 +4,24 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney } from "@/lib/format";
+import { brandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { CricheroesPanel } from "@/components/cricheroes-panel";
-import { ArrowLeft, User, Trophy, Crown, ExternalLink } from "lucide-react";
+import {
+  ArrowLeft,
+  User,
+  Users,
+  Trophy,
+  Crown,
+  ExternalLink,
+  Gavel,
+  Shirt,
+  Target,
+  Activity,
+  Coins,
+  Wallet,
+  MapPin,
+} from "lucide-react";
 import { cricheroesProfileUrl } from "@/lib/cricheroes";
 import { motion } from "framer-motion";
 import { Reveal, LiftCard, CountUp } from "@/components/sports/motion-bits";
@@ -369,15 +384,30 @@ function StatusPill({ status }: { status: string }) {
   );
 }
 
-function Info({ label, value }: { label: string; value: string }) {
+function Info({
+  label,
+  value,
+  icon,
+  accent,
+}: {
+  label: string;
+  value: string;
+  icon?: React.ReactNode;
+  accent?: boolean;
+}) {
   return (
     <LiftCard>
-    <Card className="glass-card h-full">
-      <CardContent className="pt-4 pb-3">
-        <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
-        <div className="text-base font-semibold mt-0.5">{value}</div>
-      </CardContent>
-    </Card>
+      <Card className="glass-card h-full">
+        <CardContent className="pt-4 pb-3 flex items-start gap-3">
+          {icon && <span className="mt-0.5 text-active shrink-0">{icon}</span>}
+          <div className="min-w-0">
+            <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
+            <div className={cn("text-base font-semibold mt-0.5 break-words", accent && "text-active")}>
+              {value}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
     </LiftCard>
   );
 }
