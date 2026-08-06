@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
+import { brandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { HeroBackdrop, SpinningBall } from "@/components/sports/hero-backdrop";
 import {
@@ -29,6 +30,8 @@ import {
   MapPin,
   Calendar,
   Gavel,
+  Shirt,
+  Target,
 } from "lucide-react";
 
 export const Route = createFileRoute("/tournament/$slug/")({
@@ -703,16 +706,25 @@ function PlayerMeta({
 }
 
 
-function StatusBadge({ status }: { status: string }) {
+function StatusBadge({ status, animated }: { status: string; animated?: boolean }) {
   const map: Record<string, string> = {
-    sold: "bg-active text-active-foreground border-transparent",
-    unsold: "bg-destructive/10 text-destructive border-destructive/30",
+    sold: "bg-active text-active-foreground border-transparent shadow-[0_0_18px_-4px_var(--active)]",
+    unsold: "bg-destructive text-destructive-foreground border-transparent shadow-[0_0_18px_-6px_var(--destructive)]",
     available: "bg-secondary text-secondary-foreground border-border",
   };
   return (
-    <span className={cn("inline-flex items-center rounded-full border px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wider", map[status] ?? map.available)}>
+    <motion.span
+      initial={animated ? { scale: 0.7, opacity: 0 } : false}
+      animate={animated ? { scale: 1, opacity: 1 } : undefined}
+      transition={{ type: "spring", stiffness: 340, damping: 18 }}
+      className={cn(
+        "inline-flex items-center rounded-full border px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider",
+        animated && status === "available" && "lights-pulse",
+        map[status] ?? map.available,
+      )}
+    >
       {status}
-    </span>
+    </motion.span>
   );
 }
 
