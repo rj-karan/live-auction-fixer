@@ -83,23 +83,8 @@ export function CricheroesPanel({
     );
   }
 
-  if (!state || !state.available) {
-    return (
-      <Card className="border-dashed">
-        <CardContent className="pt-5 flex flex-col sm:flex-row sm:items-center gap-3 justify-between">
-          <div>
-            <div className="font-semibold">CricHeroes profile not available.</div>
-            <p className="text-xs text-muted-foreground mt-0.5">
-              {state?.reason ?? "Showing auction information only."}
-            </p>
-          </div>
-          <Button size="sm" variant="outline" onClick={() => load(true)} disabled={loading}>
-            <RefreshCw className={loading ? "h-4 w-4 animate-spin" : "h-4 w-4"} /> Retry
-          </Button>
-        </CardContent>
-      </Card>
-    );
-  }
+  // No CricHeroes data → render nothing at all (never surface fetch errors publicly).
+  if (!state || !state.available) return null;
 
   const p: CricheroesProfile = state.profile;
 
