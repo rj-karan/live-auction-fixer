@@ -151,9 +151,9 @@ function PlayerPage() {
       </div>
 
       <div className="relative">
-        <HeroBackdrop variant="auction" className="absolute inset-x-0 top-0 h-[420px]" />
-        <main className="relative mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-start">
+        <HeroBackdrop variant="auction" className="absolute inset-x-0 top-0 h-[190px] opacity-55 sm:h-[220px]" />
+        <main className="relative mx-auto max-w-6xl px-4 sm:px-6 py-5 sm:py-7">
+          <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
             {/* LEFT — portrait & identity */}
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -161,9 +161,9 @@ function PlayerPage() {
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="lg:sticky lg:top-20"
             >
-              <Card className="glass-card glow-border overflow-hidden">
-                <CardContent className="flex flex-col items-center gap-4 p-6">
-                  <div className="shine relative w-full max-w-[320px] aspect-square overflow-hidden rounded-3xl border-2 border-active/70 bg-muted shadow-[0_18px_60px_-18px_color-mix(in_oklab,var(--active)_80%,transparent)]">
+              <Card className="glass-card glow-border overflow-hidden border-active/30 bg-[linear-gradient(160deg,color-mix(in_oklab,var(--card)_92%,transparent),color-mix(in_oklab,var(--active)_8%,transparent))]">
+                <CardContent className="flex flex-col items-center gap-3 p-4">
+                  <div className="shine relative aspect-[4/5] w-full overflow-hidden rounded-2xl border-2 border-active/60 bg-muted shadow-[0_14px_44px_-18px_color-mix(in_oklab,var(--active)_80%,transparent)]">
                     {photo ? (
                       <img
                         src={photo}
@@ -172,12 +172,12 @@ function PlayerPage() {
                       />
                     ) : (
                       <div className="grid h-full w-full place-items-center">
-                        <User className="h-20 w-20 text-muted-foreground" />
+                        <User className="h-16 w-16 text-muted-foreground" />
                       </div>
                     )}
                   </div>
-                  <div className="text-center space-y-2">
-                    <h1 className="text-3xl sm:text-4xl font-black tracking-tight break-words">
+                  <div className="space-y-1.5 text-center">
+                    <h1 className="text-2xl font-black tracking-tight break-words sm:text-3xl">
                       {player.name}
                     </h1>
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
@@ -193,7 +193,7 @@ function PlayerPage() {
                       )}
                       {player.age && <span>Age {player.age}</span>}
                     </div>
-                    <div className="pt-1">
+                    <div className="pt-0.5">
                       <StatusPill status={player.status} />
                     </div>
                   </div>
@@ -201,8 +201,9 @@ function PlayerPage() {
               </Card>
             </motion.div>
 
+
             {/* RIGHT — auction result + stat cards */}
-            <div className="space-y-5">
+            <div className="space-y-4">
               {isSold && team ? (
                 <Card className="glass-card glow-border border-active/60 bg-active-soft/30">
                   <CardContent className="pt-5">
@@ -270,32 +271,32 @@ function PlayerPage() {
                 </Card>
               )}
 
-              <Reveal className="grid gap-3 sm:grid-cols-2">
-                <Info label="Role" value={player.role || ch?.role || "—"} icon={<Gavel className="h-4 w-4" />} />
+              <Reveal className="grid auto-rows-fr gap-3 sm:grid-cols-2">
+                <Info label="Role" value={player.role || ch?.role} icon={<Gavel className="h-4 w-4" />} />
                 <Info
                   label="Batting Style"
-                  value={player.batting_style || ch?.batting_style || "—"}
+                  value={player.batting_style || ch?.batting_style}
                   icon={<Target className="h-4 w-4" />}
                 />
                 <Info
                   label="Bowling Style"
-                  value={player.bowling_style || ch?.bowling_style || "—"}
+                  value={player.bowling_style || ch?.bowling_style}
                   icon={<Activity className="h-4 w-4" />}
                 />
                 <Info
                   label="Base Price"
-                  value={player.base_price != null ? formatMoney(Number(player.base_price), c) : "—"}
+                  value={player.base_price != null ? formatMoney(Number(player.base_price), c) : null}
                   icon={<Coins className="h-4 w-4" />}
                 />
                 <Info
                   label="Auction Price"
-                  value={isSold && player.final_price != null ? formatMoney(Number(player.final_price), c) : "—"}
+                  value={isSold && player.final_price != null ? formatMoney(Number(player.final_price), c) : null}
                   icon={<Wallet className="h-4 w-4" />}
                   accent={isSold}
                 />
                 <Info
                   label="Current Team"
-                  value={team?.name || (isSold ? "—" : "Not sold")}
+                  value={team?.name || (isSold ? null : "Not sold")}
                   icon={<Users className="h-4 w-4" />}
                 />
                 <Info
@@ -304,8 +305,8 @@ function PlayerPage() {
                   icon={<Trophy className="h-4 w-4" />}
                 />
                 <Info
-                  label="Player Number"
-                  value={player.player_number ? `#${player.player_number}` : "—"}
+                  label="Jersey Number"
+                  value={player.player_number ? `#${player.player_number}` : null}
                   icon={<Shirt className="h-4 w-4" />}
                 />
                 {(player.city || ch?.city) && (
@@ -315,27 +316,21 @@ function PlayerPage() {
               </Reveal>
 
               {cricheroesLink && (
-                <Card className="glass-card">
-                  <CardContent className="pt-5 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                        CricHeroes Profile
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-0.5">
-                        Verified profile link shared by the player.
-                      </p>
-                    </div>
+                <Card className="glass-card border-active/30">
+                  <CardContent className="flex flex-wrap items-center justify-between gap-3 py-4">
+                    <div className="text-sm font-semibold">Official CricHeroes Profile</div>
                     <a
                       href={cricheroesLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium hover:text-active transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-active px-4 py-2 text-sm font-semibold text-active-foreground shadow-[0_8px_26px_-12px_var(--active)] transition-transform hover:scale-[1.03]"
                     >
-                      View on CricHeroes <ExternalLink className="h-4 w-4" />
+                      View Profile <ExternalLink className="h-4 w-4" />
                     </a>
                   </CardContent>
                 </Card>
               )}
+
 
               {player.details && (
                 <Card className="glass-card">
@@ -391,19 +386,26 @@ function Info({
   accent,
 }: {
   label: string;
-  value: string;
+  value?: string | null;
   icon?: React.ReactNode;
   accent?: boolean;
 }) {
+  const empty = !value;
   return (
-    <LiftCard>
-      <Card className="glass-card h-full">
-        <CardContent className="pt-4 pb-3 flex items-start gap-3">
-          {icon && <span className="mt-0.5 text-active shrink-0">{icon}</span>}
+    <LiftCard className="h-full">
+      <Card className="glass-card h-full rounded-xl border-active/20 bg-[linear-gradient(150deg,color-mix(in_oklab,var(--card)_94%,transparent),color-mix(in_oklab,var(--active)_6%,transparent))] shadow-[0_8px_28px_-20px_var(--active)]">
+        <CardContent className="flex h-full items-start gap-3 px-4 py-3">
+          {icon && <span className="mt-0.5 shrink-0 text-active">{icon}</span>}
           <div className="min-w-0">
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
-            <div className={cn("text-base font-semibold mt-0.5 break-words", accent && "text-active")}>
-              {value}
+            <div
+              className={cn(
+                "mt-0.5 break-words text-base font-semibold",
+                accent && "text-active",
+                empty && "text-sm font-normal text-muted-foreground",
+              )}
+            >
+              {value || "Not Available"}
             </div>
           </div>
         </CardContent>
@@ -411,3 +413,4 @@ function Info({
     </LiftCard>
   );
 }
+
