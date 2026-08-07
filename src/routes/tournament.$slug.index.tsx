@@ -11,6 +11,10 @@ import { brandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { HeroBackdrop, SpinningBall } from "@/components/sports/hero-backdrop";
 import {
+  SoldAnnouncement,
+  type SoldAnnouncementItem,
+} from "@/components/sports/sold-announcement";
+import {
   AnimatedBar,
   CardSkeletonGrid,
   CountUp,
