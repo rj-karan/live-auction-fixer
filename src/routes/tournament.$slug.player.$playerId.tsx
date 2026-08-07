@@ -151,9 +151,9 @@ function PlayerPage() {
       </div>
 
       <div className="relative">
-        <HeroBackdrop variant="auction" className="absolute inset-x-0 top-0 h-[420px]" />
-        <main className="relative mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
-          <div className="grid gap-6 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)] items-start">
+        <HeroBackdrop variant="auction" className="absolute inset-x-0 top-0 h-[190px] opacity-55 sm:h-[220px]" />
+        <main className="relative mx-auto max-w-6xl px-4 sm:px-6 py-5 sm:py-7">
+          <div className="grid items-start gap-5 lg:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
             {/* LEFT — portrait & identity */}
             <motion.div
               initial={{ opacity: 0, y: 18 }}
@@ -161,9 +161,9 @@ function PlayerPage() {
               transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               className="lg:sticky lg:top-20"
             >
-              <Card className="glass-card glow-border overflow-hidden">
-                <CardContent className="flex flex-col items-center gap-4 p-6">
-                  <div className="shine relative w-full max-w-[320px] aspect-square overflow-hidden rounded-3xl border-2 border-active/70 bg-muted shadow-[0_18px_60px_-18px_color-mix(in_oklab,var(--active)_80%,transparent)]">
+              <Card className="glass-card glow-border overflow-hidden border-active/30 bg-[linear-gradient(160deg,color-mix(in_oklab,var(--card)_92%,transparent),color-mix(in_oklab,var(--active)_8%,transparent))]">
+                <CardContent className="flex flex-col items-center gap-3 p-4">
+                  <div className="shine relative aspect-[4/5] w-full overflow-hidden rounded-2xl border-2 border-active/60 bg-muted shadow-[0_14px_44px_-18px_color-mix(in_oklab,var(--active)_80%,transparent)]">
                     {photo ? (
                       <img
                         src={photo}
@@ -172,12 +172,12 @@ function PlayerPage() {
                       />
                     ) : (
                       <div className="grid h-full w-full place-items-center">
-                        <User className="h-20 w-20 text-muted-foreground" />
+                        <User className="h-16 w-16 text-muted-foreground" />
                       </div>
                     )}
                   </div>
-                  <div className="text-center space-y-2">
-                    <h1 className="text-3xl sm:text-4xl font-black tracking-tight break-words">
+                  <div className="space-y-1.5 text-center">
+                    <h1 className="text-2xl font-black tracking-tight break-words sm:text-3xl">
                       {player.name}
                     </h1>
                     <div className="flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
@@ -193,13 +193,14 @@ function PlayerPage() {
                       )}
                       {player.age && <span>Age {player.age}</span>}
                     </div>
-                    <div className="pt-1">
+                    <div className="pt-0.5">
                       <StatusPill status={player.status} />
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </motion.div>
+
 
             {/* RIGHT — auction result + stat cards */}
             <div className="space-y-5">
