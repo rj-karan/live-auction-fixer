@@ -338,6 +338,8 @@ function PublicTournament() {
           </motion.div>
         </AnimatePresence>
       </main>
+
+      <SoldAnnouncement item={queue[0] ?? null} onDismiss={dismissAnnouncement} />
     </div>
   );
 }
