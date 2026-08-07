@@ -132,6 +132,40 @@ function PublicTournament() {
   const sold = useMemo(() => players.filter((p) => p.status === "sold"), [players]);
   const unsold = useMemo(() => players.filter((p) => p.status === "unsold"), [players]);
   const available = useMemo(() => players.filter((p) => p.status === "available"), [players]);
+
+  /* ---- Sold announcement queue (UI only, derived from live player rows) ---- */
+  const seenSold = useRef<Map<string, string> | null>(null);
+  const [queue, setQueue] = useState<SoldAnnouncementItem[]>([]);
+  const dismissAnnouncement = useCallback(() => setQueue((q) => q.slice(1)), []);
+
+  useEffect(() => {
+    if (!players.length) return;
+    const prev = seenSold.current;
+    const next = new Map<string, string>(players.map((p) => [p.id, p.status]));
+    seenSold.current = next;
+    if (!prev) return; // first snapshot: don't replay history
+    const fresh = players.filter(
+      (p) => p.status === "sold" && prev.has(p.id) && prev.get(p.id) !== "sold",
+    );
+    if (!fresh.length) return;
+    setQueue((q) => [
+      ...q,
+      ...fresh.map((p) => {
+        const team = teams.find((t) => t.id === p.team_id);
+        return {
+          key: `${p.id}-${p.final_price}`,
+          playerName: p.name,
+          playerPhoto: p.photo_url || brandAsset("playerPhoto") || brandAsset("playerAvatar"),
+          teamName: team?.name ?? "—",
+          teamLogo: team?.logo_url ?? null,
+          price: Number(p.final_price ?? 0),
+          currency: tournament.currency,
+        } satisfies SoldAnnouncementItem;
+      }),
+    ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [players]);
+
   const totalSpent = teams.reduce((s, t) => s + Number(t.total_spent), 0);
   const totalRemaining = teams.reduce((s, t) => s + Number(t.remaining_purse), 0);
   const totalInitial = teams.reduce((s, t) => s + Number(t.initial_purse), 0);
