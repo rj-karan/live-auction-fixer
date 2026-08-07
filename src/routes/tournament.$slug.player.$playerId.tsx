@@ -386,19 +386,26 @@ function Info({
   accent,
 }: {
   label: string;
-  value: string;
+  value?: string | null;
   icon?: React.ReactNode;
   accent?: boolean;
 }) {
+  const empty = !value;
   return (
-    <LiftCard>
-      <Card className="glass-card h-full">
-        <CardContent className="pt-4 pb-3 flex items-start gap-3">
-          {icon && <span className="mt-0.5 text-active shrink-0">{icon}</span>}
+    <LiftCard className="h-full">
+      <Card className="glass-card h-full rounded-xl border-active/20 bg-[linear-gradient(150deg,color-mix(in_oklab,var(--card)_94%,transparent),color-mix(in_oklab,var(--active)_6%,transparent))] shadow-[0_8px_28px_-20px_var(--active)]">
+        <CardContent className="flex h-full items-start gap-3 px-4 py-3">
+          {icon && <span className="mt-0.5 shrink-0 text-active">{icon}</span>}
           <div className="min-w-0">
             <div className="text-[11px] uppercase tracking-wider text-muted-foreground">{label}</div>
-            <div className={cn("text-base font-semibold mt-0.5 break-words", accent && "text-active")}>
-              {value}
+            <div
+              className={cn(
+                "mt-0.5 break-words text-base font-semibold",
+                accent && "text-active",
+                empty && "text-sm font-normal text-muted-foreground",
+              )}
+            >
+              {value || "Not Available"}
             </div>
           </div>
         </CardContent>
@@ -406,3 +413,4 @@ function Info({
     </LiftCard>
   );
 }
+
