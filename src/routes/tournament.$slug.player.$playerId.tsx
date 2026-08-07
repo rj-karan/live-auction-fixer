@@ -271,32 +271,32 @@ function PlayerPage() {
                 </Card>
               )}
 
-              <Reveal className="grid gap-3 sm:grid-cols-2">
-                <Info label="Role" value={player.role || ch?.role || "—"} icon={<Gavel className="h-4 w-4" />} />
+              <Reveal className="grid auto-rows-fr gap-3 sm:grid-cols-2">
+                <Info label="Role" value={player.role || ch?.role} icon={<Gavel className="h-4 w-4" />} />
                 <Info
                   label="Batting Style"
-                  value={player.batting_style || ch?.batting_style || "—"}
+                  value={player.batting_style || ch?.batting_style}
                   icon={<Target className="h-4 w-4" />}
                 />
                 <Info
                   label="Bowling Style"
-                  value={player.bowling_style || ch?.bowling_style || "—"}
+                  value={player.bowling_style || ch?.bowling_style}
                   icon={<Activity className="h-4 w-4" />}
                 />
                 <Info
                   label="Base Price"
-                  value={player.base_price != null ? formatMoney(Number(player.base_price), c) : "—"}
+                  value={player.base_price != null ? formatMoney(Number(player.base_price), c) : null}
                   icon={<Coins className="h-4 w-4" />}
                 />
                 <Info
                   label="Auction Price"
-                  value={isSold && player.final_price != null ? formatMoney(Number(player.final_price), c) : "—"}
+                  value={isSold && player.final_price != null ? formatMoney(Number(player.final_price), c) : null}
                   icon={<Wallet className="h-4 w-4" />}
                   accent={isSold}
                 />
                 <Info
                   label="Current Team"
-                  value={team?.name || (isSold ? "—" : "Not sold")}
+                  value={team?.name || (isSold ? null : "Not sold")}
                   icon={<Users className="h-4 w-4" />}
                 />
                 <Info
@@ -305,8 +305,8 @@ function PlayerPage() {
                   icon={<Trophy className="h-4 w-4" />}
                 />
                 <Info
-                  label="Player Number"
-                  value={player.player_number ? `#${player.player_number}` : "—"}
+                  label="Jersey Number"
+                  value={player.player_number ? `#${player.player_number}` : null}
                   icon={<Shirt className="h-4 w-4" />}
                 />
                 {(player.city || ch?.city) && (
@@ -316,27 +316,21 @@ function PlayerPage() {
               </Reveal>
 
               {cricheroesLink && (
-                <Card className="glass-card">
-                  <CardContent className="pt-5 flex flex-wrap items-center justify-between gap-3">
-                    <div>
-                      <div className="text-[11px] uppercase tracking-wider text-muted-foreground">
-                        CricHeroes Profile
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-0.5">
-                        Verified profile link shared by the player.
-                      </p>
-                    </div>
+                <Card className="glass-card border-active/30">
+                  <CardContent className="flex flex-wrap items-center justify-between gap-3 py-4">
+                    <div className="text-sm font-semibold">Official CricHeroes Profile</div>
                     <a
                       href={cricheroesLink}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-md border px-3 py-2 text-sm font-medium hover:text-active transition-colors"
+                      className="inline-flex items-center gap-1.5 rounded-lg bg-active px-4 py-2 text-sm font-semibold text-active-foreground shadow-[0_8px_26px_-12px_var(--active)] transition-transform hover:scale-[1.03]"
                     >
-                      View on CricHeroes <ExternalLink className="h-4 w-4" />
+                      View Profile <ExternalLink className="h-4 w-4" />
                     </a>
                   </CardContent>
                 </Card>
               )}
+
 
               {player.details && (
                 <Card className="glass-card">
