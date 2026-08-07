@@ -203,7 +203,7 @@ function PlayerPage() {
 
 
             {/* RIGHT — auction result + stat cards */}
-            <div className="space-y-5">
+            <div className="space-y-4">
               {isSold && team ? (
                 <Card className="glass-card glow-border border-active/60 bg-active-soft/30">
                   <CardContent className="pt-5">
