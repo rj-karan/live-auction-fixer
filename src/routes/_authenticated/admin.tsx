@@ -1,5 +1,6 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
+import { useBrandAsset } from "@/lib/branding";
 import {
   Sidebar,
   SidebarContent,
@@ -43,7 +44,9 @@ const items = [
 ];
 
 function AdminLayout() {
-  const adminLogo = useBrandAsset("adminLogo") || useBrandAsset("siteLogo");
+  const brandedAdminLogo = useBrandAsset("adminLogo");
+  const siteLogo = useBrandAsset("siteLogo");
+  const adminLogo = brandedAdminLogo || siteLogo;
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
