@@ -7,7 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { formatMoney } from "@/lib/format";
-import { brandAsset } from "@/lib/branding";
+import { brandAsset, useBrandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { HeroBackdrop, SpinningBall } from "@/components/sports/hero-backdrop";
 import {
@@ -92,6 +92,7 @@ const SECTIONS: { id: Section; label: string; icon: any }[] = [
 ];
 
 function PublicTournament() {
+  const defaultTournamentLogo = useBrandAsset("tournamentLogo");
   const { tournament } = Route.useLoaderData();
   const [teams, setTeams] = useState<any[]>([]);
   const [players, setPlayers] = useState<any[]>([]);
@@ -177,7 +178,7 @@ function PublicTournament() {
     <div className="min-h-screen bg-background">
       {/* Hero */}
       <div className="relative border-b bg-primary text-primary-foreground overflow-hidden">
-        <HeroBackdrop variant="stadium" priority />
+        <HeroBackdrop variant="stadium" priority assetKey="tournamentHeroBanner" />
         {tournament.banner_url && (
           <img
             src={tournament.banner_url}
@@ -198,9 +199,9 @@ function PublicTournament() {
               animate={{ y: [0, -6, 0] }}
               transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
             >
-              {tournament.logo_url ? (
+              {(tournament.logo_url || defaultTournamentLogo) ? (
                 <img
-                  src={tournament.logo_url}
+                  src={tournament.logo_url || defaultTournamentLogo}
                   alt=""
                   className="h-14 w-14 sm:h-20 sm:w-20 rounded-lg object-cover ring-2 ring-active shadow-[0_0_30px_-6px_var(--active)]"
                 />
@@ -488,6 +489,7 @@ function SectionHeader({ title, action }: { title: string; action?: React.ReactN
 }
 
 function TeamsGrid({ teams, sold, tournament }: any) {
+  const defaultTeamLogo = useBrandAsset("teamLogo");
   const c = tournament.currency;
   if (teams.length === 0) {
     return (
@@ -512,9 +514,9 @@ function TeamsGrid({ teams, sold, tournament }: any) {
             >
               <Card className="glass-card glow-border h-full overflow-hidden transition-shadow cursor-pointer hover:shadow-2xl group-focus-visible:ring-2 group-focus-visible:ring-active">
                 <div className="flex items-center gap-3 border-b bg-[linear-gradient(100deg,color-mix(in_oklab,var(--primary)_10%,transparent),transparent)] px-4 py-3 transition-colors group-hover:bg-[linear-gradient(100deg,color-mix(in_oklab,var(--active)_16%,transparent),transparent)]">
-                  {t.logo_url ? (
+                  {(t.logo_url || defaultTeamLogo) ? (
                     <img
-                      src={t.logo_url}
+                      src={t.logo_url || defaultTeamLogo}
                       loading="lazy"
                       className="h-10 w-10 rounded object-cover shrink-0 transition-transform duration-500 group-hover:rotate-6 group-hover:scale-110"
                       alt=""
