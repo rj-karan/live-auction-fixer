@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Shield, MapPin, CalendarDays, Radio } from "lucide-react";
 import { motion } from "framer-motion";
 import { HeroBackdrop, SpinningBall } from "@/components/sports/hero-backdrop";
+import { useBrandAsset } from "@/lib/branding";
 import { Reveal, LiftCard, EmptyState, Shimmer } from "@/components/sports/motion-bits";
 
 export const Route = createFileRoute("/")({
@@ -54,8 +55,12 @@ function Landing() {
       <header className="sticky top-0 z-30 border-b bg-background/80 backdrop-blur-xl">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 sm:px-6 py-3">
           <div className="flex items-center gap-2 font-black text-lg tracking-tight">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-active text-active-foreground">
-              <Trophy className="h-4.5 w-4.5" />
+            <span className="grid h-8 w-8 place-items-center overflow-hidden rounded-lg bg-active text-active-foreground">
+              {siteLogo ? (
+                <img src={siteLogo} alt="" className="h-full w-full object-cover" />
+              ) : (
+                <Trophy className="h-4.5 w-4.5" />
+              )}
             </span>
             AuctionHub
           </div>
@@ -69,7 +74,7 @@ function Landing() {
       </header>
 
       <section className="relative overflow-hidden border-b text-primary-foreground">
-        <HeroBackdrop variant="stadium" className="absolute inset-0" />
+        <HeroBackdrop variant="stadium" assetKey="headerBg" className="absolute inset-0" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-28 text-center">
           <motion.div
             initial={{ opacity: 0, y: 20 }}

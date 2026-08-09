@@ -67,6 +67,9 @@ export function SoldAnnouncement({
           transition={{ duration: 0.28 }}
           onClick={onDismiss}
         >
+          {soldBg && (
+            <img src={soldBg} alt="" aria-hidden className="absolute inset-0 h-full w-full object-cover opacity-30" />
+          )}
           {/* golden flash */}
           {!reduce && (
             <motion.div

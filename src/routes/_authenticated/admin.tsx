@@ -57,7 +57,12 @@ function AdminLayout() {
         <Sidebar>
           <SidebarHeader className="border-b p-4">
             <div className="flex items-center gap-2 font-semibold">
-              <Trophy className="h-5 w-5" /> AuctionHub
+              {adminLogo ? (
+                <img src={adminLogo} alt="" className="h-5 w-5 rounded object-cover" />
+              ) : (
+                <Trophy className="h-5 w-5" />
+              )}{" "}
+              AuctionHub
             </div>
           </SidebarHeader>
           <SidebarContent>
