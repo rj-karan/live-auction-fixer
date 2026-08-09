@@ -1,6 +1,7 @@
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
+import { useBranding, layoutOf, type AssetKey } from "@/lib/branding";
 import stadium from "@/assets/hero-stadium.jpg";
 import auction from "@/assets/hero-auction.jpg";
 import trophy from "@/assets/hero-trophy.jpg";
@@ -18,11 +19,17 @@ export function HeroBackdrop({
   variant = "stadium",
   className,
   priority = false,
+  assetKey,
 }: {
   variant?: HeroVariant;
   className?: string;
   priority?: boolean;
+  /** Appearance & Branding asset that overrides the built-in photo. */
+  assetKey?: AssetKey;
 }) {
+  const { branding } = useBranding();
+  const custom = assetKey ? branding.assets?.[assetKey] : undefined;
+  const layout = assetKey ? layoutOf(branding, assetKey) : null;
   const ref = useRef<HTMLDivElement>(null);
   const reduce = useReducedMotion();
   const { scrollY } = useScroll();
@@ -36,13 +43,19 @@ export function HeroBackdrop({
       className={cn("pointer-events-none absolute inset-0 overflow-hidden", className)}
     >
       <motion.img
-        src={IMAGES[variant]}
+        src={custom || IMAGES[variant]}
         alt=""
         width={1920}
         height={1080}
         loading={priority ? "eager" : "lazy"}
         decoding="async"
-        style={{ y, scale }}
+        style={{
+          y,
+          scale,
+          objectFit: layout?.fit ?? "cover",
+          objectPosition: layout?.position ?? "center",
+          opacity: layout ? 1 - layout.overlay / 100 : undefined,
+        }}
         className="absolute inset-0 h-full w-full object-cover opacity-40"
       />
       {/* navy wash + gold vignette keeps text legible */}

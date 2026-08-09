@@ -34,6 +34,7 @@ import {
   EmptyState,
 } from "@/components/sports/motion-bits";
 import { HeroBackdrop } from "@/components/sports/hero-backdrop";
+import { useBrandAsset } from "@/lib/branding";
 
 export const Route = createFileRoute("/tournament/$slug/team/$teamSlug")({
   loader: async ({ params }) => {
@@ -76,6 +77,7 @@ export const Route = createFileRoute("/tournament/$slug/team/$teamSlug")({
 type SortKey = "latest" | "oldest" | "high" | "low";
 
 function TeamPage() {
+  const defaultTeamLogo = useBrandAsset("teamLogo");
   const { tournament, team: initialTeam } = Route.useLoaderData();
   const navigate = useNavigate();
   const [team, setTeam] = useState<any>(initialTeam);
@@ -246,7 +248,7 @@ function TeamPage() {
 
       {/* Team header */}
       <div className="relative border-b text-primary-foreground overflow-hidden">
-        <HeroBackdrop variant="trophy" className="absolute inset-0" />
+        <HeroBackdrop variant="trophy" assetKey="teamDetailsBg" className="absolute inset-0" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
           <motion.div
             className="flex items-start gap-4"
@@ -254,9 +256,9 @@ function TeamPage() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
           >
-            {team.logo_url ? (
+            {(team.logo_url || defaultTeamLogo) ? (
               <img
-                src={team.logo_url}
+                src={team.logo_url || defaultTeamLogo}
                 alt=""
                 className="h-16 w-16 sm:h-20 sm:w-20 rounded-lg object-cover ring-2 ring-active shrink-0 shadow-[0_0_28px_-6px_var(--active)]"
               />

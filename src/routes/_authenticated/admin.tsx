@@ -1,5 +1,6 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
+import { useBrandAsset } from "@/lib/branding";
 import {
   Sidebar,
   SidebarContent,
@@ -43,6 +44,9 @@ const items = [
 ];
 
 function AdminLayout() {
+  const brandedAdminLogo = useBrandAsset("adminLogo");
+  const siteLogo = useBrandAsset("siteLogo");
+  const adminLogo = brandedAdminLogo || siteLogo;
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 
@@ -57,7 +61,12 @@ function AdminLayout() {
         <Sidebar>
           <SidebarHeader className="border-b p-4">
             <div className="flex items-center gap-2 font-semibold">
-              <Trophy className="h-5 w-5" /> AuctionHub
+              {adminLogo ? (
+                <img src={adminLogo} alt="" className="h-5 w-5 rounded object-cover" />
+              ) : (
+                <Trophy className="h-5 w-5" />
+              )}{" "}
+              AuctionHub
             </div>
           </SidebarHeader>
           <SidebarContent>
