@@ -4,9 +4,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney } from "@/lib/format";
-import { brandAsset } from "@/lib/branding";
+import { useBrandAsset, useBrandLayout } from "@/lib/branding";
 import { cn } from "@/lib/utils";
-import { CricheroesPanel } from "@/components/cricheroes-panel";
 import {
   ArrowLeft,
   User,
@@ -122,6 +121,12 @@ function PlayerPage() {
     city?: string | null;
   } | null;
 
+
+  const defaultPhoto = useBrandAsset("playerPhoto");
+  const placeholderPhoto = useBrandAsset("playerPlaceholder");
+  const defaultTeamLogo = useBrandAsset("teamLogo");
+  const pageBg = useBrandAsset("playerProfileBg");
+  const pageBgLayout = useBrandLayout("playerProfileBg");
 
   const photo = player.photo_url || defaultPhoto || placeholderPhoto;
   const teamLogo = team?.logo_url || defaultTeamLogo;
