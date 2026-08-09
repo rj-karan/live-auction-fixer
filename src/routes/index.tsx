@@ -41,6 +41,7 @@ type Tournament = {
 };
 
 function Landing() {
+  const siteLogo = useBrandAsset("siteLogo");
   const [tournaments, setTournaments] = useState<Tournament[] | null>(null);
   useEffect(() => {
     supabase

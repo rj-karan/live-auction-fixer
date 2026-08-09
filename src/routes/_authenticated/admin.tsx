@@ -43,6 +43,7 @@ const items = [
 ];
 
 function AdminLayout() {
+  const adminLogo = useBrandAsset("adminLogo") || useBrandAsset("siteLogo");
   const pathname = useRouterState({ select: (s) => s.location.pathname });
   const navigate = useNavigate();
 

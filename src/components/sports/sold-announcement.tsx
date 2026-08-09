@@ -1,3 +1,4 @@
+import { useBrandAsset } from "@/lib/branding";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { Trophy, User, Gavel } from "lucide-react";
@@ -41,6 +42,7 @@ export function SoldAnnouncement({
   onDismiss: () => void;
   duration?: number;
 }) {
+  const soldBg = useBrandAsset("soldAnimationBg");
   const reduce = useReducedMotion();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
