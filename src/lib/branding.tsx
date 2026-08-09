@@ -549,11 +549,12 @@ export function applyBranding(b: Branding) {
 }
 
 function normalize(row: any): Branding {
+  const { __layout, ...assets } = (row?.assets ?? {}) as Record<string, any>;
   return {
-    assets: (row?.assets ?? {}) as BrandingAssets,
+    assets: assets as BrandingAssets,
     colors: (row?.colors ?? {}) as BrandingColors,
     typography: (row?.typography ?? {}) as BrandingTypography,
-    layout: ((row?.assets?.__layout ?? row?.typography?.__layout ?? {}) as BrandingLayout) ?? {},
+    layout: (__layout ?? {}) as BrandingLayout,
   };
 }
 

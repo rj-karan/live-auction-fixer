@@ -123,7 +123,7 @@ function PlayerPage() {
   } | null;
 
 
-  const photo = player.photo_url || brandAsset("playerPhoto") || brandAsset("playerAvatar");
+  const photo = player.photo_url || brandAsset("playerPhoto") || brandAsset("playerPlaceholder");
 
   return (
     <div className="min-h-screen bg-background">

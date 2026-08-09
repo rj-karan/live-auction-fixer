@@ -155,7 +155,7 @@ function PublicTournament() {
         return {
           key: `${p.id}-${p.final_price}`,
           playerName: p.name,
-          playerPhoto: p.photo_url || brandAsset("playerPhoto") || brandAsset("playerAvatar"),
+          playerPhoto: p.photo_url || brandAsset("playerPhoto") || brandAsset("playerPlaceholder"),
           teamName: team?.name ?? "—",
           teamLogo: team?.logo_url ?? null,
           price: Number(p.final_price ?? 0),
@@ -641,7 +641,7 @@ function PlayerCard({
   tournament: any;
   currency: string;
 }) {
-  const photo = p.photo_url || brandAsset("playerPhoto") || brandAsset("playerAvatar");
+  const photo = p.photo_url || brandAsset("playerPhoto") || brandAsset("playerPlaceholder");
   return (
     <Card className="group glass-card glow-border relative h-full overflow-hidden transition-all duration-300 hover:shadow-2xl hover:shadow-[color-mix(in_oklab,var(--active)_25%,transparent)]">
       <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(120deg,color-mix(in_oklab,var(--active)_14%,transparent),transparent_55%)] opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
