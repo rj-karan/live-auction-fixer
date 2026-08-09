@@ -380,7 +380,7 @@ function StatusPill({ status }: { status: string }) {
   const map: Record<string, { cls: string; label: string }> = {
     sold: { cls: "bg-active text-active-foreground", label: "SOLD" },
     unsold: { cls: "bg-destructive text-destructive-foreground", label: "UNSOLD" },
-    available: { cls: "bg-white/20 text-white", label: "AVAILABLE" },
+    available: { cls: "bg-secondary text-secondary-foreground border border-border", label: "AVAILABLE" },
   };
   const m = map[status] ?? map.available;
   return (
