@@ -407,6 +407,13 @@ function OverviewSection({
 
       <div className="grid gap-4 lg:grid-cols-3">
         <div className="lg:col-span-2 space-y-4">
+          <LiveAuctionPanel
+            tournamentId={tournament.id}
+            currency={currency}
+            players={players}
+            teams={teams}
+          />
+
           <SectionHeader title="Latest Results" action={
             <button onClick={() => onSection("results")} className="text-sm text-active hover:underline flex items-center gap-1">
               View all <ChevronRight className="h-3.5 w-3.5" />
