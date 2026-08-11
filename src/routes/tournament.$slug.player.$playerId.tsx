@@ -427,7 +427,7 @@ function Info({
   const empty = !value;
   return (
     <LiftCard className="h-full">
-      <Card className="glass-card h-full rounded-xl border-active/20 bg-[linear-gradient(150deg,color-mix(in_oklab,var(--card)_94%,transparent),color-mix(in_oklab,var(--active)_6%,transparent))] shadow-[0_8px_28px_-20px_var(--active)]">
+      <Card className="glass-card h-full rounded-xl border-active/20 shadow-[0_8px_28px_-20px_rgba(0,0,0,0.8)]">
         <CardContent className="flex h-full items-start gap-3 px-4 py-3">
           {icon && <span className="mt-0.5 shrink-0 text-active">{icon}</span>}
           <div className="min-w-0">
