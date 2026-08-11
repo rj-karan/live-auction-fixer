@@ -1,3 +1,4 @@
+import { LiveAuctionPanel } from "@/components/sports/live-auction-panel";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
