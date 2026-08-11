@@ -93,6 +93,58 @@ export type Database = {
           },
         ]
       }
+      live_auction: {
+        Row: {
+          current_bid: number | null
+          player_id: string | null
+          round: number | null
+          status: string
+          team_id: string | null
+          tournament_id: string
+          updated_at: string
+        }
+        Insert: {
+          current_bid?: number | null
+          player_id?: string | null
+          round?: number | null
+          status?: string
+          team_id?: string | null
+          tournament_id: string
+          updated_at?: string
+        }
+        Update: {
+          current_bid?: number | null
+          player_id?: string | null
+          round?: number | null
+          status?: string
+          team_id?: string | null
+          tournament_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "live_auction_player_id_fkey"
+            columns: ["player_id"]
+            isOneToOne: false
+            referencedRelation: "players"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_auction_team_id_fkey"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "live_auction_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: true
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       players: {
         Row: {
           age: number | null

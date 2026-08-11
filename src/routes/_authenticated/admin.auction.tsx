@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ function AuctionPage() {
   const [price, setPrice] = useState("");
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
+  const holdLive = useRef(false);
 
   const load = async () => {
     if (!tournament) return;
@@ -54,6 +55,36 @@ function AuctionPage() {
     };
   }, [tournament?.id]);
 
+  // Publish the live auction board for public spectators (display only).
+  const publishLive = async (patch: Record<string, any>) => {
+    if (!tournament) return;
+    await supabase
+      .from("live_auction")
+      .upsert(
+        { tournament_id: tournament.id, updated_at: new Date().toISOString(), ...patch },
+        { onConflict: "tournament_id" },
+      );
+  };
+
+  useEffect(() => {
+    if (!tournament || holdLive.current) return;
+    if (!selectedPlayer) {
+      publishLive({ player_id: null, team_id: null, current_bid: null, status: "idle", round: null });
+      return;
+    }
+    const p = players.find((x) => x.id === selectedPlayer);
+    const t = setTimeout(() => {
+      publishLive({
+        player_id: selectedPlayer,
+        team_id: selectedTeam,
+        current_bid: price ? Number(price) : null,
+        status: "live",
+        round: p?.auction_round ?? 1,
+      });
+    }, 250);
+    return () => clearTimeout(t);
+  }, [tournament?.id, selectedPlayer, selectedTeam, price]);
+
   if (!tournament)
     return <p className="text-muted-foreground">Create a tournament first.</p>;
 
@@ -64,12 +95,23 @@ function AuctionPage() {
   );
   const current = players.find((p) => p.id === selectedPlayer);
 
+  const clearLiveSoon = () => {
+    holdLive.current = true;
+    setTimeout(() => {
+      holdLive.current = false;
+      publishLive({ player_id: null, team_id: null, current_bid: null, status: "idle", round: null });
+    }, 7000);
+  };
+
   const confirmSale = async () => {
     if (!selectedPlayer || !selectedTeam || !price) {
       toast.error("Select player, team, and enter price");
       return;
     }
     setBusy(true);
+    const soldPlayer = selectedPlayer;
+    const soldTeam = selectedTeam;
+    const soldPrice = Number(price);
     const { error } = await supabase.rpc("confirm_player_sale", {
       p_player_id: selectedPlayer,
       p_team_id: selectedTeam,
@@ -78,6 +120,14 @@ function AuctionPage() {
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Sale confirmed");
+    await publishLive({
+      player_id: soldPlayer,
+      team_id: soldTeam,
+      current_bid: soldPrice,
+      status: "sold",
+      round: current?.auction_round ?? 1,
+    });
+    clearLiveSoon();
     setSelectedPlayer(null);
     setSelectedTeam(null);
     setPrice("");
@@ -86,14 +136,24 @@ function AuctionPage() {
   const markUnsold = async () => {
     if (!selectedPlayer) return;
     setBusy(true);
+    const unsoldPlayer = selectedPlayer;
     const { error } = await supabase.rpc("mark_player_unsold", {
       p_player_id: selectedPlayer,
     });
     setBusy(false);
     if (error) return toast.error(error.message);
     toast.success("Marked unsold");
+    await publishLive({
+      player_id: unsoldPlayer,
+      team_id: null,
+      current_bid: null,
+      status: "unsold",
+      round: current?.auction_round ?? 1,
+    });
+    clearLiveSoon();
     setSelectedPlayer(null);
   };
+
 
   const undo = async () => {
     if (!confirm("Undo the last transaction?")) return;
