@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +25,7 @@ function AuctionPage() {
   const [price, setPrice] = useState("");
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
+  const holdLive = useRef(false);
 
   const load = async () => {
     if (!tournament) return;
@@ -66,7 +67,7 @@ function AuctionPage() {
   };
 
   useEffect(() => {
-    if (!tournament) return;
+    if (!tournament || holdLive.current) return;
     if (!selectedPlayer) {
       publishLive({ player_id: null, team_id: null, current_bid: null, status: "idle", round: null });
       return;
@@ -95,7 +96,9 @@ function AuctionPage() {
   const current = players.find((p) => p.id === selectedPlayer);
 
   const clearLiveSoon = () => {
+    holdLive.current = true;
     setTimeout(() => {
+      holdLive.current = false;
       publishLive({ player_id: null, team_id: null, current_bid: null, status: "idle", round: null });
     }, 7000);
   };
