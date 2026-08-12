@@ -102,9 +102,9 @@
 }
 
 .dark {
-  --background: oklch(0.15 0.02 258);
+  --background: oklch(0.135 0.022 260);
   --foreground: oklch(0.97 0.005 250);
-  --card: oklch(0.19 0.025 258);
+  --card: oklch(0.192 0.028 258);
   --card-foreground: oklch(0.97 0.005 250);
   --popover: oklch(0.19 0.025 258);
   --popover-foreground: oklch(0.97 0.005 250);
@@ -141,6 +141,80 @@
   --sidebar-accent-foreground: oklch(0.97 0.005 250);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.75 0.17 60);
+}
+
+
+/* ---- Night Stadium theme ------------------------------------------- *
+ * Applied together with `.dark` (html gets `dark theme-stadium`).
+ * Deep turf-navy surfaces, floodlight glow, gold auction accents.
+ * ------------------------------------------------------------------- */
+.theme-stadium {
+  --background: oklch(0.115 0.028 250);
+  --foreground: oklch(0.975 0.006 240);
+  --card: oklch(0.172 0.032 252);
+  --card-foreground: oklch(0.975 0.006 240);
+  --popover: oklch(0.16 0.032 252);
+  --popover-foreground: oklch(0.975 0.006 240);
+  --secondary: oklch(0.225 0.035 250);
+  --secondary-foreground: oklch(0.97 0.005 240);
+  --muted: oklch(0.225 0.035 250);
+  --muted-foreground: oklch(0.75 0.022 240);
+  --accent: oklch(0.25 0.04 250);
+  --accent-foreground: oklch(0.97 0.005 240);
+  --active: oklch(0.79 0.16 72);
+  --active-foreground: oklch(0.16 0.05 60);
+  --active-soft: oklch(0.34 0.09 68);
+  --success: oklch(0.74 0.17 150);
+  --border: oklch(1 0 0 / 12%);
+  --input: oklch(1 0 0 / 16%);
+  --ring: oklch(0.79 0.16 72);
+  --sidebar: oklch(0.14 0.03 252);
+  --sidebar-accent: oklch(0.34 0.09 68);
+}
+
+/* Floodlit stadium backdrop behind the whole app (Night Stadium only). */
+.theme-stadium body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -2;
+  background-image: var(--brand-night-stadium-bg, none);
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  opacity: 0.5;
+  pointer-events: none;
+}
+.theme-stadium body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(80% 55% at 15% -10%, color-mix(in oklab, var(--active) 16%, transparent), transparent 70%),
+    radial-gradient(80% 55% at 85% -10%, color-mix(in oklab, var(--active) 12%, transparent), transparent 70%),
+    linear-gradient(180deg,
+      color-mix(in oklab, var(--background) 78%, transparent),
+      color-mix(in oklab, var(--background) 94%, transparent));
+}
+.theme-stadium body {
+  background-color: var(--background);
+}
+
+/* Dark surfaces: soften the light-mode glass highlight so cards stay dark. */
+.dark .glass-card,
+.theme-stadium .glass-card {
+  background: color-mix(in oklab, var(--card) 82%, transparent);
+  border-color: color-mix(in oklab, var(--active) 22%, var(--border));
+  box-shadow:
+    0 1px 0 0 color-mix(in oklab, white 8%, transparent) inset,
+    0 18px 40px -22px rgb(0 0 0 / 80%);
+}
+
+/* Keep photos bright in dark themes — overlays belong on backgrounds only. */
+.dark img {
+  filter: none;
 }
 
 @utility no-scrollbar {
