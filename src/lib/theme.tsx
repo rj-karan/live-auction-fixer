@@ -69,6 +69,16 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setModeState(stored);
     applyTheme(stored);
     setResolved(resolveTheme(stored));
+
+    const onDefault = () => {
+      if (localStorage.getItem(THEME_STORAGE_KEY)) return;
+      const next = (localStorage.getItem(THEME_DEFAULT_KEY) as ThemeMode | null) ?? "light";
+      setModeState(next);
+      applyTheme(next);
+      setResolved(resolveTheme(next));
+    };
+    window.addEventListener("auction-theme-default", onDefault);
+    return () => window.removeEventListener("auction-theme-default", onDefault);
   }, []);
 
   // Follow the OS when the user picked "System".
@@ -107,7 +117,10 @@ export function rememberDefaultTheme(mode: ThemeMode | undefined) {
   if (typeof window === "undefined" || !mode) return;
   try {
     localStorage.setItem(THEME_DEFAULT_KEY, mode);
-    if (!localStorage.getItem(THEME_STORAGE_KEY)) applyTheme(mode);
+    if (!localStorage.getItem(THEME_STORAGE_KEY)) {
+      applyTheme(mode);
+      window.dispatchEvent(new Event("auction-theme-default"));
+    }
   } catch {
     /* ignore */
   }
