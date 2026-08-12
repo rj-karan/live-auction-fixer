@@ -394,9 +394,10 @@ function BrandingSettings() {
                       "Floodlit stadium / turf image used as the app-wide backdrop in Night Stadium mode.",
                     background: true,
                   }}
-                  draft={draft}
-                  setAsset={setAsset}
-                  setLayout={setLayout}
+                  value={draft.assets?.nightStadiumBg ?? ""}
+                  layout={layoutOf(draft, "nightStadiumBg")}
+                  onChange={(url) => setAsset("nightStadiumBg", url)}
+                  onLayout={(patch) => setLayout("nightStadiumBg", patch)}
                 />
               </div>
             </CardContent>
