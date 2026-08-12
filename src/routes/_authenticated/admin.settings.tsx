@@ -47,6 +47,7 @@ import {
   Eye,
   ImageIcon,
   Loader2,
+  MoonStar,
   Palette,
   RotateCcw,
   Save,
@@ -97,6 +98,8 @@ function BrandingSettings() {
     }));
   const setColor = (key: string, value: string) =>
     setDraft((d) => ({ ...d, colors: { ...d.colors, [key]: value || undefined } }));
+  const setTheme = (patch: Record<string, any>) =>
+    setDraft((d) => ({ ...d, theme: { ...d.theme, ...patch } }));
   const setType = (key: string, value: any) =>
     setDraft((d) => ({ ...d, typography: { ...d.typography, [key]: value } }));
 
@@ -199,6 +202,9 @@ function BrandingSettings() {
           </TabsTrigger>
           <TabsTrigger value="typography">
             <TypeIcon className="mr-1 h-4 w-4" /> Typography
+          </TabsTrigger>
+          <TabsTrigger value="theme">
+            <MoonStar className="mr-1 h-4 w-4" /> Theme
           </TabsTrigger>
           <TabsTrigger value="preview">
             <Eye className="mr-1 h-4 w-4" /> Live Preview
@@ -312,6 +318,86 @@ function BrandingSettings() {
                   step={5}
                   value={[draft.typography?.fontScale ?? 100]}
                   onValueChange={([v]) => setType("fontScale", v)}
+                />
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="theme" className="pt-4">
+          <Card>
+            <CardHeader>
+              <CardTitle className="text-base">Theme Settings</CardTitle>
+            </CardHeader>
+            <CardContent className="grid gap-5 sm:grid-cols-2">
+              <div className="space-y-2">
+                <Label>Default Theme</Label>
+                <p className="text-xs text-muted-foreground">
+                  Used for visitors who have never picked a theme themselves.
+                </p>
+                <Select
+                  value={draft.theme?.defaultTheme ?? "light"}
+                  onValueChange={(v) => setTheme({ defaultTheme: v })}
+                >
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="light">Light</SelectItem>
+                    <SelectItem value="dark">Dark</SelectItem>
+                    <SelectItem value="stadium">Night Stadium</SelectItem>
+                    <SelectItem value="system">System</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label>Dark Mode Accent</Label>
+                <p className="text-xs text-muted-foreground">
+                  Accent used by Dark and Night Stadium. Default is the auction orange.
+                </p>
+                <div className="flex items-center gap-2">
+                  <input
+                    type="color"
+                    value={
+                      /^#[0-9a-fA-F]{6}$/.test(draft.theme?.darkAccent ?? "")
+                        ? (draft.theme?.darkAccent as string)
+                        : "#f59e0b"
+                    }
+                    onChange={(e) => setTheme({ darkAccent: e.target.value })}
+                    className="h-9 w-12 shrink-0 cursor-pointer rounded-md border bg-background"
+                    aria-label="Dark mode accent"
+                  />
+                  <Input
+                    value={draft.theme?.darkAccent ?? ""}
+                    placeholder="#f59e0b"
+                    onChange={(e) => setTheme({ darkAccent: e.target.value })}
+                  />
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="Reset dark accent"
+                    onClick={() => setTheme({ darkAccent: undefined })}
+                  >
+                    <RotateCcw className="h-4 w-4" />
+                  </Button>
+                </div>
+              </div>
+
+              <div className="sm:col-span-2">
+                <AssetCard
+                  def={{
+                    key: "nightStadiumBg",
+                    label: "Night Stadium Background",
+                    usedOn: "Every page while the Night Stadium theme is active",
+                    controls:
+                      "Floodlit stadium / turf image used as the app-wide backdrop in Night Stadium mode.",
+                    background: true,
+                  }}
+                  value={draft.assets?.nightStadiumBg ?? ""}
+                  layout={layoutOf(draft, "nightStadiumBg")}
+                  onChange={(url) => setAsset("nightStadiumBg", url)}
+                  onLayout={(patch) => setLayout("nightStadiumBg", patch)}
                 />
               </div>
             </CardContent>

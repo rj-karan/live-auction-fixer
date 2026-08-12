@@ -1,6 +1,7 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { createFileRoute } from "@tanstack/react-router";
 import { useBrandAsset } from "@/lib/branding";
+import { ThemeToggle } from "@/components/theme-toggle";
 import {
   Sidebar,
   SidebarContent,
@@ -117,8 +118,11 @@ function AdminLayout() {
           </SidebarFooter>
         </Sidebar>
         <div className="flex-1 flex flex-col min-w-0">
-          <header className="h-12 flex items-center border-b px-2">
+          <header className="h-12 flex items-center gap-2 border-b px-2">
             <SidebarTrigger />
+            <div className="ml-auto pr-2">
+              <ThemeToggle />
+            </div>
           </header>
           <main className="flex-1 p-6 overflow-auto">
             <Outlet />

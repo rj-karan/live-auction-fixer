@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { rememberDefaultTheme } from "@/lib/theme";
 import tournamentPlaceholder from "@/assets/tournament-placeholder.jpg";
 
 /* ------------------------------------------------------------------ *
@@ -49,6 +50,7 @@ export type AssetKey =
   | "statsBg"
   | "resultsBg"
   | "dashboardBg"
+  | "nightStadiumBg"
   /* Placeholders / empty states */
   | "emptyState"
   | "noResults"
@@ -355,6 +357,14 @@ export const ASSET_GROUPS: AssetGroup[] = [
         background: true,
       },
       {
+        key: "nightStadiumBg",
+        label: "Night Stadium Background",
+        usedOn: "Every page while the Night Stadium theme is active",
+        controls:
+          "Floodlit stadium / turf image used as the app-wide backdrop in Night Stadium mode.",
+        background: true,
+      },
+      {
         key: "dashboardBg",
         label: "Dashboard Background",
         usedOn: "Admin → Dashboard",
@@ -452,14 +462,28 @@ const COLOR_VAR: Record<ColorKey, string[]> = {
   statusAvailable: ["--brand-status-available"],
 };
 
+export type BrandingTheme = {
+  /** Theme used for visitors who have not picked one themselves. */
+  defaultTheme?: "light" | "dark" | "stadium" | "system";
+  /** Accent colour used by the Dark / Night Stadium themes. */
+  darkAccent?: string;
+};
+
 export type Branding = {
   assets: BrandingAssets;
   colors: BrandingColors;
   typography: BrandingTypography;
   layout: BrandingLayout;
+  theme?: BrandingTheme;
 };
 
-export const EMPTY_BRANDING: Branding = { assets: {}, colors: {}, typography: {}, layout: {} };
+export const EMPTY_BRANDING: Branding = {
+  assets: {},
+  colors: {},
+  typography: {},
+  layout: {},
+  theme: {},
+};
 
 /* Module cache so non-React helpers can read the current defaults. */
 let cache: Branding = EMPTY_BRANDING;
@@ -495,14 +519,30 @@ export function applyBranding(b: Branding) {
   if (typeof document === "undefined") return;
   const root = document.documentElement;
 
+  // In Dark / Night Stadium the light palette must not leak back in — only
+  // accent + status colours (which are theme-neutral) are still honoured.
+  const darkActive = root.classList.contains("dark");
+  const DARK_SAFE: ColorKey[] = ["button", "statusSold", "statusUnsold", "statusAvailable"];
+
   for (const { key } of COLOR_FIELDS) {
     const vars = COLOR_VAR[key];
-    const value = b.colors?.[key];
+    const skip = darkActive && !DARK_SAFE.includes(key);
+    const value = skip ? undefined : b.colors?.[key];
     for (const v of vars) {
       if (value) root.style.setProperty(v, value);
       else root.style.removeProperty(v);
     }
   }
+
+  const darkAccent = b.theme?.darkAccent;
+  if (darkActive && darkAccent) {
+    root.style.setProperty("--active", darkAccent);
+    root.style.setProperty("--ring", darkAccent);
+  }
+
+  const stadiumBg = b.assets?.nightStadiumBg;
+  if (stadiumBg) root.style.setProperty("--brand-night-stadium-bg", `url("${stadiumBg}")`);
+  else root.style.removeProperty("--brand-night-stadium-bg");
 
   const fonts = [b.typography?.headingFont, b.typography?.bodyFont].filter(
     (f): f is string => !!f && f !== "Default",
@@ -549,12 +589,13 @@ export function applyBranding(b: Branding) {
 }
 
 function normalize(row: any): Branding {
-  const { __layout, ...assets } = (row?.assets ?? {}) as Record<string, any>;
+  const { __layout, __theme, ...assets } = (row?.assets ?? {}) as Record<string, any>;
   return {
     assets: assets as BrandingAssets,
     colors: (row?.colors ?? {}) as BrandingColors,
     typography: (row?.typography ?? {}) as BrandingTypography,
     layout: (__layout ?? {}) as BrandingLayout,
+    theme: (__theme ?? {}) as BrandingTheme,
   };
 }
 
@@ -566,6 +607,7 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
     const { data } = await supabase.from("site_branding").select("*").eq("id", 1).maybeSingle();
     const next = normalize(data);
     setBranding(next);
+    rememberDefaultTheme(next.theme?.defaultTheme);
     applyBranding(next);
     setLoading(false);
   }, []);
@@ -573,6 +615,13 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     refresh();
   }, [refresh]);
+
+  // Switching theme flips which colour overrides are allowed — re-apply.
+  useEffect(() => {
+    const onThemeChange = () => applyBranding(branding);
+    window.addEventListener("auction-theme-changed", onThemeChange);
+    return () => window.removeEventListener("auction-theme-changed", onThemeChange);
+  }, [branding]);
 
   const value = useMemo(() => ({ branding, loading, refresh }), [branding, loading, refresh]);
   return <BrandingContext.Provider value={value}>{children}</BrandingContext.Provider>;
@@ -596,10 +645,10 @@ export function useBrandLayout(key: AssetKey): Required<AssetLayout> {
 export async function saveBranding(b: Branding) {
   // `layout` is persisted inside the existing `assets` JSON column so the
   // database schema stays untouched.
-  const { layout, ...rest } = b;
+  const { layout, theme, ...rest } = b;
   const { error } = await supabase.from("site_branding").upsert({
     id: 1,
-    assets: { ...rest.assets, __layout: layout ?? {} },
+    assets: { ...rest.assets, __layout: layout ?? {}, __theme: theme ?? {} },
     colors: rest.colors ?? {},
     typography: rest.typography ?? {},
     updated_at: new Date().toISOString(),

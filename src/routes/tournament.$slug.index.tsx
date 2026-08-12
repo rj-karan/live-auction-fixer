@@ -3,6 +3,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -252,8 +253,8 @@ function PublicTournament() {
 
       {/* Section nav */}
       <div className="sticky top-0 z-20 border-b bg-background/80 backdrop-blur-xl">
-        <div className="mx-auto max-w-6xl px-2 sm:px-6">
-          <nav className="flex overflow-x-auto no-scrollbar">
+        <div className="mx-auto flex max-w-6xl items-center gap-2 px-2 sm:px-6">
+          <nav className="flex flex-1 overflow-x-auto no-scrollbar">
             {SECTIONS.map((s) => {
               const active = section === s.id;
               const Icon = s.icon;
@@ -282,6 +283,7 @@ function PublicTournament() {
               );
             })}
           </nav>
+          <ThemeToggle className="shrink-0" />
         </div>
       </div>
 

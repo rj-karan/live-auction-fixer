@@ -1,6 +1,7 @@
 import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { formatMoney } from "@/lib/format";
@@ -179,7 +180,10 @@ function TeamPage() {
             <span className="hidden sm:inline">Back to</span> {tournament.name}
           </Link>
 
-          <div className="ml-auto flex items-center gap-1">
+          <div className="ml-auto flex items-center gap-2">
+            <ThemeToggle />
+          </div>
+          <div className="flex items-center gap-1">
             <button
               disabled={!prevTeam}
               onClick={() =>

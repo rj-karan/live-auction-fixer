@@ -1,6 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { ThemeToggle } from "@/components/theme-toggle";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Trophy, Shield, MapPin, CalendarDays, Radio } from "lucide-react";
@@ -65,12 +66,15 @@ function Landing() {
             </span>
             AuctionHub
           </div>
-          <Link to="/auth">
-            <Button variant="outline" size="sm">
-              <Shield className="mr-2 h-4 w-4" />
-              Admin Login
-            </Button>
-          </Link>
+          <div className="flex items-center gap-2">
+            <ThemeToggle />
+            <Link to="/auth">
+              <Button variant="outline" size="sm">
+                <Shield className="mr-2 h-4 w-4" />
+                Admin Login
+              </Button>
+            </Link>
+          </div>
         </div>
       </header>
 
