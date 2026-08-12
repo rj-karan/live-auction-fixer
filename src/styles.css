@@ -108,8 +108,9 @@
   --card-foreground: oklch(0.97 0.005 250);
   --popover: oklch(0.19 0.025 258);
   --popover-foreground: oklch(0.97 0.005 250);
-  --primary: oklch(0.97 0.005 250);
-  --primary-foreground: oklch(0.19 0.025 258);
+  /* Auction orange stays the primary action colour in dark themes. */
+  --primary: oklch(0.72 0.17 55);
+  --primary-foreground: oklch(0.16 0.04 60);
   --secondary: oklch(0.24 0.03 258);
   --secondary-foreground: oklch(0.97 0.005 250);
   --muted: oklch(0.24 0.03 258);
@@ -168,6 +169,8 @@
   --border: oklch(1 0 0 / 12%);
   --input: oklch(1 0 0 / 16%);
   --ring: oklch(0.79 0.16 72);
+  --primary: oklch(0.79 0.16 72);
+  --primary-foreground: oklch(0.16 0.05 60);
   --sidebar: oklch(0.14 0.03 252);
   --sidebar-accent: oklch(0.34 0.09 68);
 }
