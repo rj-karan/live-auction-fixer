@@ -616,6 +616,13 @@ export function BrandingProvider({ children }: { children: React.ReactNode }) {
     refresh();
   }, [refresh]);
 
+  // Switching theme flips which colour overrides are allowed — re-apply.
+  useEffect(() => {
+    const onThemeChange = () => applyBranding(branding);
+    window.addEventListener("auction-theme-changed", onThemeChange);
+    return () => window.removeEventListener("auction-theme-changed", onThemeChange);
+  }, [branding]);
+
   const value = useMemo(() => ({ branding, loading, refresh }), [branding, loading, refresh]);
   return <BrandingContext.Provider value={value}>{children}</BrandingContext.Provider>;
 }

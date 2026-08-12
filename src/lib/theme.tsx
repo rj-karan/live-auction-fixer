@@ -43,6 +43,7 @@ export function applyTheme(mode: ThemeMode) {
   root.classList.toggle("dark", resolved === "dark" || resolved === "stadium");
   root.classList.toggle("theme-stadium", resolved === "stadium");
   root.dataset.theme = resolved;
+  window.dispatchEvent(new Event("auction-theme-changed"));
 }
 
 /** True whenever a dark-ish theme is active (dark or night stadium). */
