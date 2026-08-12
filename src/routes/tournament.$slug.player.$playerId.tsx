@@ -175,6 +175,9 @@ function PlayerPage() {
               Back to {team.name}
             </Link>
           )}
+          <div className="ml-auto">
+            <ThemeToggle />
+          </div>
         </div>
       </div>
 
