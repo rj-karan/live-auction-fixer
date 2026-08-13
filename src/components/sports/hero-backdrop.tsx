@@ -58,9 +58,10 @@ export function HeroBackdrop({
         }}
         className="absolute inset-0 h-full w-full object-cover opacity-40"
       />
-      {/* navy wash + gold vignette keeps text legible */}
-      <div className="absolute inset-0 bg-[linear-gradient(105deg,var(--primary)_18%,color-mix(in_oklab,var(--primary)_82%,transparent)_55%,color-mix(in_oklab,var(--primary)_55%,transparent)_100%)]" />
-      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_85%_-10%,color-mix(in_oklab,var(--active)_38%,transparent),transparent_60%)]" />
+      {/* deep-space wash + neon vignette keeps text legible */}
+      <div className="absolute inset-0 bg-[linear-gradient(105deg,color-mix(in_oklab,var(--background)_92%,transparent)_18%,color-mix(in_oklab,var(--background)_78%,transparent)_55%,color-mix(in_oklab,var(--background)_60%,transparent)_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(120%_90%_at_85%_-10%,color-mix(in_oklab,var(--neon)_16%,transparent),transparent_60%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(100%_80%_at_10%_110%,color-mix(in_oklab,var(--violet)_18%,transparent),transparent_60%)]" />
       {!reduce && <Spotlight />}
       {!reduce && <Dust />}
       <div className="absolute inset-x-0 bottom-0 h-24 bg-[linear-gradient(to_top,var(--background),transparent)] opacity-30" />

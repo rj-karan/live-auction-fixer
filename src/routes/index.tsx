@@ -78,7 +78,7 @@ function Landing() {
         </div>
       </header>
 
-      <section className="relative overflow-hidden border-b text-primary-foreground">
+      <section className="relative overflow-hidden border-b text-foreground">
         <HeroBackdrop variant="stadium" assetKey="headerBg" className="absolute inset-0" />
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-20 sm:py-28 text-center">
           <motion.div

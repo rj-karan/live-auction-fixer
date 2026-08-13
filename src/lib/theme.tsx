@@ -20,7 +20,7 @@ export const THEME_OPTIONS: { value: ThemeMode; label: string; icon: string; hin
 /** Inline script injected in <head> so the theme is applied before first paint. */
 export const THEME_INIT_SCRIPT = `
 (function(){try{
-  var s=localStorage.getItem('${THEME_STORAGE_KEY}')||localStorage.getItem('${THEME_DEFAULT_KEY}')||'light';
+  var s=localStorage.getItem('${THEME_STORAGE_KEY}')||localStorage.getItem('${THEME_DEFAULT_KEY}')||'dark';
   var m=s;
   if(m==='system'){m=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}
   var r=document.documentElement;
@@ -32,7 +32,7 @@ export const THEME_INIT_SCRIPT = `
 
 export function resolveTheme(mode: ThemeMode): "light" | "dark" | "stadium" {
   if (mode !== "system") return mode;
-  if (typeof window === "undefined") return "light";
+  if (typeof window === "undefined") return "dark";
   return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
 }
 
@@ -59,14 +59,14 @@ const ThemeContext = createContext<{
 }>({ mode: "light", resolved: "light", setMode: () => {} });
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [mode, setModeState] = useState<ThemeMode>("light");
-  const [resolved, setResolved] = useState<"light" | "dark" | "stadium">("light");
+  const [mode, setModeState] = useState<ThemeMode>("dark");
+  const [resolved, setResolved] = useState<"light" | "dark" | "stadium">("dark");
 
   useEffect(() => {
     const stored =
       (localStorage.getItem(THEME_STORAGE_KEY) as ThemeMode | null) ??
       (localStorage.getItem(THEME_DEFAULT_KEY) as ThemeMode | null) ??
-      "light";
+      "dark";
     setModeState(stored);
     applyTheme(stored);
     setResolved(resolveTheme(stored));
