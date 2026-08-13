@@ -2,6 +2,7 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { createFileRoute } from "@tanstack/react-router";
 import { useBrandAsset } from "@/lib/branding";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TournamentSelector } from "@/components/admin/tournament-selector";
 import {
   Sidebar,
   SidebarContent,
