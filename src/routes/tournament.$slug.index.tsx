@@ -465,6 +465,8 @@ function OverviewSection({
               />
             </CardContent>
           </Card>
+
+          <SponsorStrip tournamentId={tournament.id} />
         </div>
       </div>
 
