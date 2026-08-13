@@ -2,6 +2,7 @@ import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-route
 import { createFileRoute } from "@tanstack/react-router";
 import { useBrandAsset } from "@/lib/branding";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { TournamentSelector } from "@/components/admin/tournament-selector";
 import {
   Sidebar,
   SidebarContent,
@@ -26,6 +27,7 @@ import {
   LogOut,
   KeyRound,
   Settings,
+  Handshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
@@ -41,6 +43,7 @@ const items = [
   { title: "Players", url: "/admin/players", icon: UserCircle },
   { title: "Live Auction Entry", url: "/admin/auction", icon: Gavel },
   { title: "Transactions", url: "/admin/transactions", icon: History },
+  { title: "Sponsors", url: "/admin/sponsors", icon: Handshake },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
@@ -120,7 +123,8 @@ function AdminLayout() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-12 flex items-center gap-2 border-b px-2">
             <SidebarTrigger />
-            <div className="ml-auto pr-2">
+            <div className="ml-auto flex items-center gap-2 pr-2">
+              <TournamentSelector />
               <ThemeToggle />
             </div>
           </header>

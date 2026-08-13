@@ -1,4 +1,5 @@
 import { LiveAuctionPanel } from "@/components/sports/live-auction-panel";
+import { SponsorStrip } from "@/components/sports/sponsor-strip";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
@@ -465,6 +466,8 @@ function OverviewSection({
               />
             </CardContent>
           </Card>
+
+          <SponsorStrip tournamentId={tournament.id} />
         </div>
       </div>
 
