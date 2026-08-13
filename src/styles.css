@@ -427,10 +427,29 @@ body::after {
 
 @utility price-mono {
   font-family: var(--font-mono);
-  font-weight: 800;
-  color: var(--gold);
+  font-weight: 700;
+  color: var(--magenta);
   font-variant-numeric: tabular-nums;
 }
+
+/* Stat/UI label + value treatments */
+@utility stat-label {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+@utility stat-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  color: var(--text-bright);
+  font-variant-numeric: tabular-nums;
+}
+
 
 @utility status-dot {
   width: 6px;
