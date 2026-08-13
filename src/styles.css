@@ -619,3 +619,9 @@ body::after {
   }
 }
 
+
+/* Light mode surfaces: drop-shadow instead of neon glow */
+:root:not(.dark) .neon-panel,
+:root:not(.dark) [class*="card"] {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
