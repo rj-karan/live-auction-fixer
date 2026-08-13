@@ -226,7 +226,7 @@ function PublicTournament() {
                   Live Auction
                 </span>
               </div>
-              <h1 className="text-3xl sm:text-5xl font-black tracking-tight truncate drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]">
+              <h1 className="heading-chaingpt inline-block text-3xl sm:text-5xl font-black tracking-tight truncate drop-shadow-[0_2px_18px_rgba(0,0,0,0.45)]">
                 {tournament.name}
               </h1>
               <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm opacity-90">

@@ -60,103 +60,112 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* ChainGPT-style cyber auction system
- * Dark (default look): near-black deep space + neon teal / electric purple
- * Light: cool blue-white with rich blue accent
+/* ChainGPT.org design system — exact palette
+ * Dark (default): #07070f root, neon cyan #00e5c3, orange #ff6b2b, purple #7c3aed
+ * Light: #f4f6fc root, blue #0077cc, orange #d4580a
  */
 :root {
-  --radius: 0.6rem;
+  --radius: 0.25rem;
   /* light mode */
-  --background: oklch(0.968 0.014 265);
-  --foreground: oklch(0.17 0.03 268);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.17 0.03 268);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.17 0.03 268);
-  --primary: oklch(0.53 0.16 254);
-  --primary-foreground: oklch(0.99 0 0);
-  --secondary: oklch(0.935 0.018 265);
-  --secondary-foreground: oklch(0.28 0.05 268);
-  --muted: oklch(0.945 0.014 265);
-  --muted-foreground: oklch(0.44 0.04 268);
-  --accent: oklch(0.93 0.02 268);
-  --accent-foreground: oklch(0.25 0.06 275);
-  --active: oklch(0.53 0.16 254);
-  --active-foreground: oklch(0.99 0 0);
-  --active-soft: oklch(0.93 0.05 254);
-  --success: oklch(0.55 0.13 168);
-  --success-foreground: oklch(0.99 0 0);
-  --warning: oklch(0.62 0.17 48);
-  --warning-foreground: oklch(0.99 0 0);
-  --destructive: oklch(0.55 0.19 25);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.88 0.02 268);
-  --input: oklch(0.88 0.02 268);
-  --ring: oklch(0.53 0.16 254);
-  --gold: oklch(0.62 0.17 48);
-  --neon: oklch(0.53 0.16 254);
-  --violet: oklch(0.45 0.26 288);
-  --magenta: oklch(0.58 0.28 330);
-  --chart-1: oklch(0.53 0.16 254);
-  --chart-2: oklch(0.45 0.26 288);
-  --chart-3: oklch(0.55 0.13 168);
-  --chart-4: oklch(0.62 0.17 48);
-  --chart-5: oklch(0.58 0.28 330);
-  --sidebar: oklch(0.945 0.018 265);
-  --sidebar-foreground: oklch(0.2 0.04 268);
-  --sidebar-primary: oklch(0.53 0.16 254);
-  --sidebar-primary-foreground: oklch(0.99 0 0);
-  --sidebar-accent: oklch(0.92 0.03 254);
-  --sidebar-accent-foreground: oklch(0.2 0.05 268);
-  --sidebar-border: oklch(0.88 0.02 268);
-  --sidebar-ring: oklch(0.53 0.16 254);
+  --background: #f4f6fc;
+  --foreground: #1a1f36;
+  --card: #ffffff;
+  --card-foreground: #1a1f36;
+  --popover: #ffffff;
+  --popover-foreground: #1a1f36;
+  --primary: #0077cc;
+  --primary-foreground: #ffffff;
+  --secondary: #eef1f8;
+  --secondary-foreground: #1a1f36;
+  --muted: #eef1f8;
+  --muted-foreground: #4a5568;
+  --accent: #eef1f8;
+  --accent-foreground: #0a0a1a;
+  --active: #0077cc;
+  --active-foreground: #ffffff;
+  --active-soft: rgba(0, 119, 204, 0.1);
+  --success: #0077cc;
+  --success-foreground: #ffffff;
+  --warning: #d4580a;
+  --warning-foreground: #ffffff;
+  --destructive: #d21b3c;
+  --destructive-foreground: #ffffff;
+  --border: #dde3f0;
+  --input: #dde3f0;
+  --ring: #0077cc;
+  --gold: #b07500;
+  --neon: #0077cc;
+  --violet: #6d28d9;
+  --magenta: #d4580a;
+  --bg-elevated: #eef1f8;
+  --border-mid: #c8d0e8;
+  --cyan-dim: rgba(0, 119, 204, 0.05);
+  --text-bright: #0a0a1a;
+  --chart-1: #0077cc;
+  --chart-2: #6d28d9;
+  --chart-3: #0e9f8a;
+  --chart-4: #d4580a;
+  --chart-5: #b07500;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #1a1f36;
+  --sidebar-primary: #0077cc;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef1f8;
+  --sidebar-accent-foreground: #0a0a1a;
+  --sidebar-border: #dde3f0;
+  --sidebar-ring: #0077cc;
 }
 
 .dark {
-  --background: oklch(0.09 0.018 280);
-  --foreground: oklch(1 0 0);
-  --card: oklch(0.16 0.032 282);
-  --card-foreground: oklch(0.98 0 0);
-  --popover: oklch(0.15 0.03 282);
-  --popover-foreground: oklch(0.98 0 0);
-  --primary: oklch(0.88 0.18 175);
-  --primary-foreground: oklch(0.12 0.02 260);
-  --secondary: oklch(0.21 0.04 283);
-  --secondary-foreground: oklch(0.97 0 0);
-  --muted: oklch(0.21 0.04 283);
-  --muted-foreground: oklch(0.66 0.035 265);
-  --accent: oklch(0.24 0.05 283);
-  --accent-foreground: oklch(0.98 0 0);
-  --active: oklch(0.88 0.18 175);
-  --active-foreground: oklch(0.12 0.02 260);
-  --active-soft: oklch(0.28 0.08 190);
-  --success: oklch(0.88 0.18 175);
-  --success-foreground: oklch(0.12 0.02 260);
-  --warning: oklch(0.79 0.15 78);
-  --warning-foreground: oklch(0.15 0.03 70);
-  --destructive: oklch(0.65 0.24 5);
-  --destructive-foreground: oklch(0.99 0 0);
-  --border: oklch(0.28 0.06 283);
-  --input: oklch(0.28 0.06 283);
-  --ring: oklch(0.88 0.18 175);
-  --gold: oklch(0.79 0.15 78);
-  --neon: oklch(0.88 0.18 175);
-  --violet: oklch(0.55 0.28 292);
-  --magenta: oklch(0.65 0.26 358);
-  --chart-1: oklch(0.88 0.18 175);
-  --chart-2: oklch(0.55 0.28 292);
-  --chart-3: oklch(0.79 0.15 78);
-  --chart-4: oklch(0.65 0.26 358);
-  --chart-5: oklch(0.7 0.16 220);
-  --sidebar: oklch(0.12 0.025 282);
-  --sidebar-foreground: oklch(0.95 0 0);
-  --sidebar-primary: oklch(0.88 0.18 175);
-  --sidebar-primary-foreground: oklch(0.12 0.02 260);
-  --sidebar-accent: oklch(0.24 0.06 190);
-  --sidebar-accent-foreground: oklch(0.98 0 0);
-  --sidebar-border: oklch(0.28 0.06 283);
-  --sidebar-ring: oklch(0.88 0.18 175);
+  --background: #07070f;
+  --foreground: #e2e8f0;
+  --card: #0d0d1c;
+  --card-foreground: #e2e8f0;
+  --popover: #0d0d1c;
+  --popover-foreground: #e2e8f0;
+  --primary: #00e5c3;
+  --primary-foreground: #000000;
+  --secondary: #111128;
+  --secondary-foreground: #e2e8f0;
+  --muted: #111128;
+  --muted-foreground: #64748b;
+  --accent: #111128;
+  --accent-foreground: #ffffff;
+  --active: #00e5c3;
+  --active-foreground: #000000;
+  --active-soft: rgba(0, 229, 195, 0.15);
+  --success: #00e5c3;
+  --success-foreground: #000000;
+  --warning: #ff6b2b;
+  --warning-foreground: #07070f;
+  --destructive: #ff2d55;
+  --destructive-foreground: #ffffff;
+  --border: #1c1c38;
+  --input: #0a0a1a;
+  --ring: #00e5c3;
+  --gold: #f0a500;
+  --neon: #00e5c3;
+  --violet: #7c3aed;
+  --magenta: #ff6b2b;
+  --bg-elevated: #111128;
+  --border-mid: #2a2a50;
+  --cyan-dim: rgba(0, 229, 195, 0.06);
+  --text-bright: #ffffff;
+  --chart-1: #00e5c3;
+  --chart-2: #7c3aed;
+  --chart-3: #f0a500;
+  --chart-4: #ff6b2b;
+  --chart-5: #64748b;
+  --sidebar: #0a0a18;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #00e5c3;
+  --sidebar-primary-foreground: #000000;
+  --sidebar-accent: #111128;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #1c1c38;
+  --sidebar-ring: #00e5c3;
 }
+
 
 /* ---- Night Stadium theme ------------------------------------------- *
  * Applied together with `.dark` (html gets `dark theme-stadium`).
@@ -232,22 +241,23 @@ body::before {
   z-index: -3;
   pointer-events: none;
   background:
-    radial-gradient(ellipse at 10% 20%, color-mix(in oklab, var(--neon) 8%, transparent), transparent 55%),
-    radial-gradient(ellipse at 90% 80%, color-mix(in oklab, var(--violet) 10%, transparent), transparent 55%),
+    radial-gradient(ellipse 60% 40% at 15% 10%, color-mix(in oklab, var(--neon) 5%, transparent) 0%, transparent 70%),
+    radial-gradient(ellipse 50% 40% at 85% 90%, color-mix(in oklab, var(--violet) 5%, transparent) 0%, transparent 70%),
     var(--background);
 }
+/* Dot grid — dark themes only (too noisy on light) */
 body::after {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
   pointer-events: none;
-  opacity: 0.5;
-  background-image:
-    linear-gradient(color-mix(in oklab, var(--neon) 5%, transparent) 1px, transparent 1px),
-    linear-gradient(90deg, color-mix(in oklab, var(--neon) 5%, transparent) 1px, transparent 1px);
-  background-size: 40px 40px;
+  opacity: 0;
+  background-image: radial-gradient(rgba(0, 229, 195, 0.06) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
+.dark body::after { opacity: 1; }
+
 
 /* Cyber scrollbar */
 * {
@@ -282,34 +292,110 @@ body::after {
 @utility countdown-pulse { animation: countdown-pulse 1s ease-in-out infinite; }
 @utility float-up { animation: float-up 0.45s cubic-bezier(0.4, 0, 0.2, 1) both; }
 
-/* Signature corner brackets (ChainGPT card accents) */
+/* Signature corner brackets (ChainGPT card accents) — 4 multicolor corners */
 @utility corner-frame {
   position: relative;
   &::before,
   &::after {
     content: "";
     position: absolute;
-    width: 10px;
-    height: 10px;
+    inset: -1px;
     pointer-events: none;
-    opacity: 0.7;
+    opacity: 0.55;
     transition: opacity 0.3s ease;
+    border-radius: inherit;
   }
+  /* top-left cyan + bottom-right cyan */
   &::before {
-    top: -1px;
-    left: -1px;
-    border-top: 1px solid var(--neon);
-    border-left: 1px solid var(--neon);
+    background:
+      linear-gradient(var(--neon), var(--neon)) top left / 12px 1px no-repeat,
+      linear-gradient(var(--neon), var(--neon)) top left / 1px 12px no-repeat,
+      linear-gradient(var(--neon), var(--neon)) bottom right / 12px 1px no-repeat,
+      linear-gradient(var(--neon), var(--neon)) bottom right / 1px 12px no-repeat;
   }
+  /* top-right orange + bottom-left purple */
   &::after {
-    bottom: -1px;
-    right: -1px;
-    border-bottom: 1px solid var(--neon);
-    border-right: 1px solid var(--neon);
+    background:
+      linear-gradient(var(--magenta), var(--magenta)) top right / 12px 1px no-repeat,
+      linear-gradient(var(--magenta), var(--magenta)) top right / 1px 12px no-repeat,
+      linear-gradient(var(--violet), var(--violet)) bottom left / 12px 1px no-repeat,
+      linear-gradient(var(--violet), var(--violet)) bottom left / 1px 12px no-repeat;
   }
   &:hover::before,
   &:hover::after { opacity: 1; }
 }
+
+/* ChainGPT heading line system: cyan top rule + orange bottom rule */
+@utility heading-chaingpt {
+  position: relative;
+  padding-block: 12px;
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 60%;
+    max-width: 300px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--neon), transparent);
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40%;
+    max-width: 240px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--magenta), transparent);
+  }
+}
+
+/* Section divider replacing default <hr> */
+@utility rule-chaingpt {
+  height: 1px;
+  border: 0;
+  background: linear-gradient(90deg, transparent, var(--border-mid), transparent);
+}
+
+/* Pulsing live dot */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; box-shadow: 0 0 0 0 color-mix(in oklab, var(--neon) 60%, transparent); }
+  50% { opacity: 0.8; box-shadow: 0 0 0 6px color-mix(in oklab, var(--neon) 0%, transparent); }
+}
+@utility live-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: var(--neon);
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@utility fade-up { animation: fade-up 0.45s ease-out both; }
+
+@keyframes scan-line {
+  0% { top: 0%; opacity: 0.3; }
+  100% { top: 100%; opacity: 0; }
+}
+@utility live-panel {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neon), transparent);
+    animation: scan-line 3s linear infinite;
+    pointer-events: none;
+  }
+}
+
 
 /* Neon panel: card surface + glow hover, used across auction surfaces */
 @utility neon-panel {
@@ -341,10 +427,29 @@ body::after {
 
 @utility price-mono {
   font-family: var(--font-mono);
-  font-weight: 800;
-  color: var(--gold);
+  font-weight: 700;
+  color: var(--magenta);
   font-variant-numeric: tabular-nums;
 }
+
+/* Stat/UI label + value treatments */
+@utility stat-label {
+  font-family: var(--font-sans);
+  font-weight: 600;
+  font-size: 0.65rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--muted-foreground);
+}
+@utility stat-value {
+  font-family: var(--font-mono);
+  font-weight: 700;
+  font-size: 1.8rem;
+  line-height: 1.1;
+  color: var(--text-bright);
+  font-variant-numeric: tabular-nums;
+}
+
 
 @utility status-dot {
   width: 6px;
@@ -514,3 +619,9 @@ body::after {
   }
 }
 
+
+/* Light mode surfaces: drop-shadow instead of neon glow */
+:root:not(.dark) .neon-panel,
+:root:not(.dark) [class*="bg-card"] {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}

@@ -90,7 +90,7 @@ function Landing() {
               <Radio className="h-3 w-3" />
               Live auction coverage
             </span>
-            <h1 className="mt-5 text-4xl sm:text-6xl font-black tracking-tight leading-[1.05]">
+            <h1 className="heading-chaingpt mt-5 text-4xl sm:text-6xl font-black tracking-tight leading-[1.05]">
               The auction happens on the floor.
               <br />
               <span className="text-active">We broadcast every hammer.</span>
