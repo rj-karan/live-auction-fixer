@@ -41,6 +41,7 @@ const items = [
   { title: "Players", url: "/admin/players", icon: UserCircle },
   { title: "Live Auction Entry", url: "/admin/auction", icon: Gavel },
   { title: "Transactions", url: "/admin/transactions", icon: History },
+  { title: "Sponsors", url: "/admin/sponsors", icon: Handshake },
   { title: "Settings", url: "/admin/settings", icon: Settings },
 ];
 
