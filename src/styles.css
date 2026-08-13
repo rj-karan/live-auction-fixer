@@ -498,13 +498,19 @@ body::after {
   }
 
   h1, h2, h3, h4, h5, h6 {
-    font-family: var(--brand-font-heading, inherit);
+    font-family: var(--brand-font-heading, "Space Grotesk", "Inter", system-ui, sans-serif);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-weight: 800;
   }
 
   body {
-    font-family: var(--brand-font-body, inherit);
+    font-family: var(--brand-font-body, "Inter", system-ui, sans-serif);
     background-color: var(--color-background);
     color: var(--color-foreground);
+    line-height: 1.6;
+    transition: background-color 0.3s ease, color 0.3s ease;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11";
   }
 }
+
