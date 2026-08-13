@@ -1,33 +1,84 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-type Tournament = {
+export type Tournament = {
   id: string;
   name: string;
   slug: string;
   status: string;
   currency: string;
   default_purse: number;
+  display_order?: number | null;
+  banner_url?: string | null;
+  logo_url?: string | null;
+  [key: string]: any;
 };
 
-// Returns the most recently created tournament as the "active" one for the admin.
-export function useActiveTournament() {
-  const [tournament, setTournament] = useState<Tournament | null>(null);
+const STORAGE_KEY = "admin-selected-tournament";
+
+/* ---- tiny external store for the admin's selected tournament ---- */
+let selected: string | null = null;
+let hydrated = false;
+const listeners = new Set<() => void>();
+
+function readStored(): string | null {
+  try {
+    return localStorage.getItem(STORAGE_KEY);
+  } catch {
+    return null;
+  }
+}
+
+function snapshot() {
+  if (!hydrated) {
+    selected = readStored();
+    hydrated = true;
+  }
+  return selected;
+}
+
+function subscribe(l: () => void) {
+  listeners.add(l);
+  return () => {
+    listeners.delete(l);
+  };
+}
+
+export function setSelectedTournamentId(id: string | null) {
+  selected = id;
+  hydrated = true;
+  try {
+    if (id) localStorage.setItem(STORAGE_KEY, id);
+    else localStorage.removeItem(STORAGE_KEY);
+  } catch {
+    /* ignore */
+  }
+  listeners.forEach((l) => l());
+}
+
+export function useSelectedTournamentId() {
+  return useSyncExternalStore(subscribe, snapshot, () => null);
+}
+
+/** All tournaments, newest / admin-ordered first. Realtime-aware. */
+export function useTournaments() {
+  const [tournaments, setTournaments] = useState<Tournament[]>([]);
   const [loading, setLoading] = useState(true);
+
+  const load = useCallback(async () => {
+    const { data } = await supabase
+      .from("tournaments")
+      .select("*")
+      .order("display_order", { ascending: true })
+      .order("created_at", { ascending: false });
+    setTournaments((data ?? []) as Tournament[]);
+    setLoading(false);
+  }, []);
+
   useEffect(() => {
-    const load = async () => {
-      const { data } = await supabase
-        .from("tournaments")
-        .select("id,name,slug,status,currency,default_purse")
-        .order("created_at", { ascending: false })
-        .limit(1)
-        .maybeSingle();
-      setTournament((data as Tournament) ?? null);
-      setLoading(false);
-    };
     load();
     const ch = supabase
-      .channel("active-tournament")
+      .channel("tournaments-list")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "tournaments" },
@@ -37,6 +88,19 @@ export function useActiveTournament() {
     return () => {
       supabase.removeChannel(ch);
     };
-  }, []);
-  return { tournament, loading };
+  }, [load]);
+
+  return { tournaments, loading, reload: load };
+}
+
+/**
+ * The tournament the admin is currently working on.
+ * Falls back to the first tournament when nothing is selected yet.
+ */
+export function useActiveTournament() {
+  const { tournaments, loading } = useTournaments();
+  const selectedId = useSelectedTournamentId();
+  const tournament =
+    tournaments.find((t) => t.id === selectedId) ?? tournaments[0] ?? null;
+  return { tournament, tournaments, loading, selectId: setSelectedTournamentId };
 }
