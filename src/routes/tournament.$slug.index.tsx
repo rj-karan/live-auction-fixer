@@ -179,7 +179,7 @@ function PublicTournament() {
   return (
     <div className="min-h-screen bg-background">
       {/* Hero */}
-      <div className="relative border-b bg-primary text-primary-foreground overflow-hidden">
+      <div className="relative border-b bg-background text-foreground overflow-hidden">
         <HeroBackdrop variant="stadium" priority assetKey="tournamentHeroBanner" />
         {tournament.banner_url && (
           <img
