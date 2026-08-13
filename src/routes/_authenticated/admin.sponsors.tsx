@@ -215,7 +215,9 @@ function SponsorsPage() {
                   <ConfirmDelete
                     title="Delete sponsor?"
                     description="This removes the sponsor from the public page."
-                    onConfirm={() => del(s.id)}
+                    onConfirm={async () => {
+                      await del(s.id);
+                    }}
                   >
                     <Button size="icon" variant="ghost">
                       <Trash2 className="h-4 w-4 text-destructive" />
