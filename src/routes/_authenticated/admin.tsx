@@ -122,7 +122,8 @@ function AdminLayout() {
         <div className="flex-1 flex flex-col min-w-0">
           <header className="h-12 flex items-center gap-2 border-b px-2">
             <SidebarTrigger />
-            <div className="ml-auto pr-2">
+            <div className="ml-auto flex items-center gap-2 pr-2">
+              <TournamentSelector />
               <ThemeToggle />
             </div>
           </header>
