@@ -26,6 +26,7 @@ import {
   LogOut,
   KeyRound,
   Settings,
+  Handshake,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
