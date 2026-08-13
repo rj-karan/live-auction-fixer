@@ -166,6 +166,7 @@ export type Database = {
           photo_url: string | null
           player_number: string | null
           role: string | null
+          round_2_eligible: boolean
           state: string | null
           status: Database["public"]["Enums"]["player_status"]
           team_id: string | null
@@ -192,6 +193,7 @@ export type Database = {
           photo_url?: string | null
           player_number?: string | null
           role?: string | null
+          round_2_eligible?: boolean
           state?: string | null
           status?: Database["public"]["Enums"]["player_status"]
           team_id?: string | null
@@ -218,6 +220,7 @@ export type Database = {
           photo_url?: string | null
           player_number?: string | null
           role?: string | null
+          round_2_eligible?: boolean
           state?: string | null
           status?: Database["public"]["Enums"]["player_status"]
           team_id?: string | null
@@ -264,6 +267,50 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      sponsors: {
+        Row: {
+          created_at: string
+          display_order: number
+          id: string
+          is_active: boolean
+          logo_url: string | null
+          name: string
+          tournament_id: string
+          updated_at: string
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name: string
+          tournament_id: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          id?: string
+          is_active?: boolean
+          logo_url?: string | null
+          name?: string
+          tournament_id?: string
+          updated_at?: string
+          website_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "sponsors_tournament_id_fkey"
+            columns: ["tournament_id"]
+            isOneToOne: false
+            referencedRelation: "tournaments"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       teams: {
         Row: {
@@ -346,6 +393,7 @@ export type Database = {
           currency: string
           default_purse: number
           description: string | null
+          display_order: number
           id: string
           location: string | null
           logo_url: string | null
@@ -363,6 +411,7 @@ export type Database = {
           currency?: string
           default_purse?: number
           description?: string | null
+          display_order?: number
           id?: string
           location?: string | null
           logo_url?: string | null
@@ -380,6 +429,7 @@ export type Database = {
           currency?: string
           default_purse?: number
           description?: string | null
+          display_order?: number
           id?: string
           location?: string | null
           logo_url?: string | null
