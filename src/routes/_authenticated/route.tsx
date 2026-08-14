@@ -2,14 +2,33 @@ import {
   createFileRoute,
   Outlet,
   useNavigate,
+  useRouter,
 } from "@tanstack/react-router";
 import { useAdminAuth } from "@/hooks/use-admin-auth";
 import { useEffect } from "react";
+import { Button } from "@/components/ui/button";
 
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   component: AuthGate,
+  errorComponent: AdminError,
 });
+
+function AdminError({ error }: { error: Error }) {
+  const router = useRouter();
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center gap-4 px-6 text-center">
+      <h1 className="text-lg font-bold uppercase tracking-[0.12em]">
+        Admin didn&apos;t load
+      </h1>
+      <p className="max-w-md text-sm text-muted-foreground">
+        {error?.message || "Something interrupted the admin panel."}
+      </p>
+      <Button onClick={() => router.invalidate()}>Retry</Button>
+    </div>
+  );
+}
+
 
 function AuthGate() {
   const { session, isAdmin, loading } = useAdminAuth();
