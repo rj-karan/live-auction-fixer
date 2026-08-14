@@ -78,7 +78,7 @@ export function useTournaments() {
   useEffect(() => {
     load();
     const ch = supabase
-      .channel("tournaments-list")
+      .channel("tournaments-list-" + Math.random())
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "tournaments" },
