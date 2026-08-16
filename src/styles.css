@@ -648,3 +648,111 @@ body::after {
 :root:not(.dark) [class*="bg-card"] {
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
 }
+
+/* ── Broadcast dashboard: grid backdrop, connectors, sponsor stage ───────── */
+
+@utility pitch-grid {
+  position: relative;
+  isolation: isolate;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -10% -5%;
+    z-index: -1;
+    background-image:
+      linear-gradient(color-mix(in oklab, var(--active) 12%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in oklab, var(--neon, var(--primary)) 12%, transparent) 1px, transparent 1px);
+    background-size: 64px 64px, 64px 64px;
+    mask-image: radial-gradient(120% 80% at 50% 20%, #000 30%, transparent 85%);
+    opacity: 0.5;
+    animation: grid-glide 26s linear infinite;
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      radial-gradient(50% 40% at 15% 0%, color-mix(in oklab, var(--active) 10%, transparent), transparent 70%),
+      radial-gradient(45% 40% at 88% 15%, color-mix(in oklab, var(--primary) 12%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+}
+
+@keyframes grid-glide {
+  from { background-position: 0 0, 0 0; }
+  to { background-position: 64px 64px, 64px 64px; }
+}
+
+/* Subtle connector rails between dashboard widgets */
+.dash-grid > .dash-cell::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -1rem;
+  height: 1rem;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, color-mix(in oklab, var(--active) 45%, transparent));
+  opacity: 0.5;
+  pointer-events: none;
+}
+.dash-grid > .dash-cell::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: -0.35rem;
+  height: 5px;
+  width: 5px;
+  translate: -50% 0;
+  border-radius: 9999px;
+  background: var(--active);
+  box-shadow: 0 0 10px 1px color-mix(in oklab, var(--active) 65%, transparent);
+  opacity: 0.65;
+  animation: soft-pulse 3.6s ease-in-out infinite;
+  pointer-events: none;
+}
+.dash-grid--editing > .dash-cell { cursor: grab; }
+
+@utility sponsor-stage {
+  position: relative;
+  overflow: hidden;
+  &::before {
+    content: "";
+    position: absolute;
+    inset: -40%;
+    background: conic-gradient(from 0deg, transparent 0 70%, color-mix(in oklab, var(--active) 22%, transparent) 85%, transparent 100%);
+    animation: sponsor-sweep 9s linear infinite;
+    pointer-events: none;
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(60% 70% at 50% 120%, color-mix(in oklab, var(--primary) 18%, transparent), transparent 70%);
+    pointer-events: none;
+  }
+}
+
+@keyframes sponsor-sweep {
+  to { rotate: 360deg; }
+}
+
+@utility light-sweep {
+  position: relative;
+  overflow: hidden;
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.22) 50%, transparent 65%);
+    transform: translateX(-120%);
+    animation: sweep-x 4.5s ease-in-out infinite;
+    pointer-events: none;
+  }
+}
+
+@keyframes sweep-x {
+  0%, 60% { transform: translateX(-120%); }
+  100% { transform: translateX(120%); }
+}
