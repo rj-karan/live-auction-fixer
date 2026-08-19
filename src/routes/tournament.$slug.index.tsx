@@ -183,7 +183,7 @@ function PublicTournament() {
   const topSale = prices.length ? Math.max(...prices) : 0;
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="pitch-grid min-h-screen bg-background">
       {/* Hero */}
       <div className="relative border-b bg-background text-foreground overflow-hidden">
         <HeroBackdrop variant="stadium" priority assetKey="tournamentHeroBanner" />
@@ -349,7 +349,11 @@ function PublicTournament() {
         </AnimatePresence>
       </main>
 
-      <SoldAnnouncement item={queue[0] ?? null} onDismiss={dismissAnnouncement} />
+      <SoldAnnouncement
+        item={queue[0] ?? null}
+        onDismiss={dismissAnnouncement}
+        sponsors={sponsors}
+      />
     </div>
   );
 }
