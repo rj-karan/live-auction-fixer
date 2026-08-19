@@ -391,39 +391,67 @@ function OverviewSection({
   tournament,
   onSection,
 }: any) {
-  const recent = events.filter((e: any) => !e.is_undone && !e.event_type.startsWith("undo")).slice(0, 5);
-  return (
-    <div className="space-y-6">
-      <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
-        <StatMini label="Teams" value={teams.length} count={teams.length} icon={<Users className="h-3.5 w-3.5" />} />
-        <StatMini label="Players" value={players.length} count={players.length} icon={<User className="h-3.5 w-3.5" />} />
-        <StatMini label="Sold" value={sold.length} count={sold.length} accent />
-        <StatMini label="Available" value={available.length} count={available.length} />
-        <StatMini label="Unsold" value={unsold.length} count={unsold.length} />
-        <StatMini
-          label="Spent"
-          value={
-            <CountUp value={Number(totalSpent)} format={(n) => formatMoney(n, currency)} />
-          }
-          icon={<Coins className="h-3.5 w-3.5" />}
-        />
-      </div>
+  const { isAdmin } = useAdminAuth();
+  const { layout, setLayout, save, reset } = useDashboardLayout(tournament.id);
+  const [editing, setEditing] = useState(false);
+  const [saving, setSaving] = useState(false);
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <div className="lg:col-span-2 space-y-4">
-          <LiveAuctionPanel
-            tournamentId={tournament.id}
-            currency={currency}
-            players={players}
-            teams={teams}
+  const recent = events
+    .filter((e: any) => !e.is_undone && !e.event_type.startsWith("undo"))
+    .slice(0, 6);
+
+  const prices = sold.map((p: any) => Number(p.final_price)).filter(Boolean);
+  const avgPrice = prices.length
+    ? prices.reduce((a: number, b: number) => a + b, 0) / prices.length
+    : 0;
+  const topSale = prices.length ? Math.max(...prices) : 0;
+  const usedPct = totalInitial ? (totalSpent / totalInitial) * 100 : 0;
+
+  const widgets: WidgetNode[] = [
+    {
+      id: "pulse",
+      node: (
+        <div className="grid gap-3 grid-cols-2 md:grid-cols-3 lg:grid-cols-6">
+          <StatMini label="Teams" value={teams.length} count={teams.length} icon={<Users className="h-3.5 w-3.5" />} />
+          <StatMini label="Players" value={players.length} count={players.length} icon={<User className="h-3.5 w-3.5" />} />
+          <StatMini label="Sold" value={sold.length} count={sold.length} accent />
+          <StatMini label="Available" value={available.length} count={available.length} />
+          <StatMini label="Unsold" value={unsold.length} count={unsold.length} />
+          <StatMini
+            label="Spent"
+            value={<CountUp value={Number(totalSpent)} format={(n) => formatMoney(n, currency)} />}
+            icon={<Coins className="h-3.5 w-3.5" />}
           />
-
-          <SectionHeader title="Latest Results" action={
-            <button onClick={() => onSection("results")} className="text-sm text-active hover:underline flex items-center gap-1">
-              View all <ChevronRight className="h-3.5 w-3.5" />
-            </button>
-          } />
-          <Card className="glass-card">
+        </div>
+      ),
+    },
+    {
+      id: "live",
+      node: (
+        <LiveAuctionPanel
+          tournamentId={tournament.id}
+          currency={currency}
+          players={players}
+          teams={teams}
+        />
+      ),
+    },
+    {
+      id: "results",
+      node: (
+        <div className="flex h-full flex-col">
+          <SectionHeader
+            title="Latest Results"
+            action={
+              <button
+                onClick={() => onSection("results")}
+                className="text-sm text-active hover:underline flex items-center gap-1"
+              >
+                View all <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            }
+          />
+          <Card className="corner-frame glass-card flex-1">
             <CardContent className="p-0">
               {recent.length === 0 ? (
                 <EmptyState
@@ -434,52 +462,154 @@ function OverviewSection({
                 />
               ) : (
                 <ul className="divide-y">
-                  {recent.map((e: any) => (
-                    <li key={e.id} className="flex items-center justify-between px-4 py-3">
-                      <div className="min-w-0">
-                        <div className="font-medium truncate">{e.player_name_snapshot}</div>
-                        <div className="text-xs text-muted-foreground truncate">
-                          {e.event_type === "sale" ? `→ ${e.team_name_snapshot}` : "Marked unsold"}
+                  <AnimatePresence initial={false}>
+                    {recent.map((e: any, i: number) => (
+                      <motion.li
+                        key={e.id}
+                        layout
+                        initial={{ opacity: 0, x: -24 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 24 }}
+                        transition={{
+                          duration: 0.35,
+                          delay: Math.min(i, 6) * 0.04,
+                          ease: [0.22, 1, 0.36, 1],
+                        }}
+                        className="flex items-center justify-between px-4 py-3"
+                      >
+                        <div className="min-w-0">
+                          <div className="font-medium truncate">{e.player_name_snapshot}</div>
+                          <div className="text-xs text-muted-foreground truncate">
+                            {e.event_type === "sale" ? `→ ${e.team_name_snapshot}` : "Marked unsold"}
+                          </div>
                         </div>
-                      </div>
-                      <div className={cn("font-semibold text-sm", e.event_type === "sale" ? "text-active" : "text-muted-foreground")}>
-                        {e.price ? formatMoney(Number(e.price), currency) : "—"}
-                      </div>
-                    </li>
-                  ))}
+                        <div
+                          className={cn(
+                            "font-semibold text-sm",
+                            e.event_type === "sale" ? "text-active" : "text-muted-foreground",
+                          )}
+                        >
+                          {e.price ? formatMoney(Number(e.price), currency) : "—"}
+                        </div>
+                      </motion.li>
+                    ))}
+                  </AnimatePresence>
                 </ul>
               )}
             </CardContent>
           </Card>
         </div>
-
-        <div className="space-y-4">
+      ),
+    },
+    {
+      id: "purse",
+      node: (
+        <div className="flex h-full flex-col">
           <SectionHeader title="Purse Overview" />
-          <Card className="glass-card">
+          <Card className="corner-frame glass-card flex-1">
             <CardContent className="pt-5 space-y-3">
               <PurseRow label="Total Purse" value={formatMoney(totalInitial, currency)} />
               <PurseRow label="Total Spent" value={formatMoney(totalSpent, currency)} highlight />
               <PurseRow label="Remaining" value={formatMoney(totalRemaining, currency)} />
-              <AnimatedBar
-                className="h-2"
-                pct={totalInitial ? (totalSpent / totalInitial) * 100 : 0}
+              <AnimatedBar className="h-2" pct={usedPct} />
+              <div className="text-right text-[11px] text-muted-foreground">
+                <CountUp value={usedPct} format={(n) => `${n.toFixed(0)}% of purse used`} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      ),
+    },
+    {
+      id: "sponsors",
+      node: <SponsorStrip tournamentId={tournament.id} />,
+    },
+    {
+      id: "teams",
+      node: (
+        <div>
+          <SectionHeader
+            title="Teams"
+            action={
+              <button
+                onClick={() => onSection("teams")}
+                className="text-sm text-active hover:underline flex items-center gap-1"
+              >
+                View all <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            }
+          />
+          <TeamsGrid teams={teams.slice(0, 6)} sold={sold} tournament={tournament} />
+        </div>
+      ),
+    },
+    {
+      id: "stats",
+      node: (
+        <div className="flex h-full flex-col">
+          <SectionHeader title="Statistics" />
+          <Card className="corner-frame glass-card flex-1">
+            <CardContent className="grid grid-cols-2 gap-3 pt-5">
+              <MiniStat label="Avg Price" value={formatMoney(avgPrice, currency)} />
+              <MiniStat label="Top Sale" value={formatMoney(topSale, currency)} accent />
+              <MiniStat label="Sold" value={sold.length} />
+              <MiniStat
+                label="Remaining"
+                value={available.length + unsold.length}
               />
             </CardContent>
           </Card>
-
-          <SponsorStrip tournamentId={tournament.id} />
         </div>
-      </div>
+      ),
+    },
+    {
+      id: "info",
+      node: (
+        <div className="flex h-full flex-col">
+          <SectionHeader title="Tournament Info" />
+          <Card className="corner-frame glass-card flex-1">
+            <CardContent className="space-y-3 pt-5 text-sm">
+              <PurseRow label="Status" value={String(tournament.status).toUpperCase()} highlight />
+              {tournament.location && <PurseRow label="Location" value={tournament.location} />}
+              {tournament.tournament_date && (
+                <PurseRow
+                  label="Date"
+                  value={new Date(tournament.tournament_date).toLocaleDateString()}
+                />
+              )}
+              <PurseRow label="Teams" value={teams.length} />
+              <PurseRow label="Squad size" value={tournament.team_size ?? "—"} />
+              {tournament.description && (
+                <p className="pt-1 text-xs leading-relaxed text-muted-foreground">
+                  {tournament.description}
+                </p>
+              )}
+            </CardContent>
+          </Card>
+        </div>
+      ),
+    },
+  ];
 
-      <div>
-        <SectionHeader title="Teams" action={
-          <button onClick={() => onSection("teams")} className="text-sm text-active hover:underline flex items-center gap-1">
-            View all <ChevronRight className="h-3.5 w-3.5" />
-          </button>
-        } />
-        <TeamsGrid teams={teams.slice(0, 6)} sold={sold} tournament={tournament} />
-      </div>
-    </div>
+  return (
+    <DashboardGrid
+      layout={layout}
+      widgets={widgets}
+      canEdit={isAdmin}
+      editing={editing && isAdmin}
+      onEditingChange={setEditing}
+      onLayoutChange={setLayout}
+      saving={saving}
+      onSave={async () => {
+        setSaving(true);
+        await save(layout);
+        setSaving(false);
+        setEditing(false);
+      }}
+      onReset={async () => {
+        await reset();
+      }}
+    />
   );
 }
 
