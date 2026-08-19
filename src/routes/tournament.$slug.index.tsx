@@ -100,6 +100,8 @@ const SECTIONS: { id: Section; label: string; icon: any }[] = [
 
 function PublicTournament() {
   const defaultTournamentLogo = useBrandAsset("tournamentLogo");
+  const { tournament: _t } = Route.useLoaderData();
+  const sponsors = useSponsors(_t.id);
   const { tournament } = Route.useLoaderData();
   const [teams, setTeams] = useState<any[]>([]);
   const [players, setPlayers] = useState<any[]>([]);
