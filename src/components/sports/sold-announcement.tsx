@@ -1,9 +1,10 @@
 import { useBrandAsset } from "@/lib/branding";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Trophy, User, Gavel } from "lucide-react";
 import { formatMoney } from "@/lib/format";
 import { SpinningBall } from "./hero-backdrop";
+import { SponsorAd, type Sponsor } from "./sponsor-strip";
 
 export type SoldAnnouncementItem = {
   key: string;
