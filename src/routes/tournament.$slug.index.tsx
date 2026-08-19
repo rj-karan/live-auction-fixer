@@ -13,6 +13,10 @@ import { formatMoney } from "@/lib/format";
 import { brandAsset, useBrandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { HeroBackdrop, SpinningBall } from "@/components/sports/hero-backdrop";
+import { DashboardGrid, type WidgetNode } from "@/components/sports/dashboard-grid";
+import { useDashboardLayout } from "@/lib/dashboard-layout";
+import { useAdminAuth } from "@/hooks/use-admin-auth";
+import { useSponsors } from "@/components/sports/sponsor-strip";
 import {
   SoldAnnouncement,
   type SoldAnnouncementItem,
