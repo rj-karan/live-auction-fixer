@@ -231,6 +231,22 @@ export function SoldAnnouncement({
               </div>
             </motion.div>
 
+            {/* Mid-sequence sponsor slot */}
+            <AnimatePresence>
+              {sponsor && showSponsor && (
+                <motion.div
+                  key={`sponsor-${sponsor.id}`}
+                  className="mt-5 flex justify-center border-t border-active/25 pt-5"
+                  initial={reduce ? false : { opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <SponsorAd sponsor={sponsor} />
+                </motion.div>
+              )}
+            </AnimatePresence>
+
             <p className="mt-4 text-center text-[11px] text-muted-foreground">
               Tap anywhere to close
             </p>
