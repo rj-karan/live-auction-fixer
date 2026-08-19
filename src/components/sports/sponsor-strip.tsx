@@ -16,6 +16,9 @@ export type Sponsor = {
 /** Shared loader for active sponsors of a tournament (live-updating). */
 export function useSponsors(tournamentId: string) {
   const [sponsors, setSponsors] = useState<Sponsor[]>([]);
+  // Unique per hook instance so two consumers never share one channel topic.
+  const channelId = useRef(Math.random().toString(36).slice(2));
+
 
   useEffect(() => {
     let cancelled = false;
