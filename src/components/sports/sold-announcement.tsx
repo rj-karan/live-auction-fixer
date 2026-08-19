@@ -38,14 +38,25 @@ export function SoldAnnouncement({
   item,
   onDismiss,
   duration = 7000,
+  sponsors = [],
 }: {
   item: SoldAnnouncementItem | null;
   onDismiss: () => void;
   duration?: number;
+  /** Active sponsors — one is picked at random and shown mid-sequence. */
+  sponsors?: Sponsor[];
 }) {
   const soldBg = useBrandAsset("soldAnimationBg");
   const reduce = useReducedMotion();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showSponsor, setShowSponsor] = useState(false);
+
+  /** Random active sponsor, stable for the life of one announcement. */
+  const sponsor = useMemo(() => {
+    if (!item || sponsors.length === 0) return null;
+    return sponsors[Math.floor(Math.random() * sponsors.length)] ?? null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item?.key, sponsors]);
 
   useEffect(() => {
     if (!item) return;
@@ -54,6 +65,24 @@ export function SoldAnnouncement({
       if (timer.current) clearTimeout(timer.current);
     };
   }, [item, duration, onDismiss]);
+
+  // Mid-sequence sponsor slot: appears after the bid reveal, then fades out.
+  useEffect(() => {
+    if (!item || !sponsor) {
+      setShowSponsor(false);
+      return;
+    }
+    const inAt = Math.min(2200, duration * 0.35);
+    const outAt = Math.min(duration - 600, inAt + 2600);
+    const t1 = setTimeout(() => setShowSponsor(true), inAt);
+    const t2 = setTimeout(() => setShowSponsor(false), outAt);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      setShowSponsor(false);
+    };
+  }, [item, sponsor, duration]);
+
 
   return (
     <AnimatePresence>
