@@ -111,7 +111,19 @@ export function LiveAuctionPanel({
         "bg-[linear-gradient(150deg,color-mix(in_oklab,var(--card)_92%,transparent),color-mix(in_oklab,var(--active)_10%,transparent))]",
       )}
     >
-      <CardContent className="relative p-4 sm:p-5">
+      {/* Bid pulse: golden ring sweeps the panel each time the bid changes */}
+      <AnimatePresence>
+        {flash && !reduce && (
+          <motion.span
+            key={`ring-${flash.id}`}
+            className="pointer-events-none absolute inset-0 z-0 rounded-xl ring-2 ring-active"
+            initial={{ opacity: 0.9, scale: 0.985 }}
+            animate={{ opacity: 0, scale: 1.01 }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+        )}
+      </AnimatePresence>
+      <CardContent className="relative z-10 p-4 sm:p-5">
         <div className="flex items-center justify-between">
           <LiveDot label={sold ? "SOLD" : unsold ? "UNSOLD" : "LIVE AUCTION"} />
           <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">

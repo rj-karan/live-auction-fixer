@@ -1,9 +1,10 @@
 import { useBrandAsset } from "@/lib/branding";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Trophy, User, Gavel } from "lucide-react";
 import { formatMoney } from "@/lib/format";
 import { SpinningBall } from "./hero-backdrop";
+import { SponsorAd, type Sponsor } from "./sponsor-strip";
 
 export type SoldAnnouncementItem = {
   key: string;
@@ -37,14 +38,25 @@ export function SoldAnnouncement({
   item,
   onDismiss,
   duration = 7000,
+  sponsors = [],
 }: {
   item: SoldAnnouncementItem | null;
   onDismiss: () => void;
   duration?: number;
+  /** Active sponsors — one is picked at random and shown mid-sequence. */
+  sponsors?: Sponsor[];
 }) {
   const soldBg = useBrandAsset("soldAnimationBg");
   const reduce = useReducedMotion();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [showSponsor, setShowSponsor] = useState(false);
+
+  /** Random active sponsor, stable for the life of one announcement. */
+  const sponsor = useMemo(() => {
+    if (!item || sponsors.length === 0) return null;
+    return sponsors[Math.floor(Math.random() * sponsors.length)] ?? null;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [item?.key, sponsors]);
 
   useEffect(() => {
     if (!item) return;
@@ -53,6 +65,24 @@ export function SoldAnnouncement({
       if (timer.current) clearTimeout(timer.current);
     };
   }, [item, duration, onDismiss]);
+
+  // Mid-sequence sponsor slot: appears after the bid reveal, then fades out.
+  useEffect(() => {
+    if (!item || !sponsor) {
+      setShowSponsor(false);
+      return;
+    }
+    const inAt = Math.min(2200, duration * 0.35);
+    const outAt = Math.min(duration - 600, inAt + 2600);
+    const t1 = setTimeout(() => setShowSponsor(true), inAt);
+    const t2 = setTimeout(() => setShowSponsor(false), outAt);
+    return () => {
+      clearTimeout(t1);
+      clearTimeout(t2);
+      setShowSponsor(false);
+    };
+  }, [item, sponsor, duration]);
+
 
   return (
     <AnimatePresence>
@@ -200,6 +230,22 @@ export function SoldAnnouncement({
                 {formatMoney(item.price, item.currency)}
               </div>
             </motion.div>
+
+            {/* Mid-sequence sponsor slot */}
+            <AnimatePresence>
+              {sponsor && showSponsor && (
+                <motion.div
+                  key={`sponsor-${sponsor.id}`}
+                  className="mt-5 flex justify-center border-t border-active/25 pt-5"
+                  initial={reduce ? false : { opacity: 0, y: 14 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <SponsorAd sponsor={sponsor} />
+                </motion.div>
+              )}
+            </AnimatePresence>
 
             <p className="mt-4 text-center text-[11px] text-muted-foreground">
               Tap anywhere to close
