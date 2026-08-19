@@ -33,7 +33,7 @@ export function useSponsors(tournamentId: string) {
     };
     load();
     const ch = supabase
-      .channel(`sponsors-${tournamentId}`)
+      .channel(`sponsors-${tournamentId}-${channelId.current}`)
       .on("postgres_changes", { event: "*", schema: "public", table: "sponsors" }, load)
       .subscribe();
     return () => {
