@@ -71,6 +71,7 @@ function PlayerPage() {
   const [player, setPlayer] = useState<any>(initial);
   const [team, setTeam] = useState<any>(null);
   const [event, setEvent] = useState<any>(null);
+  const [roundHistory, setRoundHistory] = useState<any[]>([]);
   const c = tournament.currency;
 
   useEffect(() => {
@@ -94,9 +95,13 @@ function PlayerPage() {
         .select("*")
         .eq("player_id", initial.id)
         .eq("is_undone", false)
-        .order("created_at", { ascending: false })
-        .limit(1);
-      if (!cancelled) setEvent(e?.[0] ?? null);
+        .order("created_at", { ascending: false });
+      if (!cancelled) {
+        setEvent(e?.[0] ?? null);
+        setRoundHistory(
+          (e ?? []).filter((x: any) => x.event_type === "sale" || x.event_type === "unsold"),
+        );
+      }
     };
     load();
     const ch = supabase
