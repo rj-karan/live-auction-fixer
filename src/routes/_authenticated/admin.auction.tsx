@@ -403,7 +403,10 @@ function AuctionPage() {
         {/* LEFT: queue */}
         <Card className="order-4 flex max-h-[calc(100vh-190px)] flex-col overflow-hidden lg:order-none">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Player Queue ({available.length})</CardTitle>
+            <CardTitle className="text-base">
+              {activeRound === 2 ? "Round 2 — Unsold Players" : "Player Queue"} ({available.length}
+              )
+            </CardTitle>
             <div className="relative">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -443,7 +446,7 @@ function AuctionPage() {
                     </span>
                   </span>
                   <Badge variant="outline" className="shrink-0 text-[10px]">
-                    R{p.auction_round ?? 1}
+                    {activeRound === 2 ? "R1 Unsold" : `R${p.auction_round ?? 1}`}
                   </Badge>
                 </button>
               );
@@ -497,11 +500,17 @@ function AuctionPage() {
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-active-soft px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-active">
                         <Gavel className="h-3 w-3" /> Bidding Live
                       </span>
+                      {activeRound === 2 && (
+                        <span className="rounded-full border border-active/50 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-active">
+                          Round 2 · Second Chance
+                        </span>
+                      )}
                     </div>
                     <p className="mt-0.5 text-sm uppercase tracking-wide text-muted-foreground">
                       {current.role || "—"}
                       {current.player_number ? ` · #${current.player_number}` : ""} · Round{" "}
                       {current.auction_round ?? 1}
+                      {activeRound === 2 ? " · Round 1 status: Unsold" : ""}
                     </p>
 
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">
