@@ -99,7 +99,10 @@ function AuctionPage() {
   }, [tournament?.id, selectedPlayer, selectedTeam, price]);
 
   const c = tournament?.currency ?? "₹";
-  const available = players.filter((p) => p.status === "available");
+  const activeRound = Number(tournament?.current_round ?? 1) || 1;
+  const available = players.filter(
+    (p) => p.status === "available" && (Number(p.auction_round) || 1) === activeRound,
+  );
   const filtered = available.filter((p) =>
     q ? p.name.toLowerCase().includes(q.toLowerCase()) : true,
   );
@@ -308,8 +311,35 @@ function AuctionPage() {
   if (!tournament)
     return <p className="text-muted-foreground">Create a tournament first.</p>;
 
-  const playerIndex = current ? players.findIndex((p) => p.id === current.id) + 1 : 0;
+  const playerIndex = current ? available.findIndex((p) => p.id === current.id) + 1 : 0;
   const photo = current?.photo_url || defaultPhoto || placeholderPhoto;
+
+  // ---- round state (additive: derived from existing player rows) -----------
+  const roundPlayers = (r: number) => players.filter((p) => (Number(p.auction_round) || 1) === r);
+  const round1Done =
+    players.length > 0 && roundPlayers(1).every((p) => p.status !== "available");
+  const round2 = roundPlayers(2);
+  const round2Sold = round2.filter((p) => p.status === "sold");
+  const round2Unsold = round2.filter((p) => p.status === "unsold");
+  const round2Spend = round2Sold.reduce((s, p) => s + Number(p.final_price ?? 0), 0);
+  const round2Done = activeRound === 2 && round2.length > 0 && available.length === 0;
+  const canStartRound2 =
+    activeRound === 1 && round1Done && roundPlayers(1).some((p) => p.status === "unsold");
+
+  const startRound2 = async () => {
+    if (!tournament) return;
+    if (!confirm("Start Round 2 with the players who went unsold in Round 1?")) return;
+    setBusy(true);
+    const { data, error } = await supabase.rpc("start_round_2" as any, {
+      p_tournament_id: tournament.id,
+    } as any);
+    setBusy(false);
+    if (error) return toast.error(error.message);
+    setSelectedPlayer(null);
+    setSelectedTeam(null);
+    toast.success(`Round 2 started with ${data ?? 0} unsold players`);
+    load();
+  };
 
   return (
     <div className="space-y-4">
@@ -324,8 +354,18 @@ function AuctionPage() {
             />
             Live Auction
           </span>
-          <Meta label="Round" value={`${current?.auction_round ?? 1}`} />
-          <Meta label="Player" value={`${playerIndex || "—"} / ${players.length}`} />
+          <Badge
+            className={cn(
+              "shrink-0 border-0 text-[10px] font-black uppercase tracking-wider",
+              activeRound === 2
+                ? "bg-active text-active-foreground"
+                : "bg-primary text-primary-foreground",
+            )}
+          >
+            Round {activeRound}
+            {activeRound === 2 ? " — Unsold Re-auction" : ""}
+          </Badge>
+          <Meta label="Player" value={`${playerIndex || "—"} / ${available.length}`} />
           <Meta label="Current" value={current?.name ?? "—"} />
           <Meta label="Bid" value={bidValue != null ? formatMoney(bidValue, c) : "—"} accent />
           <Meta label="Leader" value={currentTeam?.name ?? "—"} />
@@ -335,11 +375,38 @@ function AuctionPage() {
         </Button>
       </div>
 
+      {/* ROUND CONTROL */}
+      {(canStartRound2 || (activeRound === 1 && round1Done) || round2Done) && (
+        <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-active/40 bg-active-soft/30 px-4 py-3">
+          <div className="min-w-0">
+            <div className="text-sm font-black uppercase tracking-wider">
+              {round2Done ? "Round 2 Completed" : "Round 1 Completed"}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              {round2Done
+                ? `Round 2 players ${round2.length} · Sold ${round2Sold.length} · Unsold again ${round2Unsold.length} · Total spend ${formatMoney(round2Spend, c)}`
+                : canStartRound2
+                  ? `${roundPlayers(1).filter((p) => p.status === "unsold").length} players went unsold and can get a second chance.`
+                  : "Every Round 1 player has been sold. No unsold players to re-auction."}
+            </p>
+          </div>
+          {canStartRound2 && (
+            <Button size="lg" onClick={startRound2} disabled={busy}>
+              Start Round 2
+            </Button>
+          )}
+        </div>
+      )}
+
+
       <div className="grid gap-4 lg:grid-cols-[300px_minmax(0,1fr)] xl:grid-cols-[300px_minmax(0,1fr)_320px]">
         {/* LEFT: queue */}
         <Card className="order-4 flex max-h-[calc(100vh-190px)] flex-col overflow-hidden lg:order-none">
           <CardHeader className="pb-2">
-            <CardTitle className="text-base">Player Queue ({available.length})</CardTitle>
+            <CardTitle className="text-base">
+              {activeRound === 2 ? "Round 2 — Unsold Players" : "Player Queue"} ({available.length}
+              )
+            </CardTitle>
             <div className="relative">
               <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
               <Input
@@ -379,7 +446,7 @@ function AuctionPage() {
                     </span>
                   </span>
                   <Badge variant="outline" className="shrink-0 text-[10px]">
-                    R{p.auction_round ?? 1}
+                    {activeRound === 2 ? "R1 Unsold" : `R${p.auction_round ?? 1}`}
                   </Badge>
                 </button>
               );
@@ -433,11 +500,17 @@ function AuctionPage() {
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-active-soft px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider text-active">
                         <Gavel className="h-3 w-3" /> Bidding Live
                       </span>
+                      {activeRound === 2 && (
+                        <span className="rounded-full border border-active/50 px-2.5 py-0.5 text-[10px] font-black uppercase tracking-wider text-active">
+                          Round 2 · Second Chance
+                        </span>
+                      )}
                     </div>
                     <p className="mt-0.5 text-sm uppercase tracking-wide text-muted-foreground">
                       {current.role || "—"}
                       {current.player_number ? ` · #${current.player_number}` : ""} · Round{" "}
                       {current.auction_round ?? 1}
+                      {activeRound === 2 ? " · Round 1 status: Unsold" : ""}
                     </p>
 
                     <div className="mt-4 grid gap-3 sm:grid-cols-3">

@@ -71,6 +71,7 @@ function PlayerPage() {
   const [player, setPlayer] = useState<any>(initial);
   const [team, setTeam] = useState<any>(null);
   const [event, setEvent] = useState<any>(null);
+  const [roundHistory, setRoundHistory] = useState<any[]>([]);
   const c = tournament.currency;
 
   useEffect(() => {
@@ -94,9 +95,13 @@ function PlayerPage() {
         .select("*")
         .eq("player_id", initial.id)
         .eq("is_undone", false)
-        .order("created_at", { ascending: false })
-        .limit(1);
-      if (!cancelled) setEvent(e?.[0] ?? null);
+        .order("created_at", { ascending: false });
+      if (!cancelled) {
+        setEvent(e?.[0] ?? null);
+        setRoundHistory(
+          (e ?? []).filter((x: any) => x.event_type === "sale" || x.event_type === "unsold"),
+        );
+      }
     };
     load();
     const ch = supabase
@@ -358,6 +363,35 @@ function PlayerPage() {
                 icon={<MapPin className="h-4 w-4" />}
               />
             </Reveal>
+
+            {roundHistory.length > 0 && (
+              <Card className="glass-card border-active/30">
+                <CardContent className="py-4">
+                  <div className="text-[11px] uppercase tracking-[0.2em] text-muted-foreground">
+                    Auction History
+                  </div>
+                  <ul className="mt-2 space-y-1.5 text-sm">
+                    {[...roundHistory]
+                      .sort((a, b) => (a.auction_round ?? 1) - (b.auction_round ?? 1))
+                      .map((h) => (
+                        <li key={h.id} className="flex flex-wrap items-center gap-2">
+                          <span className="rounded bg-muted px-1.5 py-0.5 text-[10px] font-black uppercase">
+                            Round {h.auction_round ?? 1}
+                          </span>
+                          {h.event_type === "sale" ? (
+                            <span className="font-semibold text-active">
+                              Sold — {formatMoney(Number(h.price ?? 0), c)}
+                              {h.team_name_snapshot ? ` — ${h.team_name_snapshot}` : ""}
+                            </span>
+                          ) : (
+                            <span className="font-semibold text-muted-foreground">Unsold</span>
+                          )}
+                        </li>
+                      ))}
+                  </ul>
+                </CardContent>
+              </Card>
+            )}
 
             {cricheroesLink && (
               <Card className="glass-card border-active/30">

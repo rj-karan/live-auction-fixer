@@ -101,6 +101,7 @@ export function LiveAuctionPanel({
   const photo = player.photo_url || defaultPhoto || placeholderPhoto;
   const teamLogo = team?.logo_url || defaultTeamLogo;
   const bid = live?.current_bid != null ? Number(live.current_bid) : null;
+  const round = Number(live?.round ?? player.auction_round ?? 1) || 1;
   const sold = status === "sold";
   const unsold = status === "unsold";
 
@@ -127,10 +128,12 @@ export function LiveAuctionPanel({
         <div className="flex items-center justify-between">
           <LiveDot label={sold ? "SOLD" : unsold ? "UNSOLD" : "LIVE AUCTION"} />
           <span className="text-[11px] font-semibold uppercase tracking-[0.2em] text-muted-foreground">
-            Round {live?.round ?? player.auction_round ?? 1}
+            Round {round}
           </span>
         </div>
-        <p className="mt-0.5 text-[11px] uppercase tracking-[0.25em] text-active">Now on Auction</p>
+        <p className="mt-0.5 text-[11px] uppercase tracking-[0.25em] text-active">
+          {round >= 2 ? "Round 2 · Second Chance — Now on Auction" : "Now on Auction"}
+        </p>
 
         <div className="mt-4 flex flex-col gap-4 sm:flex-row sm:items-start">
           <motion.div

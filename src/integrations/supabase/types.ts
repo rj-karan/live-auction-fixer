@@ -423,6 +423,7 @@ export type Database = {
           banner_url: string | null
           created_at: string
           currency: string
+          current_round: number
           default_purse: number
           description: string | null
           display_order: number
@@ -441,6 +442,7 @@ export type Database = {
           banner_url?: string | null
           created_at?: string
           currency?: string
+          current_round?: number
           default_purse?: number
           description?: string | null
           display_order?: number
@@ -459,6 +461,7 @@ export type Database = {
           banner_url?: string | null
           created_at?: string
           currency?: string
+          current_round?: number
           default_purse?: number
           description?: string | null
           display_order?: number
@@ -490,6 +493,7 @@ export type Database = {
         Args: { p_player_id: string }
         Returns: undefined
       }
+      start_round_2: { Args: { p_tournament_id: string }; Returns: number }
       undo_last_event: { Args: { p_tournament_id: string }; Returns: string }
     }
     Enums: {
