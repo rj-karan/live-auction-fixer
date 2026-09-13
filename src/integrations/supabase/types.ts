@@ -361,6 +361,8 @@ export type Database = {
           remaining_purse: number
           short_name: string
           slug: string
+          sponsor_logo_url: string | null
+          sponsor_name: string | null
           theme_color: string | null
           total_spent: number
           tournament_id: string
@@ -382,6 +384,8 @@ export type Database = {
           remaining_purse: number
           short_name: string
           slug: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
           theme_color?: string | null
           total_spent?: number
           tournament_id: string
@@ -403,6 +407,8 @@ export type Database = {
           remaining_purse?: number
           short_name?: string
           slug?: string
+          sponsor_logo_url?: string | null
+          sponsor_name?: string | null
           theme_color?: string | null
           total_spent?: number
           tournament_id?: string
