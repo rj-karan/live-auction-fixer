@@ -194,25 +194,31 @@ export function SponsorAd({ sponsor }: { sponsor: Sponsor }) {
   const reduce = useReducedMotion();
   return (
     <motion.div
-      className="pointer-events-none flex flex-col items-center gap-2"
-      initial={reduce ? false : { opacity: 0, scale: 0.7 }}
+      className="pointer-events-none w-full max-w-xl"
+      initial={reduce ? false : { opacity: 0, scale: 0.94, y: 12 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+      exit={{ opacity: 0, scale: 0.97, y: -8 }}
+      transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
     >
-      <span className="text-[10px] font-semibold uppercase tracking-[0.34em] text-muted-foreground">
-        Powered by
-      </span>
-      <div className="light-sweep grid min-h-[6rem] min-w-[13rem] place-items-center rounded-2xl border border-active/40 bg-background/70 px-6 py-4 shadow-[0_0_50px_-14px_var(--active)]">
-        {sponsor.logo_url ? (
-          <img src={sponsor.logo_url} alt={sponsor.name} className="max-h-20 w-auto object-contain" />
-        ) : (
-          <Handshake className="h-10 w-10 text-active" />
-        )}
+      <div className="light-sweep flex min-h-24 items-center justify-center gap-4 rounded-xl border border-active/35 bg-background/75 px-5 py-4 shadow-[0_18px_45px_-28px_var(--active)] sm:min-h-28 sm:px-8">
+        <div className="min-w-0 text-center sm:text-left">
+          <span className="block text-[9px] font-semibold uppercase tracking-[0.28em] text-muted-foreground">
+            Broadcast partner
+          </span>
+          <span className="mt-1 block max-w-44 truncate text-sm font-black uppercase text-active sm:text-base">
+            {sponsor.name}
+          </span>
+        </div>
+        <div className="h-14 w-32 shrink-0 border-l border-active/20 pl-4 sm:h-20 sm:w-48 sm:pl-6">
+          {sponsor.logo_url ? (
+            <img src={sponsor.logo_url} alt={sponsor.name} className="h-full w-full object-contain" />
+          ) : (
+            <div className="grid h-full w-full place-items-center">
+              <Handshake className="h-9 w-9 text-active" />
+            </div>
+          )}
+        </div>
       </div>
-      <span className="text-sm font-bold uppercase tracking-[0.2em] text-active">
-        {sponsor.name}
-      </span>
     </motion.div>
   );
 }

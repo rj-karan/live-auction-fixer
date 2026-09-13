@@ -12,6 +12,8 @@ export type SoldAnnouncementItem = {
   playerPhoto?: string | null;
   teamName: string;
   teamLogo?: string | null;
+  teamSponsor?: Sponsor | null;
+  fallbackSponsorIndex?: number;
   price: number;
   currency: string;
 };
@@ -43,7 +45,7 @@ export function SoldAnnouncement({
   item: SoldAnnouncementItem | null;
   onDismiss: () => void;
   duration?: number;
-  /** Active sponsors — one is picked at random and shown mid-sequence. */
+  /** Active tournament sponsors, used only when the winning team has no sponsor image. */
   sponsors?: Sponsor[];
 }) {
   const soldBg = useBrandAsset("soldAnimationBg");
@@ -51,12 +53,12 @@ export function SoldAnnouncement({
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showSponsor, setShowSponsor] = useState(false);
 
-  /** Random active sponsor, stable for the life of one announcement. */
   const sponsor = useMemo(() => {
-    if (!item || sponsors.length === 0) return null;
-    return sponsors[Math.floor(Math.random() * sponsors.length)] ?? null;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [item?.key, sponsors]);
+    if (!item) return null;
+    if (item.teamSponsor?.logo_url) return item.teamSponsor;
+    if (sponsors.length === 0) return null;
+    return sponsors[(item.fallbackSponsorIndex ?? 0) % sponsors.length] ?? null;
+  }, [item, sponsors]);
 
   useEffect(() => {
     if (!item) return;
@@ -115,7 +117,7 @@ export function SoldAnnouncement({
           {!reduce && <Confetti />}
 
           <motion.div
-            className="relative z-10 w-full max-w-3xl overflow-hidden rounded-3xl border border-active/50 bg-card/85 p-5 shadow-[0_30px_90px_-30px_var(--active)] sm:p-8"
+            className="relative z-10 max-h-[94vh] w-full max-w-4xl overflow-y-auto rounded-2xl border border-active/50 bg-card/90 p-4 shadow-[0_30px_90px_-30px_var(--active)] sm:p-7"
             initial={{ opacity: 0, scale: 0.86, y: 24 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.94 }}
@@ -158,7 +160,7 @@ export function SoldAnnouncement({
               )}
             </div>
 
-            <div className="grid items-center gap-5 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+            <div className="grid items-center gap-4 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] sm:gap-5">
               {/* player */}
               <motion.div
                 className="flex min-w-0 flex-col items-center gap-3 text-center"
@@ -166,7 +168,7 @@ export function SoldAnnouncement({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 0.85, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-2xl border-2 border-active/70 bg-muted shadow-[0_0_40px_-10px_var(--active)] sm:h-36 sm:w-36">
+                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-xl border-2 border-active/70 bg-muted shadow-[0_0_40px_-10px_var(--active)] sm:h-36 sm:w-36">
                   {item.playerPhoto ? (
                     <img src={item.playerPhoto} alt="" className="h-full w-full object-cover" />
                   ) : (
@@ -175,7 +177,7 @@ export function SoldAnnouncement({
                     </div>
                   )}
                 </div>
-                <p className="max-w-full truncate text-xl font-black uppercase tracking-tight sm:text-3xl">
+                <p className="max-w-full truncate text-lg font-black uppercase sm:text-3xl">
                   {item.playerName}
                 </p>
               </motion.div>
@@ -202,7 +204,7 @@ export function SoldAnnouncement({
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ delay: 1, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
               >
-                <div className="relative h-24 w-24 shrink-0 overflow-hidden rounded-2xl border-2 border-active/60 bg-muted shadow-[0_0_40px_-12px_var(--active)] sm:h-32 sm:w-32">
+                <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-xl border-2 border-active/60 bg-muted shadow-[0_0_40px_-12px_var(--active)] sm:h-32 sm:w-32">
                   {item.teamLogo ? (
                     <img src={item.teamLogo} alt="" className="h-full w-full object-cover" />
                   ) : (
@@ -218,7 +220,7 @@ export function SoldAnnouncement({
             </div>
 
             <motion.div
-              className="relative mt-5 text-center"
+              className="relative mt-4 text-center"
               initial={reduce ? false : { opacity: 0, scale: 0.7 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ delay: 1.35, type: "spring", stiffness: 240, damping: 18 }}
@@ -236,7 +238,7 @@ export function SoldAnnouncement({
               {sponsor && showSponsor && (
                 <motion.div
                   key={`sponsor-${sponsor.id}`}
-                  className="mt-5 flex justify-center border-t border-active/25 pt-5"
+                  className="mt-4 flex justify-center border-t border-active/25 pt-4"
                   initial={reduce ? false : { opacity: 0, y: 14 }}
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -10 }}

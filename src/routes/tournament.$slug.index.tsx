@@ -144,6 +144,7 @@ function PublicTournament() {
 
   /* ---- Sold announcement queue (UI only, derived from live player rows) ---- */
   const seenSold = useRef<Map<string, string> | null>(null);
+  const fallbackSponsorIndex = useRef(0);
   const [queue, setQueue] = useState<SoldAnnouncementItem[]>([]);
   const dismissAnnouncement = useCallback(() => setQueue((q) => q.slice(1)), []);
 
@@ -161,12 +162,24 @@ function PublicTournament() {
       ...q,
       ...fresh.map((p) => {
         const team = teams.find((t) => t.id === p.team_id);
+        const fallbackIndex = fallbackSponsorIndex.current++;
         return {
           key: `${p.id}-${p.final_price}`,
           playerName: p.name,
           playerPhoto: p.photo_url || brandAsset("playerPhoto") || brandAsset("playerPlaceholder"),
           teamName: team?.name ?? "—",
           teamLogo: team?.logo_url ?? null,
+          teamSponsor:
+            team?.sponsor_logo_url
+              ? {
+                  id: `team-${team.id}`,
+                  name: team.sponsor_name || `${team.name} Partner`,
+                  logo_url: team.sponsor_logo_url,
+                  website_url: null,
+                  display_order: -1,
+                }
+              : null,
+          fallbackSponsorIndex: fallbackIndex,
           price: Number(p.final_price ?? 0),
           currency: tournament.currency,
         } satisfies SoldAnnouncementItem;

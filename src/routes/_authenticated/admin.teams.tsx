@@ -28,6 +28,8 @@ type Form = {
   name: string;
   short_name: string;
   logo_url: string;
+  sponsor_name: string;
+  sponsor_logo_url: string;
   captain_name: string;
   captain_photo_url: string;
   captain_contact: string;
@@ -42,6 +44,8 @@ const emptyForm: Form = {
   name: "",
   short_name: "",
   logo_url: "",
+  sponsor_name: "",
+  sponsor_logo_url: "",
   captain_name: "",
   captain_photo_url: "",
   captain_contact: "",
@@ -83,6 +87,23 @@ function TeamFields({
         onChange={(url) => setForm({ ...form, logo_url: url })}
         folder="teams"
       />
+      <div className="space-y-3 border-t pt-3">
+        <p className="text-sm font-medium">Team Sponsor (optional)</p>
+        <div>
+          <Label>Sponsor Name</Label>
+          <Input
+            value={form.sponsor_name}
+            onChange={(e) => setForm({ ...form, sponsor_name: e.target.value })}
+            placeholder="Official team partner"
+          />
+        </div>
+        <ImageUpload
+          label="Sponsor Image / Logo"
+          value={form.sponsor_logo_url}
+          onChange={(url) => setForm({ ...form, sponsor_logo_url: url })}
+          folder="team-sponsors"
+        />
+      </div>
       <div className="space-y-3 border-t pt-3">
         <p className="text-sm font-medium">Captain</p>
         <div>
@@ -196,6 +217,8 @@ function TeamsPage() {
       short_name: form.short_name,
       slug,
       logo_url: form.logo_url || null,
+      sponsor_name: form.sponsor_name.trim() || null,
+      sponsor_logo_url: form.sponsor_logo_url || null,
       captain_name: form.captain_name,
       captain_photo_url: form.captain_photo_url || null,
       captain_contact: form.captain_contact || null,
@@ -217,6 +240,8 @@ function TeamsPage() {
       captain_photo_url: "",
       captain_contact: "",
       logo_url: "",
+      sponsor_name: "",
+      sponsor_logo_url: "",
       description: "",
     });
     load();
@@ -228,6 +253,8 @@ function TeamsPage() {
       name: t.name ?? "",
       short_name: t.short_name ?? "",
       logo_url: t.logo_url ?? "",
+      sponsor_name: t.sponsor_name ?? "",
+      sponsor_logo_url: t.sponsor_logo_url ?? "",
       captain_name: t.captain_name ?? "",
       captain_photo_url: t.captain_photo_url ?? "",
       captain_contact: t.captain_contact ?? "",
@@ -251,6 +278,8 @@ function TeamsPage() {
         name: editForm.name,
         short_name: editForm.short_name,
         logo_url: editForm.logo_url || null,
+        sponsor_name: editForm.sponsor_name.trim() || null,
+        sponsor_logo_url: editForm.sponsor_logo_url || null,
         captain_name: editForm.captain_name,
         captain_photo_url: editForm.captain_photo_url || null,
         captain_contact: editForm.captain_contact || null,
@@ -354,6 +383,21 @@ function TeamsPage() {
                 <span className="text-muted-foreground">Players:</span>{" "}
                 {t.players_purchased_count}
               </div>
+              {(t.sponsor_name || t.sponsor_logo_url) && (
+                <div className="flex items-center gap-2 border-t pt-2">
+                  {t.sponsor_logo_url && (
+                    <img
+                      src={t.sponsor_logo_url}
+                      alt=""
+                      loading="lazy"
+                      className="h-7 w-10 rounded border bg-muted object-contain p-0.5"
+                    />
+                  )}
+                  <span className="min-w-0 truncate text-xs text-muted-foreground">
+                    Sponsor: {t.sponsor_name || "Team partner"}
+                  </span>
+                </div>
+              )}
             </CardContent>
           </Card>
         ))}
