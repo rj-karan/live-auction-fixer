@@ -251,8 +251,14 @@ function TeamPage() {
       </div>
 
       {/* Team header */}
-      <div className="relative border-b text-primary-foreground overflow-hidden">
+      <div className="relative border-b text-white overflow-hidden [text-shadow:0_2px_12px_rgba(0,0,0,0.75)]">
         <HeroBackdrop variant="trophy" assetKey="teamDetailsBg" className="absolute inset-0" />
+        {/* Dark scrim keeps the white team header legible in every theme */}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.45),rgba(0,0,0,0.2)_45%,rgba(0,0,0,0.55))]"
+        />
+
         <div className="relative mx-auto max-w-6xl px-4 sm:px-6 py-8 sm:py-12">
           <motion.div
             className="flex items-start gap-4"
@@ -277,7 +283,7 @@ function TeamPage() {
                 <span>·</span>
                 <span className="uppercase tracking-wide">{team.short_name}</span>
               </div>
-              <h1 className="text-2xl sm:text-3xl font-black truncate">{team.name}</h1>
+              <h1 className="text-2xl sm:text-3xl font-black truncate text-white">{team.name}</h1>
               <div className="mt-3 flex flex-wrap items-center gap-5">
                 <div className="flex items-center gap-3">
                   {team.captain_photo_url ? (
