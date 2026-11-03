@@ -13,6 +13,7 @@ import { formatMoney } from "@/lib/format";
 import { useBrandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { Undo2, Gavel, User, Trophy, Flame, Search } from "lucide-react";
+import { VerticalPlayerReel } from "@/components/admin/vertical-player-reel";
 
 export const Route = createFileRoute("/_authenticated/admin/auction")({
   component: AuctionPage,
@@ -35,6 +36,9 @@ function AuctionPage() {
   const [flash, setFlash] = useState<number | null>(null);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
+  // Random-selection mode (additive): manual stays the default and untouched.
+  const [selectionMode, setSelectionMode] = useState<"manual" | "random">("manual");
+  const [spinning, setSpinning] = useState(false);
   const holdLive = useRef(false);
   const placeholderPhoto = useBrandAsset("playerPlaceholder");
   const defaultPhoto = useBrandAsset("playerPhoto");
