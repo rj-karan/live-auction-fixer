@@ -489,40 +489,54 @@ function AuctionPage() {
             )}
           </CardHeader>
           <CardContent className="space-y-1.5 overflow-auto">
-            {filtered.map((p) => {
-              const active = selectedPlayer === p.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => setSelectedPlayer(p.id)}
-                  className={cn(
-                    "flex w-full items-center gap-2.5 rounded-lg border px-2 py-1.5 text-left transition-all",
-                    active
-                      ? "border-active bg-active-soft shadow-[0_0_0_1px_var(--active)]"
-                      : "border-transparent hover:border-border hover:bg-accent",
-                  )}
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
-                    {p.photo_url || defaultPhoto ? (
-                      <img src={p.photo_url || defaultPhoto} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <User className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold">{p.name}</span>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {p.role || "—"}
-                      {p.base_price ? ` · ${formatMoney(Number(p.base_price), c)}` : ""}
-                    </span>
-                  </span>
-                  <Badge variant="outline" className="shrink-0 text-[10px]">
-                    {activeRound === 2 ? "R1 Unsold" : `R${p.auction_round ?? 1}`}
-                  </Badge>
-                </button>
-              );
-            })}
-            {filtered.length === 0 && <p className="text-xs text-muted-foreground">No players.</p>}
+            {selectionMode === "manual" ? (
+              <>
+                {filtered.map((p) => {
+                  const active = selectedPlayer === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => setSelectedPlayer(p.id)}
+                      className={cn(
+                        "flex w-full items-center gap-2.5 rounded-lg border px-2 py-1.5 text-left transition-all",
+                        active
+                          ? "border-active bg-active-soft shadow-[0_0_0_1px_var(--active)]"
+                          : "border-transparent hover:border-border hover:bg-accent",
+                      )}
+                    >
+                      <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
+                        {p.photo_url || defaultPhoto ? (
+                          <img src={p.photo_url || defaultPhoto} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <User className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-semibold">{p.name}</span>
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {p.role || "—"}
+                          {p.base_price ? ` · ${formatMoney(Number(p.base_price), c)}` : ""}
+                        </span>
+                      </span>
+                      <Badge variant="outline" className="shrink-0 text-[10px]">
+                        {activeRound === 2 ? "R1 Unsold" : `R${p.auction_round ?? 1}`}
+                      </Badge>
+                    </button>
+                  );
+                })}
+                {filtered.length === 0 && <p className="text-xs text-muted-foreground">No players.</p>}
+              </>
+            ) : (
+              <VerticalPlayerReel
+                pool={available}
+                currency={c}
+                disabled={!!current || busy}
+                disabledReason="Finish or clear (Esc) the current auction before spinning again."
+                onSpinStart={() => setSpinning(true)}
+                onResult={commitRandomPick}
+                tournamentId={tournament.id}
+              />
+            )}
           </CardContent>
         </Card>
 
