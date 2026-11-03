@@ -440,18 +440,53 @@ function AuctionPage() {
         <Card className="order-4 flex max-h-[calc(100vh-190px)] flex-col overflow-hidden lg:order-none">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">
-              {activeRound === 2 ? "Round 2 — Unsold Players" : "Player Queue"} ({available.length}
-              )
+              {selectionMode === "random"
+                ? "Random Selection"
+                : activeRound === 2
+                  ? "Round 2 — Unsold Players"
+                  : "Player Queue"}{" "}
+              ({available.length})
             </CardTitle>
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search players…"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                className="pl-8"
-              />
+            {/* Selection mode toggle — additive; manual behaviour untouched */}
+            <div className="grid grid-cols-2 gap-1 rounded-lg border bg-muted/40 p-1">
+              <button
+                type="button"
+                onClick={() => setSelectionMode("manual")}
+                disabled={spinning}
+                className={cn(
+                  "rounded-md px-2 py-1.5 text-[11px] font-black uppercase tracking-wider transition-colors disabled:opacity-60",
+                  selectionMode === "manual"
+                    ? "bg-active text-active-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                Select Manually
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectionMode("random")}
+                disabled={spinning}
+                className={cn(
+                  "rounded-md px-2 py-1.5 text-[11px] font-black uppercase tracking-wider transition-colors disabled:opacity-60",
+                  selectionMode === "random"
+                    ? "bg-active text-active-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                Random Selection
+              </button>
             </div>
+            {selectionMode === "manual" && (
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search players…"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+            )}
           </CardHeader>
           <CardContent className="space-y-1.5 overflow-auto">
             {filtered.map((p) => {
