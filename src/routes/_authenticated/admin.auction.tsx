@@ -533,7 +533,7 @@ function AuctionPage() {
                 disabled={!!current || busy}
                 disabledReason="Finish or clear (Esc) the current auction before spinning again."
                 onSpinStart={() => setSpinning(true)}
-                onResult={commitRandomPick}
+                onResult={(winner) => commitRandomPick(winner.id)}
                 tournamentId={tournament.id}
               />
             )}
