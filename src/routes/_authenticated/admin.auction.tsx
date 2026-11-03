@@ -13,6 +13,7 @@ import { formatMoney } from "@/lib/format";
 import { useBrandAsset } from "@/lib/branding";
 import { cn } from "@/lib/utils";
 import { Undo2, Gavel, User, Trophy, Flame, Search } from "lucide-react";
+import { VerticalPlayerReel } from "@/components/admin/vertical-player-reel";
 
 export const Route = createFileRoute("/_authenticated/admin/auction")({
   component: AuctionPage,
@@ -35,6 +36,9 @@ function AuctionPage() {
   const [flash, setFlash] = useState<number | null>(null);
   const [q, setQ] = useState("");
   const [busy, setBusy] = useState(false);
+  // Random-selection mode (additive): manual stays the default and untouched.
+  const [selectionMode, setSelectionMode] = useState<"manual" | "random">("manual");
+  const [spinning, setSpinning] = useState(false);
   const holdLive = useRef(false);
   const placeholderPhoto = useBrandAsset("playerPlaceholder");
   const defaultPhoto = useBrandAsset("playerPhoto");
@@ -247,6 +251,38 @@ function AuctionPage() {
     toast.success("Undone");
   };
 
+  // Random selection commit: revalidate the winner against the latest database
+  // state, then reuse the exact same selectedPlayer flow a manual pick uses.
+  const commitRandomPick = useCallback(
+    async (playerId: string): Promise<boolean> => {
+      if (!tournament) {
+        setSpinning(false);
+        return false;
+      }
+      const { data, error } = await supabase
+        .from("players")
+        .select("id,status,auction_round,tournament_id")
+        .eq("id", playerId)
+        .maybeSingle();
+      const p = data as any;
+      const eligible =
+        !error &&
+        !!p &&
+        p.tournament_id === tournament.id &&
+        p.status === "available" &&
+        (Number(p.auction_round) || 1) === activeRound;
+      if (!eligible) {
+        setSpinning(false);
+        toast.error("That player is no longer available — spin again.");
+        return false;
+      }
+      setSelectedPlayer(playerId);
+      setSpinning(false);
+      return true;
+    },
+    [tournament?.id, activeRound],
+  );
+
   // ---- keyboard console ----------------------------------------------------
   const teamsRef = useRef(teams);
   teamsRef.current = teams;
@@ -404,54 +440,103 @@ function AuctionPage() {
         <Card className="order-4 flex max-h-[calc(100vh-190px)] flex-col overflow-hidden lg:order-none">
           <CardHeader className="pb-2">
             <CardTitle className="text-base">
-              {activeRound === 2 ? "Round 2 — Unsold Players" : "Player Queue"} ({available.length}
-              )
+              {selectionMode === "random"
+                ? "Random Selection"
+                : activeRound === 2
+                  ? "Round 2 — Unsold Players"
+                  : "Player Queue"}{" "}
+              ({available.length})
             </CardTitle>
-            <div className="relative">
-              <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-              <Input
-                placeholder="Search players…"
-                value={q}
-                onChange={(e) => setQ(e.target.value)}
-                className="pl-8"
-              />
+            {/* Selection mode toggle — additive; manual behaviour untouched */}
+            <div className="grid grid-cols-2 gap-1 rounded-lg border bg-muted/40 p-1">
+              <button
+                type="button"
+                onClick={() => setSelectionMode("manual")}
+                disabled={spinning}
+                className={cn(
+                  "rounded-md px-2 py-1.5 text-[11px] font-black uppercase tracking-wider transition-colors disabled:opacity-60",
+                  selectionMode === "manual"
+                    ? "bg-active text-active-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                Select Manually
+              </button>
+              <button
+                type="button"
+                onClick={() => setSelectionMode("random")}
+                disabled={spinning}
+                className={cn(
+                  "rounded-md px-2 py-1.5 text-[11px] font-black uppercase tracking-wider transition-colors disabled:opacity-60",
+                  selectionMode === "random"
+                    ? "bg-active text-active-foreground shadow-sm"
+                    : "text-muted-foreground hover:text-foreground",
+                )}
+              >
+                Random Selection
+              </button>
             </div>
+            {selectionMode === "manual" && (
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <Input
+                  placeholder="Search players…"
+                  value={q}
+                  onChange={(e) => setQ(e.target.value)}
+                  className="pl-8"
+                />
+              </div>
+            )}
           </CardHeader>
           <CardContent className="space-y-1.5 overflow-auto">
-            {filtered.map((p) => {
-              const active = selectedPlayer === p.id;
-              return (
-                <button
-                  key={p.id}
-                  onClick={() => setSelectedPlayer(p.id)}
-                  className={cn(
-                    "flex w-full items-center gap-2.5 rounded-lg border px-2 py-1.5 text-left transition-all",
-                    active
-                      ? "border-active bg-active-soft shadow-[0_0_0_1px_var(--active)]"
-                      : "border-transparent hover:border-border hover:bg-accent",
-                  )}
-                >
-                  <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
-                    {p.photo_url || defaultPhoto ? (
-                      <img src={p.photo_url || defaultPhoto} alt="" className="h-full w-full object-cover" />
-                    ) : (
-                      <User className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-semibold">{p.name}</span>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {p.role || "—"}
-                      {p.base_price ? ` · ${formatMoney(Number(p.base_price), c)}` : ""}
-                    </span>
-                  </span>
-                  <Badge variant="outline" className="shrink-0 text-[10px]">
-                    {activeRound === 2 ? "R1 Unsold" : `R${p.auction_round ?? 1}`}
-                  </Badge>
-                </button>
-              );
-            })}
-            {filtered.length === 0 && <p className="text-xs text-muted-foreground">No players.</p>}
+            {selectionMode === "manual" ? (
+              <>
+                {filtered.map((p) => {
+                  const active = selectedPlayer === p.id;
+                  return (
+                    <button
+                      key={p.id}
+                      onClick={() => setSelectedPlayer(p.id)}
+                      className={cn(
+                        "flex w-full items-center gap-2.5 rounded-lg border px-2 py-1.5 text-left transition-all",
+                        active
+                          ? "border-active bg-active-soft shadow-[0_0_0_1px_var(--active)]"
+                          : "border-transparent hover:border-border hover:bg-accent",
+                      )}
+                    >
+                      <span className="grid h-9 w-9 shrink-0 place-items-center overflow-hidden rounded-md bg-muted">
+                        {p.photo_url || defaultPhoto ? (
+                          <img src={p.photo_url || defaultPhoto} alt="" className="h-full w-full object-cover" />
+                        ) : (
+                          <User className="h-4 w-4 text-muted-foreground" />
+                        )}
+                      </span>
+                      <span className="min-w-0 flex-1">
+                        <span className="block truncate text-sm font-semibold">{p.name}</span>
+                        <span className="block truncate text-xs text-muted-foreground">
+                          {p.role || "—"}
+                          {p.base_price ? ` · ${formatMoney(Number(p.base_price), c)}` : ""}
+                        </span>
+                      </span>
+                      <Badge variant="outline" className="shrink-0 text-[10px]">
+                        {activeRound === 2 ? "R1 Unsold" : `R${p.auction_round ?? 1}`}
+                      </Badge>
+                    </button>
+                  );
+                })}
+                {filtered.length === 0 && <p className="text-xs text-muted-foreground">No players.</p>}
+              </>
+            ) : (
+              <VerticalPlayerReel
+                pool={available}
+                currency={c}
+                disabled={!!current || busy}
+                disabledReason="Finish or clear (Esc) the current auction before spinning again."
+                onSpinStart={() => setSpinning(true)}
+                onResult={(winner) => commitRandomPick(winner.id)}
+                tournamentId={tournament.id}
+              />
+            )}
           </CardContent>
         </Card>
 
