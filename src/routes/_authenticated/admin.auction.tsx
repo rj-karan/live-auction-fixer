@@ -251,6 +251,38 @@ function AuctionPage() {
     toast.success("Undone");
   };
 
+  // Random selection commit: revalidate the winner against the latest database
+  // state, then reuse the exact same selectedPlayer flow a manual pick uses.
+  const commitRandomPick = useCallback(
+    async (playerId: string): Promise<boolean> => {
+      if (!tournament) {
+        setSpinning(false);
+        return false;
+      }
+      const { data, error } = await supabase
+        .from("players")
+        .select("id,status,auction_round,tournament_id")
+        .eq("id", playerId)
+        .maybeSingle();
+      const p = data as any;
+      const eligible =
+        !error &&
+        !!p &&
+        p.tournament_id === tournament.id &&
+        p.status === "available" &&
+        (Number(p.auction_round) || 1) === activeRound;
+      if (!eligible) {
+        setSpinning(false);
+        toast.error("That player is no longer available — spin again.");
+        return false;
+      }
+      setSelectedPlayer(playerId);
+      setSpinning(false);
+      return true;
+    },
+    [tournament?.id, activeRound],
+  );
+
   // ---- keyboard console ----------------------------------------------------
   const teamsRef = useRef(teams);
   teamsRef.current = teams;
