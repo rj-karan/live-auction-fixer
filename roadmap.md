@@ -1,0 +1,2 @@
+- [ ] Broadcast the admin random-player spin as a full-screen public tournament moment using existing realtime state; preserve the existing auction workflow.
+- [ ] Verify the public broadcast and ensure checks pass.
