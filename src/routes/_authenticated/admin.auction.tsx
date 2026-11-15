@@ -273,6 +273,7 @@ function AuctionPage() {
         (Number(p.auction_round) || 1) === activeRound;
       if (!eligible) {
         setSpinning(false);
+        await publishLive({ player_id: null, team_id: null, current_bid: null, status: "idle", round: null });
         toast.error("That player is no longer available — spin again.");
         return false;
       }
@@ -532,7 +533,16 @@ function AuctionPage() {
                 currency={c}
                 disabled={!!current || busy}
                 disabledReason="Finish or clear (Esc) the current auction before spinning again."
-                onSpinStart={() => setSpinning(true)}
+                onSpinStart={() => {
+                  setSpinning(true);
+                  void publishLive({
+                    player_id: null,
+                    team_id: null,
+                    current_bid: null,
+                    status: "spinning",
+                    round: activeRound,
+                  });
+                }}
                 onResult={(winner) => commitRandomPick(winner.id)}
                 tournamentId={tournament.id}
               />
