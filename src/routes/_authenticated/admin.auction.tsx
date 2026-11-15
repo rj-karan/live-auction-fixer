@@ -533,9 +533,9 @@ function AuctionPage() {
                 currency={c}
                 disabled={!!current || busy}
                 disabledReason="Finish or clear (Esc) the current auction before spinning again."
-                onSpinStart={() => {
+                onSpinStart={async () => {
                   setSpinning(true);
-                  void publishLive({
+                  await publishLive({
                     player_id: null,
                     team_id: null,
                     current_bid: null,
