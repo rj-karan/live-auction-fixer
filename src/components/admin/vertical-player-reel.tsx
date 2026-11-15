@@ -91,7 +91,7 @@ export function VerticalPlayerReel({
   currency: string;
   disabled?: boolean;
   disabledReason?: string;
-  onSpinStart?: () => void | Promise<void>;
+  onSpinStart?: () => void | boolean | Promise<void | boolean>;
   /** Revalidate + commit the winner in the parent. Resolve true when committed. */
   onResult: (player: ReelPlayer) => Promise<boolean>;
   tournamentId: string;
@@ -156,7 +156,12 @@ export function VerticalPlayerReel({
     setPhase("spinning");
     // Publish the live state before the draw can commit its winner, so the
     // public board cannot receive the final player before the spin signal.
-    await onSpinStart?.();
+    const started = await onSpinStart?.();
+    if (started === false) {
+      setPhase("idle");
+      setStrip(null);
+      return;
+    }
 
     if (reduce) {
       // Accessibility: skip the roll, reveal immediately.
