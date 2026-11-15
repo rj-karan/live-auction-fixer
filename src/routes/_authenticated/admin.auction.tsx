@@ -74,13 +74,14 @@ function AuctionPage() {
 
   // Publish the live auction board for public spectators (display only).
   const publishLive = async (patch: Record<string, any>) => {
-    if (!tournament) return;
-    await supabase
+    if (!tournament) return false;
+    const { error } = await supabase
       .from("live_auction")
       .upsert(
         { tournament_id: tournament.id, updated_at: new Date().toISOString(), ...patch },
         { onConflict: "tournament_id" },
       );
+    return !error;
   };
 
   useEffect(() => {
@@ -273,6 +274,7 @@ function AuctionPage() {
         (Number(p.auction_round) || 1) === activeRound;
       if (!eligible) {
         setSpinning(false);
+        await publishLive({ player_id: null, team_id: null, current_bid: null, status: "idle", round: null });
         toast.error("That player is no longer available — spin again.");
         return false;
       }
@@ -532,7 +534,22 @@ function AuctionPage() {
                 currency={c}
                 disabled={!!current || busy}
                 disabledReason="Finish or clear (Esc) the current auction before spinning again."
-                onSpinStart={() => setSpinning(true)}
+                onSpinStart={async () => {
+                  setSpinning(true);
+                  const published = await publishLive({
+                    player_id: null,
+                    team_id: null,
+                    current_bid: null,
+                    status: "spinning",
+                    round: activeRound,
+                  });
+                  if (!published) {
+                    setSpinning(false);
+                    toast.error("Unable to start the public player draw. Please try again.");
+                    return false;
+                  }
+                  return true;
+                }}
                 onResult={(winner) => commitRandomPick(winner.id)}
                 tournamentId={tournament.id}
               />

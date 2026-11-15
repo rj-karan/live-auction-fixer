@@ -1,4 +1,5 @@
 import { LiveAuctionPanel } from "@/components/sports/live-auction-panel";
+import { LiveSpinBroadcast } from "@/components/sports/live-spin-broadcast";
 import { SponsorStrip } from "@/components/sports/sponsor-strip";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -366,6 +367,13 @@ function PublicTournament() {
         item={queue[0] ?? null}
         onDismiss={dismissAnnouncement}
         sponsors={sponsors}
+      />
+      <LiveSpinBroadcast
+        tournamentId={tournament.id}
+        tournamentName={tournament.name}
+        currency={c}
+        currentRound={Number(tournament.current_round ?? 1) || 1}
+        players={players}
       />
     </div>
   );
